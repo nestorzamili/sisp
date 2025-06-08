@@ -16,8 +16,9 @@ import {
 } from '@/components/ui/form';
 import { PasswordInput } from '@/components/password-input';
 import { useRouter } from 'next/navigation';
-import { AlertCircle, CheckCircle } from 'lucide-react';
+import { IconAlertCircle, IconCheck } from '@tabler/icons-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AuthLink } from '@/app/(auth)/_components/auth-footers';
 
 type ResetFormProps = HTMLAttributes<HTMLDivElement> & {
   token: string;
@@ -110,9 +111,9 @@ export function ResetForm({ className, token, ...props }: ResetFormProps) {
         >
           <div className="flex items-center gap-2">
             {formState.status === 'success' ? (
-              <CheckCircle className="h-4 w-4" />
+              <IconCheck className="h-4 w-4" />
             ) : (
-              <AlertCircle className="h-4 w-4" />
+              <IconAlertCircle className="h-4 w-4" />
             )}
             <AlertDescription className="text-sm leading-relaxed">
               {formState.message}
@@ -181,6 +182,12 @@ export function ResetForm({ className, token, ...props }: ResetFormProps) {
                 'Ubah Password'
               )}
             </Button>
+
+            <AuthLink
+              question="Sudah ingat password?"
+              linkText="Masuk di sini"
+              href="/sign-in"
+            />
           </div>
         </form>
       </Form>

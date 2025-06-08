@@ -1,17 +1,17 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import Image from 'next/image';
 import {
-  School,
-  Facebook,
-  Twitter,
-  Instagram,
-  Youtube,
-  MapPin,
-  Phone,
-  Mail,
-  Send,
-} from 'lucide-react';
+  IconBrandFacebook,
+  IconBrandTwitter,
+  IconBrandInstagram,
+  IconBrandYoutube,
+  IconMapPin,
+  IconPhone,
+  IconMail,
+  IconSend,
+} from '@tabler/icons-react';
 
 const Footer: React.FC = () => {
   return (
@@ -22,8 +22,14 @@ const Footer: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="text-2xl font-bold mb-4 flex items-center">
-                <School className="mr-2" size={28} />
-                <span>SISP SMP</span>
+                <Image
+                  src="/logo-nias-selatan.svg"
+                  alt="Logo Nias Selatan"
+                  width={28}
+                  height={28}
+                  className="mr-2"
+                />
+                <span>SISPS Nias Selatan</span>
               </div>
               <p className="text-slate-400 mb-6">
                 Sistem pendataan sarana prasarana resmi dari Dinas Pendidikan
@@ -35,25 +41,25 @@ const Footer: React.FC = () => {
                   href="#"
                   className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors cursor-pointer"
                 >
-                  <Facebook size={20} />
+                  <IconBrandFacebook size={20} />
                 </a>
                 <a
                   href="#"
                   className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors cursor-pointer"
                 >
-                  <Twitter size={20} />
+                  <IconBrandTwitter size={20} />
                 </a>
                 <a
                   href="#"
                   className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors cursor-pointer"
                 >
-                  <Instagram size={20} />
+                  <IconBrandInstagram size={20} />
                 </a>
                 <a
                   href="#"
                   className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors cursor-pointer"
                 >
-                  <Youtube size={20} />
+                  <IconBrandYoutube size={20} />
                 </a>
               </div>
             </div>
@@ -116,18 +122,18 @@ const Footer: React.FC = () => {
               <h3 className="text-lg font-semibold mb-4">Hubungi Kami</h3>
               <ul className="space-y-3">
                 <li className="flex items-start">
-                  <MapPin className="mt-1 mr-3 text-primary" size={20} />
+                  <IconMapPin className="mt-1 mr-3 text-primary" size={20} />
                   <span className="text-slate-400">
                     Jalan Arah Lagundri Km. 7 Fanayama Nias Selatan Sumatera
                     Utara 22865
                   </span>
                 </li>
                 <li className="flex items-center">
-                  <Phone className="mr-3 text-primary" size={20} />
+                  <IconPhone className="mr-3 text-primary" size={20} />
                   <span className="text-slate-400">+62 639 21001</span>
                 </li>
                 <li className="flex items-center">
-                  <Mail className="mr-3 text-primary" size={20} />
+                  <IconMail className="mr-3 text-primary" size={20} />
                   <span className="text-slate-400">
                     disdiknisel90@gmail.com
                   </span>
@@ -148,7 +154,7 @@ const Footer: React.FC = () => {
                   className="bg-slate-800 text-slate-100 px-4 py-2 rounded-l-md focus:outline-none focus:ring-1 focus:ring-primary w-full border-none text-sm"
                 />
                 <Button className="btn-primary rounded-l-none">
-                  <Send size={16} />
+                  <IconSend size={16} />
                 </Button>
               </div>
             </div>

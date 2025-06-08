@@ -1,31 +1,23 @@
-'use client';
-
-import AuthLayout from '../auth-layout';
+import { Metadata } from 'next';
+import AuthLayout from '../_components/auth-layout';
 import { ForgotForm } from './components/forgot-password-form';
-import { AlertCircle } from 'lucide-react';
-import { AuthCard } from '@/app/(auth)/_components/auth-card';
-import { BackToLoginLink } from '@/app/(auth)/_components/auth-footers';
 
-export default function ForgotPassword() {
+export const metadata: Metadata = {
+  title: 'Lupa Password',
+  description:
+    'Reset password akun SISP Anda dengan memasukkan alamat email yang terdaftar',
+  robots: 'noindex, nofollow',
+};
+
+export default function ForgotPasswordPage() {
   return (
     <AuthLayout
       title="Lupa Password?"
       subtitle="Masukkan email Anda untuk menerima link reset password"
     >
-      <AuthCard
-        title="Reset Password"
-        icon={AlertCircle}
-        footer={<BackToLoginLink />}
-      >
-        <div className="mb-4 sm:mb-5">
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Masukkan alamat email yang terdaftar di akun Anda. Kami akan
-            mengirimkan link untuk mereset password.
-          </p>
-        </div>
-
+      <div className="card-primary p-5 sm:p-6">
         <ForgotForm />
-      </AuthCard>
+      </div>
     </AuthLayout>
   );
 }

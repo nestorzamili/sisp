@@ -1,20 +1,23 @@
-'use client';
-
-import AuthLayout from '../auth-layout';
+import { Metadata } from 'next';
+import AuthLayout from '../_components/auth-layout';
 import { UserAuthForm } from './components/user-auth-form';
-import { LogIn } from 'lucide-react';
-import { AuthCard } from '@/app/(auth)/_components/auth-card';
-import { TermsFooter } from '@/app/(auth)/_components/auth-footers';
 
-export default function SignIn() {
+export const metadata: Metadata = {
+  title: 'Masuk',
+  description:
+    'Masuk ke akun SISP Anda untuk mengakses sistem informasi sarana prasarana sekolah',
+  robots: 'noindex, nofollow', // Auth pages shouldn't be indexed
+};
+
+export default function SignInPage() {
   return (
     <AuthLayout
       title="Selamat Datang Kembali"
       subtitle="Masuk untuk melanjutkan ke akun Anda"
     >
-      <AuthCard title="Masuk" icon={LogIn} footer={<TermsFooter />}>
+      <div className="card-primary p-5 sm:p-6">
         <UserAuthForm />
-      </AuthCard>
+      </div>
     </AuthLayout>
   );
 }

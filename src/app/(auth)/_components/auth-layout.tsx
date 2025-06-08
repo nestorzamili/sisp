@@ -3,7 +3,8 @@
 import { useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { AuthBackgroundShapes } from './_components/auth-background-shapes';
+import { IconExternalLink } from '@tabler/icons-react';
+import { AuthBackgroundShapes } from './auth-background-shapes';
 
 interface Props {
   children?: React.ReactNode;
@@ -69,20 +70,7 @@ export default function AuthLayout({ children, title, subtitle }: Props) {
                   className="inline-flex items-center text-primary-brand font-medium hover:opacity-80 transition-colors text-[10px] sm:text-xs"
                 >
                   Hubungi Support
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="10"
-                    height="10"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="ml-1"
-                  >
-                    <path d="M7 17L17 7M7 7H7M17 7V17" />
-                  </svg>
+                  <IconExternalLink className="ml-1" size={10} />
                 </a>
               </div>
             </div>

@@ -4,6 +4,7 @@ import { HTMLAttributes, useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { IconLogin } from '@tabler/icons-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -70,6 +71,16 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   return (
     <div className={cn('w-full', className)} {...props}>
+      {/* Form Header with Icon and Title */}
+      <div className="flex items-center justify-center mb-6">
+        <div className="flex items-center space-x-2">
+          <div className="p-2 bg-primary/10 rounded-lg">
+            <IconLogin className="h-5 w-5 text-primary" />
+          </div>
+          <h2 className="text-lg font-semibold text-foreground">Masuk</h2>
+        </div>
+      </div>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <div className="grid gap-3 sm:gap-4 w-full">

@@ -15,9 +15,32 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'SISP-Sekolah',
+  title: {
+    template: '%s | SISP SMP Nias Selatan',
+    default: 'SISP SMP Nias Selatan - Sistem Informasi Sarana Prasarana',
+  },
   description:
-    'SISP-Sekolah adalah sistem informasi sarana dan prasarana sekolah.',
+    'Sistem Informasi Sarana dan Prasarana (SISP) SMP Di Kabupaten Nias Selatan. Platform digital untuk pendataan, pengelolaan, dan monitoring sarana prasarana sekolah menengah pertama.',
+  keywords: [
+    'SISP',
+    'Nias Selatan',
+    'sistem informasi',
+    'sarana prasarana',
+    'sekolah',
+    'SMP',
+    'pendidikan',
+    'monitoring',
+    'inventarisasi',
+    'manajemen sekolah',
+  ],
+  authors: [{ name: 'Nestor Zamili', url: 'https://nestorzamili.works' }],
+  creator: 'Nestor Zamili',
+  publisher: 'Dinas Pendidikan Kabupaten Nias Selatan',
+  robots: 'index, follow',
+  other: {
+    'msapplication-TileColor': '#2563eb',
+    'theme-color': '#ffffff',
+  },
 };
 
 export default function RootLayout({

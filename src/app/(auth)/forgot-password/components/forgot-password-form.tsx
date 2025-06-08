@@ -17,6 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { AlertCircle, CheckCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AuthLink } from '@/app/(auth)/_components/auth-footers';
 
 type ForgotFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -73,6 +74,25 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
 
   return (
     <div className={cn('w-full', className)} {...props}>
+      {/* Form Header with Icon and Title */}
+      <div className="flex items-center justify-center mb-6">
+        <div className="flex items-center space-x-2">
+          <div className="p-2 bg-orange-500/10 rounded-lg">
+            <AlertCircle className="h-5 w-5 text-orange-600" />
+          </div>
+          <h2 className="text-lg font-semibold text-foreground">
+            Reset Password
+          </h2>
+        </div>
+      </div>
+
+      <div className="mb-4 sm:mb-5">
+        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed text-center">
+          Masukkan alamat email yang terdaftar di akun Anda. Kami akan
+          mengirimkan link untuk mereset password.
+        </p>
+      </div>
+
       {formState.status !== 'idle' && (
         <Alert
           variant={formState.status === 'success' ? 'default' : 'destructive'}
@@ -133,6 +153,12 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
                 'Kirim Link Reset Password'
               )}
             </Button>
+
+            <AuthLink
+              question="Ingat password Anda?"
+              linkText="Kembali ke Login"
+              href="/sign-in"
+            />
           </div>
         </form>
       </Form>

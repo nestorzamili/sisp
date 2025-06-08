@@ -1,28 +1,34 @@
-'use client';
-
+import { Metadata } from 'next';
 import { Suspense } from 'react';
-import AuthLayout from '../auth-layout';
-import { KeyRound } from 'lucide-react';
+import AuthLayout from '../_components/auth-layout';
 import ResetPasswordContent from './components/reset-password-content';
-import { AuthCard } from '@/app/(auth)/_components/auth-card';
 
-export default function ResetPassword() {
+export const metadata: Metadata = {
+  title: 'Reset Password',
+  description: 'Buat password baru yang kuat untuk akun SISP Anda',
+  robots: 'noindex, nofollow',
+};
+
+export default function ResetPasswordPage() {
   return (
     <AuthLayout
       title="Reset Password"
       subtitle="Buat password baru untuk akun Anda"
     >
-      <AuthCard title="Buat Password Baru" icon={KeyRound}>
+      <div className="card-primary p-5 sm:p-6">
         <Suspense
           fallback={
-            <p className="text-center py-4 text-muted-foreground">
-              Memuat formulir...
-            </p>
+            <div className="text-center py-8">
+              <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-2"></div>
+              <p className="text-muted-foreground text-sm">
+                Memuat formulir...
+              </p>
+            </div>
           }
         >
           <ResetPasswordContent />
         </Suspense>
-      </AuthCard>
+      </div>
     </AuthLayout>
   );
 }
