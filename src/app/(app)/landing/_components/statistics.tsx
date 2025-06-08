@@ -5,37 +5,37 @@ const Statistics: React.FC = () => {
   return (
     <>
       {/* Statistics Section */}
-      <section id="statistics" className="py-20 bg-white">
+      <section id="statistics" className="py-20 bg-background">
         <div className="container mx-auto max-w-[1440px] px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              <h2 className="text-3xl font-bold text-foreground mb-6">
                 Target Analisis Prioritas SMP Nias Selatan
               </h2>
-              <p className="text-lg text-gray-600 mb-8">
+              <p className="text-lg text-muted-foreground mb-8">
                 Sistem menganalisis prioritas kebutuhan sarana prasarana dari
                 seluruh SMP di Kabupaten Nias Selatan untuk perencanaan
                 pembangunan yang efektif.
               </p>
 
               <div className="grid grid-cols-2 gap-6">
-                <div className="border border-gray-200 rounded-lg p-6 text-center">
-                  <div className="text-4xl font-bold text-red-600 mb-2">43</div>
-                  <div className="text-gray-600">Total SMP</div>
+                <div className="border border-border rounded-lg p-6 text-center bg-card">
+                  <div className="text-4xl font-bold text-primary mb-2">43</div>
+                  <div className="text-muted-foreground">Total SMP</div>
                 </div>
-                <div className="border border-gray-200 rounded-lg p-6 text-center">
-                  <div className="text-4xl font-bold text-red-600 mb-2">13</div>
-                  <div className="text-gray-600">Kategori Data</div>
+                <div className="border border-border rounded-lg p-6 text-center bg-card">
+                  <div className="text-4xl font-bold text-primary mb-2">13</div>
+                  <div className="text-muted-foreground">Kategori Data</div>
                 </div>
-                <div className="border border-gray-200 rounded-lg p-6 text-center">
-                  <div className="text-4xl font-bold text-red-600 mb-2">3</div>
-                  <div className="text-gray-600">Level Prioritas</div>
+                <div className="border border-border rounded-lg p-6 text-center bg-card">
+                  <div className="text-4xl font-bold text-primary mb-2">3</div>
+                  <div className="text-muted-foreground">Level Prioritas</div>
                 </div>
-                <div className="border border-gray-200 rounded-lg p-6 text-center">
-                  <div className="text-4xl font-bold text-red-600 mb-2">
+                <div className="border border-border rounded-lg p-6 text-center bg-card">
+                  <div className="text-4xl font-bold text-primary mb-2">
                     100%
                   </div>
-                  <div className="text-gray-600">Cakupan Analisis</div>
+                  <div className="text-muted-foreground">Cakupan Analisis</div>
                 </div>
               </div>
             </div>

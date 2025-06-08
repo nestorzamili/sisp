@@ -26,14 +26,14 @@ const ProcessFlow: React.FC = () => {
   ];
 
   return (
-    <section id="process" className="py-20 bg-gray-50">
+    <section id="process" className="py-20 bg-muted">
       <div className="container mx-auto max-w-[1440px] px-6">
-        <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-2xl p-8 border border-orange-200">
+        <div className="bg-gradient-to-r from-accent to-accent/80 rounded-2xl p-8 border border-primary/20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
               Proses Analisis Prioritas
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Data yang dikumpulkan melalui proses yang terstruktur untuk
               menghasilkan rekomendasi prioritas kebutuhan yang akurat
             </p>
@@ -46,28 +46,28 @@ const ProcessFlow: React.FC = () => {
                 <div key={index} className="text-center relative">
                   {/* Connection Line */}
                   {index < processSteps.length - 1 && (
-                    <div className="hidden lg:block absolute top-4 left-[calc(50%+1.5rem)] w-[calc(100%-3rem)] h-0.5 bg-orange-300 z-0">
-                      <div className="absolute right-0 top-[-3px] w-2 h-2 bg-orange-400 rounded-full"></div>
+                    <div className="hidden lg:block absolute top-4 left-[calc(50%+1rem)] w-[calc(100%-1rem)] h-0.5 bg-primary/30 z-0">
+                      <div className="absolute right-0 top-[-3px] w-2 h-2 bg-primary/50 rounded-full"></div>
                     </div>
                   )}
 
                   {/* Step Content */}
                   <div className="relative">
                     {/* Step Number Badge */}
-                    <div className="inline-flex items-center justify-center w-8 h-8 bg-orange-600 text-white rounded-full text-sm font-bold mb-4 z-20 relative">
+                    <div className="inline-flex items-center justify-center w-8 h-8 bg-primary text-primary-foreground rounded-full text-sm font-bold mb-4 z-20 relative">
                       {index + 1}
                     </div>
 
                     {/* Icon Container */}
-                    <div className="w-20 h-20 rounded-2xl bg-orange-100 flex items-center justify-center mx-auto mb-4 relative z-10 shadow-sm">
-                      <StepIcon className="text-orange-600" size={36} />
+                    <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4 relative z-10 shadow-sm border border-primary/20">
+                      <StepIcon className="text-primary" size={36} />
                     </div>
 
                     {/* Step Content */}
-                    <h4 className="font-bold text-gray-900 mb-2 text-lg">
+                    <h4 className="font-bold text-foreground mb-2 text-lg">
                       {step.title}
                     </h4>
-                    <p className="text-sm text-gray-600 leading-relaxed px-2">
+                    <p className="text-sm text-muted-foreground leading-relaxed px-2">
                       {step.description}
                     </p>
                   </div>

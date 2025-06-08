@@ -1,0 +1,141 @@
+'use client';
+
+import { HTMLAttributes, useState } from 'react';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { AlertCircle, CheckCircle } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+type ForgotFormProps = HTMLAttributes<HTMLDivElement>;
+
+export function ForgotForm({ className, ...props }: ForgotFormProps) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [formState, setFormState] = useState<{
+    status: 'idle' | 'success' | 'error';
+    message: string;
+  }>({ status: 'idle', message: '' });
+
+  const formSchema = z.object({
+    email: z
+      .string()
+      .trim()
+      .min(1, { message: 'Email harus diisi' })
+      .email({ message: 'Format email tidak valid' }),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { email: '' },
+  });
+
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+    setFormState({ status: 'idle', message: '' });
+
+    try {
+      // TODO: Implement password reset logic
+      console.log('Reset password for:', data.email);
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
+      // Success simulation
+      setFormState({
+        status: 'success',
+        message:
+          'Link reset password telah dikirim ke email Anda. Silakan periksa kotak masuk dan folder spam.',
+      });
+
+      // Clear the form on success
+      form.reset();
+    } catch (error) {
+      console.error('Error during password reset:', error);
+      setFormState({
+        status: 'error',
+        message: 'Gagal mengirim email reset password. Silakan coba lagi.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return (
+    <div className={cn('w-full', className)} {...props}>
+      {formState.status !== 'idle' && (
+        <Alert
+          variant={formState.status === 'success' ? 'default' : 'destructive'}
+          className={
+            formState.status === 'success'
+              ? 'border-green-500 text-green-700 bg-green-50 dark:bg-green-950 dark:text-green-400 mb-4'
+              : 'mb-4'
+          }
+        >
+          <div className="flex items-center gap-2">
+            {formState.status === 'success' ? (
+              <CheckCircle className="h-4 w-4" />
+            ) : (
+              <AlertCircle className="h-4 w-4" />
+            )}
+            <AlertDescription className="text-sm leading-relaxed">
+              {formState.message}
+            </AlertDescription>
+          </div>
+        </Alert>
+      )}
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+          <div className="grid gap-3 sm:gap-4 w-full">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem className="form-field w-full">
+                  <FormLabel className="form-label">Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="Masukkan alamat email Anda"
+                      className="input-primary h-9 sm:h-10 text-sm w-full"
+                      {...field}
+                      disabled={isLoading}
+                      autoFocus
+                      autoComplete="email"
+                    />
+                  </FormControl>
+                  <FormMessage className="form-error" />
+                </FormItem>
+              )}
+            />
+            <Button
+              className="btn-primary mt-2 sm:mt-3 h-9 sm:h-10 text-sm w-full"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="flex items-center">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                  Mengirim Email...
+                </div>
+              ) : (
+                'Kirim Link Reset Password'
+              )}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+}

@@ -4,6 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { LogIn, Menu, X } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { ModeToggle } from '@/components/theme-switch';
+import { useRouter } from 'next/navigation';
 
 const navItems = [
   { id: 'home', label: 'Beranda' },
@@ -18,6 +21,7 @@ const Header: React.FC = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const router = useRouter();
 
   const handleNavClick = useCallback((id: string) => {
     setActiveTab(id);
@@ -32,6 +36,11 @@ const Header: React.FC = () => {
       });
     }
   }, []);
+
+  const handleLogoClick = useCallback(() => {
+    // Navigate to home page
+    router.push('/');
+  }, [router]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,8 +93,8 @@ const Header: React.FC = () => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'bg-white/90 backdrop-blur-xl shadow-lg'
-            : 'bg-white/40 backdrop-blur-md'
+            ? 'bg-background/90 backdrop-blur-xl shadow-lg'
+            : 'bg-background/40 backdrop-blur-md'
         }`}
       >
         <div className="container mx-auto max-w-[1440px] px-6">
@@ -97,25 +106,29 @@ const Header: React.FC = () => {
             {/* Logo */}
             <div
               className="flex items-center cursor-pointer group"
-              onClick={() => handleNavClick('home')}
+              onClick={handleLogoClick}
             >
               <Image
                 src="/logo-nias-selatan.svg"
                 alt="Logo Nias Selatan"
-                width={isScrolled ? 40 : 44}
-                height={isScrolled ? 40 : 44}
+                width={44}
+                height={44}
                 className="mr-3 transition-all duration-300"
+                style={{
+                  width: isScrolled ? '40px' : '44px',
+                  height: 'auto',
+                }}
               />
               <div className="flex flex-col">
                 <span
-                  className={`font-bold text-red-600 tracking-tight transition-all duration-300 ${
+                  className={`font-bold text-primary-brand tracking-tight transition-all duration-300 ${
                     isScrolled ? 'text-lg' : 'text-xl'
                   }`}
                 >
                   Dinas Pendidikan
                 </span>
                 <span
-                  className={`text-gray-600 font-medium transition-all duration-300 ${
+                  className={`text-secondary-brand font-medium transition-all duration-300 ${
                     isScrolled ? 'text-[10px]' : 'text-xs'
                   }`}
                 >
@@ -131,8 +144,8 @@ const Header: React.FC = () => {
                   key={item.id}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
                     activeTab === item.id
-                      ? 'text-white bg-red-600 shadow-lg'
-                      : 'text-gray-700 hover:text-red-600 hover:bg-white/50'
+                      ? 'text-primary-foreground bg-primary shadow-lg'
+                      : 'text-foreground hover:text-primary hover:bg-background/50'
                   }`}
                   onClick={() => handleNavClick(item.id)}
                 >
@@ -143,31 +156,36 @@ const Header: React.FC = () => {
 
             {/* Desktop Auth Buttons */}
             <div className="hidden lg:flex items-center space-x-3">
-              <Button
-                variant="ghost"
-                size={isScrolled ? 'sm' : 'default'}
-                className="text-gray-700 hover:text-red-600 hover:bg-white/50 font-medium"
-              >
-                Daftar
-              </Button>
-              <Button
-                size={isScrolled ? 'sm' : 'default'}
-                className="bg-red-600 hover:bg-red-700 text-white font-medium shadow-lg"
-              >
-                <LogIn className="mr-2" size={16} />
-                Masuk
-              </Button>
+              <ModeToggle />
+              <Link href="/sign-up">
+                <Button
+                  variant="ghost"
+                  size={isScrolled ? 'sm' : 'default'}
+                  className="btn-ghost"
+                >
+                  Daftar
+                </Button>
+              </Link>
+              <Link href="/sign-in">
+                <Button
+                  size={isScrolled ? 'sm' : 'default'}
+                  className="btn-primary"
+                >
+                  <LogIn className="mr-2" size={16} />
+                  Masuk
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden p-2 rounded-xl hover:bg-white/50 transition-colors"
+              className="lg:hidden p-2 rounded-xl hover:bg-background/50 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
-                <X className="text-gray-700" size={24} />
+                <X className="text-foreground" size={24} />
               ) : (
-                <Menu className="text-gray-700" size={24} />
+                <Menu className="text-foreground" size={24} />
               )}
             </button>
           </div>
@@ -178,15 +196,15 @@ const Header: React.FC = () => {
               mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
-            <div className="pb-4 pt-2 bg-white/90 backdrop-blur-xl rounded-xl mt-2 border border-white/20">
+            <div className="pb-4 pt-2 bg-background/90 backdrop-blur-xl rounded-xl mt-2 border border-border">
               <nav className="flex flex-col space-y-1 mt-2 px-4">
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     className={`px-4 py-3 rounded-lg text-sm font-medium text-left transition-all duration-200 ${
                       activeTab === item.id
-                        ? 'text-white bg-red-600'
-                        : 'text-gray-700 hover:bg-white/50 hover:text-red-600'
+                        ? 'text-primary-foreground bg-primary'
+                        : 'text-foreground hover:bg-background/50 hover:text-primary'
                     }`}
                     onClick={() => handleNavClick(item.id)}
                   >
@@ -196,17 +214,21 @@ const Header: React.FC = () => {
               </nav>
 
               {/* Mobile Auth Buttons */}
-              <div className="flex flex-col space-y-3 mt-4 pt-4 px-4 border-t border-gray-200">
-                <Button
-                  variant="ghost"
-                  className="justify-start text-gray-700 hover:text-red-600 hover:bg-white/50 font-medium"
-                >
-                  Daftar
-                </Button>
-                <Button className="justify-start bg-red-600 hover:bg-red-700 text-white font-medium">
-                  <LogIn className="mr-2" size={16} />
-                  Login Sekolah
-                </Button>
+              <div className="flex flex-col space-y-3 mt-4 pt-4 px-4 border-t border-border">
+                <Link href="/sign-up">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start btn-ghost"
+                  >
+                    Daftar
+                  </Button>
+                </Link>
+                <Link href="/sign-in">
+                  <Button className="w-full justify-start btn-primary">
+                    <LogIn className="mr-2" size={16} />
+                    Login Sekolah
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

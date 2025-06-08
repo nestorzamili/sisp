@@ -66,13 +66,13 @@ const Features: React.FC = () => {
   return (
     <>
       {/* Features Section */}
-      <section id="features" className="py-20 bg-gray-50">
+      <section id="features" className="py-20 bg-muted">
         <div className="container mx-auto max-w-[1440px] px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
               Fitur Analisis Prioritas Sarana Prasarana
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Sistem terintegrasi untuk mengumpulkan data, menganalisis
               prioritas kebutuhan, dan melaporkan rekomendasi pembangunan sarana
               prasarana SMP di Nias Selatan.
@@ -83,23 +83,20 @@ const Features: React.FC = () => {
             {features.map((feature) => {
               const IconComponent = feature.icon;
               return (
-                <Card
-                  key={feature.id}
-                  className="p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-300 h-full"
-                >
+                <Card key={feature.id} className="feature-card p-6 h-full">
                   <div className="flex flex-col h-full">
-                    <div className="rounded-full bg-red-100 w-16 h-16 flex items-center justify-center mb-4">
-                      <IconComponent className="text-red-600" size={32} />
+                    <div className="rounded-full bg-accent w-16 h-16 flex items-center justify-center mb-4">
+                      <IconComponent className="text-primary" size={32} />
                     </div>
-                    <h3 className="text-xl font-semibold mb-3 text-gray-900">
+                    <h3 className="text-xl font-semibold mb-3 text-foreground">
                       {feature.title}
                     </h3>
-                    <p className="text-gray-600 mb-4 flex-grow">
+                    <p className="text-muted-foreground mb-4 flex-grow">
                       {feature.description}
                     </p>
                     <a
                       href="#"
-                      className="text-red-600 font-medium hover:text-red-700 inline-flex items-center cursor-pointer"
+                      className="text-primary font-medium hover:opacity-80 inline-flex items-center cursor-pointer transition-colors"
                     >
                       Pelajari Lebih Lanjut
                       <ChevronRight className="ml-2" size={16} />
