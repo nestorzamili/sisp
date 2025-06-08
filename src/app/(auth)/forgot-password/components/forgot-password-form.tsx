@@ -74,18 +74,6 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
 
   return (
     <div className={cn('w-full', className)} {...props}>
-      {/* Form Header with Icon and Title */}
-      <div className="flex items-center justify-center mb-6">
-        <div className="flex items-center space-x-2">
-          <div className="p-2 bg-orange-500/10 rounded-lg">
-            <AlertCircle className="h-5 w-5 text-orange-600" />
-          </div>
-          <h2 className="text-lg font-semibold text-foreground">
-            Reset Password
-          </h2>
-        </div>
-      </div>
-
       <div className="mb-4 sm:mb-5">
         <p className="text-sm sm:text-base text-muted-foreground leading-relaxed text-center">
           Masukkan alamat email yang terdaftar di akun Anda. Kami akan
@@ -102,16 +90,14 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
               : 'mb-4'
           }
         >
-          <div className="flex items-center gap-2">
-            {formState.status === 'success' ? (
-              <CheckCircle className="h-4 w-4" />
-            ) : (
-              <AlertCircle className="h-4 w-4" />
-            )}
-            <AlertDescription className="text-sm leading-relaxed">
-              {formState.message}
-            </AlertDescription>
-          </div>
+          {formState.status === 'success' ? (
+            <CheckCircle className="h-4 w-4 flex-shrink-0" />
+          ) : (
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+          )}
+          <AlertDescription className="text-sm leading-relaxed">
+            {formState.message}
+          </AlertDescription>
         </Alert>
       )}
 

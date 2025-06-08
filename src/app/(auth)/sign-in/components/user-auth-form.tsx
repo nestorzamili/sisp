@@ -4,7 +4,6 @@ import { HTMLAttributes, useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { IconLogin } from '@tabler/icons-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -17,6 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { PasswordInput } from '@/components/password-input';
 import Link from 'next/link';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
@@ -46,11 +46,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       .string()
       .min(1, { message: 'Password harus diisi' })
       .min(7, { message: 'Password minimal 7 karakter' }),
+    rememberMe: z.boolean(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { identifier: '', password: '' },
+    defaultValues: { identifier: '', password: '', rememberMe: false },
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
@@ -71,16 +72,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   return (
     <div className={cn('w-full', className)} {...props}>
-      {/* Form Header with Icon and Title */}
-      <div className="flex items-center justify-center mb-6">
-        <div className="flex items-center space-x-2">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <IconLogin className="h-5 w-5 text-primary" />
-          </div>
-          <h2 className="text-lg font-semibold text-foreground">Masuk</h2>
-        </div>
-      </div>
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <div className="grid gap-3 sm:gap-4 w-full">
@@ -130,6 +121,24 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                     />
                   </FormControl>
                   <FormMessage className="form-error" />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="rememberMe"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormLabel className="text-sm font-normal cursor-pointer">
+                    Ingat saya
+                  </FormLabel>
                 </FormItem>
               )}
             />
