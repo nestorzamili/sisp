@@ -29,7 +29,7 @@ const HeroSection: React.FC = () => {
               Pengelolaan data sarana dan prasarana untuk meningkatkan kualitas
               pendidikan di tingkat Sekolah Menengah Pertama
             </p>
-            <Link href="/sign-up">
+            <Link href="/home">
               <Button className="btn-primary text-lg px-8 py-6">
                 Isi Data Sekolah
                 <ArrowRight className="ml-2" size={20} />

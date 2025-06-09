@@ -49,7 +49,7 @@ const CallToAction: React.FC = () => {
 
             {/* CTA Button */}
             <div className="flex justify-center">
-              <Link href="/sign-up">
+              <Link href="/home">
                 <Button className="group relative overflow-hidden bg-background text-primary hover:bg-background/90 hover:text-primary text-lg font-semibold px-8 py-4 md:px-10 md:py-5 rounded-full shadow-2xl hover:shadow-background/20 transition-all duration-300 transform hover:scale-105 focus:ring-4 focus:ring-background/30">
                   {/* Button Background Animation */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
