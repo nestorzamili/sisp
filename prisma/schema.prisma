@@ -1,0 +1,242 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name          String
+  email         String  @unique
+  emailVerified Boolean
+  image         String?
+
+  sessions Session[]
+  accounts Account[]
+  Sekolah  Sekolah?
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model Account {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("accounts")
+}
+
+model Verification {
+  id        String    @id @default(uuid())
+  createdAt DateTime?
+  updatedAt DateTime?
+
+  identifier String
+  value      String
+  expiresAt  DateTime
+
+  @@map("verifications")
+}
+
+model RateLimit {
+  id          String @id @default(uuid()) @db.Uuid
+  key         String
+  count       Int
+  lastRequest BigInt @map("last_request")
+
+  @@map("rate_limits")
+}
+
+model Sekolah {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  nama_sekolah        String
+  npsn                String  @unique
+  nama_kepala_sekolah String?
+  nip_kepala_sekolah  String?
+  alamat_sekolah      String?
+  kecamatan           String?
+  phone               String? @unique
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  sarana             Sarana[]
+  prasarana          Prasarana[]
+  kebutuhanPrioritas KebutuhanPrioritas[]
+  lampiran           Lampiran[]
+  guru               Guru[]
+  rombonganBelajar   RombonganBelajar[]
+
+  @@map("sekolah")
+}
+
+model Sarana {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sekolahId            String
+  jenis_sarana         JenisRuangan
+  nama_sarana          String
+  jumlah_total         Int
+  jumlah_kondisi_baik  Int
+  jumlah_kondisi_rusak Int
+  keterangan           String?
+  tahun_ajaran         String
+
+  sekolah Sekolah @relation(fields: [sekolahId], references: [id], onDelete: Cascade)
+
+  @@unique([sekolahId, jenis_sarana, nama_sarana, tahun_ajaran])
+  @@map("sarana")
+}
+
+model Prasarana {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sekolahId            String
+  jenis_prasarana      JenisRuangan
+  nama_prasarana       String
+  jumlah_total         Int
+  jumlah_kondisi_baik  Int
+  jumlah_kondisi_rusak Int
+  keterangan           String?
+  tahun_ajaran         String
+
+  sekolah Sekolah @relation(fields: [sekolahId], references: [id], onDelete: Cascade)
+
+  @@unique([sekolahId, jenis_prasarana, nama_prasarana, tahun_ajaran])
+  @@map("prasarana")
+}
+
+model KebutuhanPrioritas {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sekolahId    String
+  jenis        JenisKebutuhan
+  penjelasan   String
+  tahun_ajaran String
+
+  sekolah Sekolah @relation(fields: [sekolahId], references: [id], onDelete: Cascade)
+
+  @@map("kebutuhan_prioritas")
+}
+
+model Lampiran {
+  id           String   @id @default(uuid())
+  createdAt    DateTime @default(now())
+  sekolahId    String
+  nama_dokumen String
+  url          String
+
+  sekolah Sekolah @relation(fields: [sekolahId], references: [id], onDelete: Cascade)
+
+  @@map("lampiran")
+}
+
+model Guru {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sekolahId     String
+  status_guru   StatusGuru
+  jenis_kelamin JenisKelamin
+  jumlah        Int
+  tahun_ajaran  String
+
+  sekolah Sekolah @relation(fields: [sekolahId], references: [id], onDelete: Cascade)
+
+  @@unique([sekolahId, status_guru, jenis_kelamin, tahun_ajaran])
+  @@map("guru")
+}
+
+model RombonganBelajar {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sekolahId       String
+  tingkatan_kelas String
+  jenis_kelamin   JenisKelamin
+  jumlah_siswa    Int
+  tahun_ajaran    String
+
+  sekolah Sekolah @relation(fields: [sekolahId], references: [id], onDelete: Cascade)
+
+  @@unique([sekolahId, tingkatan_kelas, jenis_kelamin, tahun_ajaran])
+  @@map("rombongan_belajar")
+}
+
+// Enums
+
+enum JenisRuangan {
+  RuangKepalaSekolah
+  RuangGuru
+  RuangKelas
+  LaboratoriumIPA
+  LaboratoriumBahasa
+  LaboratoriumTIK
+  AulaPertemuan
+  Perpustakaan
+  JambanGuru
+  JambanSiswa
+}
+
+enum JenisKebutuhan {
+  Sarana
+  Prasarana
+}
+
+enum StatusGuru {
+  PNS
+  PPPK
+  Honorer
+}
+
+enum JenisKelamin {
+  L
+  P
+}

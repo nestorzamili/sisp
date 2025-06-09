@@ -17,13 +17,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/password-input';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
+import { signUp } from '@/lib/auth-client';
+import { createSekolahAction } from '../action';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 type SignUpFormProps = HTMLAttributes<HTMLDivElement>;
 
-// Simplified form schema with only essential fields
+// Simplified form schema with only essential fields for registration
 const formSchema = z
   .object({
-    // Essential School Information
     schoolName: z
       .string()
       .trim()
@@ -34,8 +37,6 @@ const formSchema = z
       .trim()
       .length(8, { message: 'NPSN harus 8 digit' })
       .regex(/^\d{8}$/, { message: 'NPSN hanya boleh berisi angka' }),
-
-    // Administrator Account
     email: z
       .string()
       .trim()
@@ -68,6 +69,7 @@ type SchoolFormData = z.infer<typeof formSchema>;
 
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const form = useForm<SchoolFormData>({
     resolver: zodResolver(formSchema),
@@ -100,15 +102,46 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     setIsLoading(true);
 
     try {
-      // TODO: Implement school registration logic
-      console.log('School registration data:', values);
+      // Create user account with better-auth
+      const { data: authData, error: authError } = await signUp.email({
+        email: values.email,
+        password: values.password,
+        name: values.schoolName,
+      });
 
-      // Simulate loading
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (authError) {
+        toast.error(authError.message || 'Gagal membuat akun');
+        return;
+      }
 
+      if (!authData?.user?.id) {
+        toast.error('User ID tidak ditemukan');
+        return;
+      }
+
+      // Create sekolah record with minimal data using server action
+      const sekolahResult = await createSekolahAction({
+        nama_sekolah: values.schoolName,
+        npsn: values.npsn,
+        phone: values.phone,
+        userId: authData.user.id,
+      });
+
+      if (!sekolahResult.success) {
+        toast.error(sekolahResult.error || 'Gagal membuat data sekolah');
+        return;
+      }
+
+      // Success
       form.reset();
+
+      // Redirect to sign-in with success parameter
+      router.push('/sign-in?success=registration');
     } catch (err) {
       console.error('Registration error:', err);
+      toast.error(
+        'Terjadi kesalahan saat mendaftarkan sekolah. Silakan coba lagi.',
+      );
     } finally {
       setIsLoading(false);
     }
@@ -120,7 +153,6 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
             <div className="grid gap-3 sm:gap-4 w-full">
-              {/* School Information */}
               <FormField
                 control={form.control}
                 name="schoolName"
@@ -161,7 +193,6 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
                 )}
               />
 
-              {/* Administrator Account */}
               <FormField
                 control={form.control}
                 name="email"

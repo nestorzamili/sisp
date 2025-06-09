@@ -1,9 +1,11 @@
 'use client';
 
-import { HTMLAttributes, useState } from 'react';
+import { HTMLAttributes, useState, useEffect } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -20,51 +22,63 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { PasswordInput } from '@/components/password-input';
 import Link from 'next/link';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
+import { signIn } from '@/lib/auth-client';
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams();
 
-  // A combined schema that accepts either email or username
+  // Check for success parameter on component mount
+  useEffect(() => {
+    const success = searchParams?.get('success');
+    if (success === 'registration') {
+      toast.success('Registrasi berhasil! Silakan masuk ke akun Anda.');
+    }
+  }, [searchParams]);
+
+  // Simplified schema for email only
   const formSchema = z.object({
-    identifier: z
+    email: z
       .string()
-      .min(1, { message: 'Email atau username harus diisi' })
-      .refine(
-        (value) => {
-          // Either valid email or username with minimum length
-          const isEmail = value.includes('@') && value.includes('.');
-          const isUsername = !value.includes('@') && value.length >= 3;
-          return isEmail || isUsername;
-        },
-        {
-          message: 'Format email tidak valid atau username minimal 3 karakter',
-        },
-      ),
+      .min(1, { message: 'Email harus diisi' })
+      .email({ message: 'Format email tidak valid' }),
     password: z
       .string()
       .min(1, { message: 'Password harus diisi' })
-      .min(7, { message: 'Password minimal 7 karakter' }),
+      .min(8, { message: 'Password minimal 8 karakter' }),
     rememberMe: z.boolean(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { identifier: '', password: '', rememberMe: false },
+    defaultValues: { email: '', password: '', rememberMe: false },
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
     try {
-      // TODO: Implement authentication logic
-      console.log('Login data:', data);
+      const { data: authData, error: authError } = await signIn.email({
+        email: data.email,
+        password: data.password,
+        rememberMe: data.rememberMe,
+        callbackURL: '/home',
+      });
 
-      // Simulate loading
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (authError) {
+        toast.error(authError.message || 'Gagal masuk ke akun');
+        return;
+      }
+
+      // No need for manual redirect as better-auth handles it with callbackURL
+      if (authData?.user) {
+        toast.success('Berhasil masuk ke akun!');
+      }
     } catch (error) {
       console.error('Login error:', error);
+      toast.error('Terjadi kesalahan saat masuk. Silakan coba lagi.');
     } finally {
       setIsLoading(false);
     }
@@ -77,20 +91,19 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           <div className="grid gap-3 sm:gap-4 w-full">
             <FormField
               control={form.control}
-              name="identifier"
+              name="email"
               render={({ field }) => (
                 <FormItem className="form-field w-full">
-                  <FormLabel className="form-label">
-                    Email atau Username
-                  </FormLabel>
+                  <FormLabel className="form-label">Email</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Masukkan email atau username"
+                      type="email"
+                      placeholder="Masukkan email"
                       className="input-primary h-9 sm:h-10 text-sm w-full"
                       {...field}
                       disabled={isLoading}
                       autoFocus
-                      autoComplete="username"
+                      autoComplete="email"
                     />
                   </FormControl>
                   <FormMessage className="form-error" />

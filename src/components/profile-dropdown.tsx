@@ -15,29 +15,48 @@ import { User, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-
-// Mock user data - replace with actual user data later
-const mockUser = {
-  name: 'Nestor Zamili',
-  email: 'nestor.zamili@example.com',
-  image: null,
-};
+import { useSession, signOut } from '@/lib/auth-client';
 
 export function ProfileDropdown() {
   const router = useRouter();
+  const { data: session, isPending: loading } = useSession();
 
   const handleLogout = async () => {
     try {
-      // TODO: Implement actual logout logic
-      toast.success('Logged out successfully');
-      router.push('/sign-in');
+      await signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            router.push('/sign-in');
+            toast.success('Anda telah berhasil keluar.');
+          },
+          onError: () => {
+            toast.error('Gagal keluar. Silakan coba lagi.');
+          },
+        },
+      });
     } catch (error) {
+      toast.error('Gagal keluar. Silakan coba lagi.');
       console.error('Logout error:', error);
-      toast.error('Failed to log out');
     }
   };
 
-  const user = mockUser;
+  if (loading || !session?.user) {
+    return (
+      <Button
+        variant="ghost"
+        className="relative h-10 w-10 rounded-full hover:bg-primary/10 transition-colors duration-200 p-0"
+        disabled
+      >
+        <Avatar className="h-9 w-9 ring-2 ring-primary/20">
+          <AvatarFallback className="bg-primary/10 text-primary font-medium">
+            <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+          </AvatarFallback>
+        </Avatar>
+      </Button>
+    );
+  }
+
+  const user = session.user;
   const userInitials = user.name
     ? user.name
         .split(' ')
@@ -111,7 +130,7 @@ export function ProfileDropdown() {
         >
           <div className="flex items-center gap-2">
             <LogOut size={16} />
-            <span>Log Out</span>
+            <span>Keluar</span>
           </div>
           <DropdownMenuShortcut className="text-xs opacity-60">
             ⇧⌘Q
