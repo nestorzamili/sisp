@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { DashboardHeader } from './_components/header';
@@ -23,6 +23,8 @@ import {
   Step6Data,
   Step7Data,
 } from '@/types/user-home.types';
+import { getDataCompletionStatusAction } from './_actions/data-completion.action';
+import { Loader2 } from 'lucide-react';
 
 export default function HomePage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -33,45 +35,124 @@ export default function HomePage() {
   const [step4Data, setStep4Data] = useState<Step4Data | null>(null);
   const [step5Data, setStep5Data] = useState<Step5Data | null>(null);
   const [step6Data, setStep6Data] = useState<Step6Data | null>(null);
+  const [dataCompletionStatus, setDataCompletionStatus] = useState({
+    step1: false,
+    step2: false,
+    step3: false,
+    step4: false,
+    step5: false,
+    step6: false,
+    step7: false,
+  });
+  const [isLoadingStatus, setIsLoadingStatus] = useState(true);
 
-  const onStep1Submit = (data: Step1Data) => {
+  // Load data completion status on component mount
+  useEffect(() => {
+    async function loadCompletionStatus() {
+      try {
+        setIsLoadingStatus(true);
+        const result = await getDataCompletionStatusAction();
+
+        if (result.success && result.data) {
+          // Ensure all values are boolean, not undefined
+          const safeData = {
+            step1: Boolean(result.data.step1),
+            step2: Boolean(result.data.step2),
+            step3: Boolean(result.data.step3),
+            step4: Boolean(result.data.step4),
+            step5: Boolean(result.data.step5),
+            step6: Boolean(result.data.step6),
+            step7: Boolean(result.data.step7),
+          };
+
+          setDataCompletionStatus(safeData);
+
+          // Update completed steps based on actual data
+          const completed = Object.entries(safeData)
+            .filter(([, isComplete]) => isComplete)
+            .map(([step]) => parseInt(step.replace('step', '')));
+
+          setCompletedSteps(completed);
+        }
+      } catch (error) {
+        console.error('Error loading completion status:', error);
+      } finally {
+        setIsLoadingStatus(false);
+      }
+    }
+
+    loadCompletionStatus();
+  }, []);
+
+  // Refresh completion status after form submissions
+  const refreshCompletionStatus = async () => {
+    const result = await getDataCompletionStatusAction();
+    if (result.success && result.data) {
+      const safeData = {
+        step1: Boolean(result.data.step1),
+        step2: Boolean(result.data.step2),
+        step3: Boolean(result.data.step3),
+        step4: Boolean(result.data.step4),
+        step5: Boolean(result.data.step5),
+        step6: Boolean(result.data.step6),
+        step7: Boolean(result.data.step7),
+      };
+
+      setDataCompletionStatus(safeData);
+
+      const completed = Object.entries(safeData)
+        .filter(([, isComplete]) => isComplete)
+        .map(([step]) => parseInt(step.replace('step', '')));
+
+      setCompletedSteps(completed);
+    }
+  };
+
+  const onStep1Submit = async (data: Step1Data) => {
     setStep1Data(data);
     setCompletedSteps((prev) => [...prev.filter((s) => s !== 1), 1]);
+    await refreshCompletionStatus();
     setCurrentStep(2);
   };
 
-  const onStep2Submit = (data: Step2Data) => {
+  const onStep2Submit = async (data: Step2Data) => {
     setStep2Data(data);
     setCompletedSteps((prev) => [...prev.filter((s) => s !== 2), 2]);
+    await refreshCompletionStatus();
     setCurrentStep(3);
   };
 
-  const onStep3Submit = (data: Step3Data) => {
+  const onStep3Submit = async (data: Step3Data) => {
     setStep3Data(data);
     setCompletedSteps((prev) => [...prev.filter((s) => s !== 3), 3]);
+    await refreshCompletionStatus();
     setCurrentStep(4);
   };
 
-  const onStep4Submit = (data: Step4Data) => {
+  const onStep4Submit = async (data: Step4Data) => {
     setStep4Data(data);
     setCompletedSteps((prev) => [...prev.filter((s) => s !== 4), 4]);
+    await refreshCompletionStatus();
     setCurrentStep(5);
   };
 
-  const onStep5Submit = (data: Step5Data) => {
+  const onStep5Submit = async (data: Step5Data) => {
     setStep5Data(data);
     setCompletedSteps((prev) => [...prev.filter((s) => s !== 5), 5]);
+    await refreshCompletionStatus();
     setCurrentStep(6);
   };
 
-  const onStep6Submit = (data: Step6Data) => {
+  const onStep6Submit = async (data: Step6Data) => {
     setStep6Data(data);
     setCompletedSteps((prev) => [...prev.filter((s) => s !== 6), 6]);
+    await refreshCompletionStatus();
     setCurrentStep(7);
   };
 
-  const onStep7Submit = (data: Step7Data) => {
+  const onStep7Submit = async (data: Step7Data) => {
     setCompletedSteps((prev) => [...prev.filter((s) => s !== 7), 7]);
+    await refreshCompletionStatus();
     console.log('All Form Data:');
     console.log('Step 1 Data:', step1Data);
     console.log('Step 2 Data:', step2Data);
@@ -87,6 +168,19 @@ export default function HomePage() {
     setCurrentStep(stepNumber);
   };
 
+  if (isLoadingStatus) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex items-center space-x-2">
+          <Loader2 className="w-5 h-5 animate-spin" />
+          <span className="text-sm text-muted-foreground">
+            Memuat status kelengkapan data...
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-muted">
       <DashboardHeader />
@@ -101,6 +195,7 @@ export default function HomePage() {
         <StepIndicator
           currentStep={currentStep}
           completedSteps={completedSteps}
+          dataCompletionStatus={dataCompletionStatus}
           onStepClick={handleStepClick}
         />
       </div>

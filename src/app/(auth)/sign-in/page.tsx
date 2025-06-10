@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import AuthLayout from '../_components/auth-layout';
 import { UserAuthForm } from './components/user-auth-form';
 
@@ -16,7 +17,15 @@ export default function SignInPage() {
       subtitle="Masuk untuk melanjutkan ke akun Anda"
     >
       <div className="card-primary p-5 sm:p-6">
-        <UserAuthForm />
+        <Suspense
+          fallback={
+            <div className="w-full h-64 flex items-center justify-center">
+              Loading...
+            </div>
+          }
+        >
+          <UserAuthForm />
+        </Suspense>
       </div>
     </AuthLayout>
   );

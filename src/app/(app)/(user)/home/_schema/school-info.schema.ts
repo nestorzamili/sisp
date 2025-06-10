@@ -12,6 +12,16 @@ export const step1Schema = z.object({
   kecamatan: z.string().min(1, 'Kecamatan harus dipilih'),
 });
 
+// Schema for existing data (allows empty strings for incomplete data)
+export const existingSchoolDataSchema = z.object({
+  namaSekolah: z.string(),
+  npsn: z.string(),
+  namaKepalaSekolah: z.string(),
+  nipKepalaSekolah: z.string(),
+  alamatSekolah: z.string(),
+  kecamatan: z.string(),
+});
+
 export const kecamatanOptions = [
   'Gomo',
   'Hilimbowo',
@@ -28,3 +38,4 @@ export const kecamatanOptions = [
 ];
 
 export type Step1Data = z.infer<typeof step1Schema>;
+export type ExistingSchoolData = z.infer<typeof existingSchoolDataSchema>;

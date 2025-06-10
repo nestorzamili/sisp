@@ -3,7 +3,14 @@ import {
   JenisKebutuhan,
   StatusGuru,
   JenisKelamin,
-} from '@/generated/prisma';
+} from '@prisma/client';
+
+export {
+  JenisRuangan,
+  JenisKebutuhan,
+  StatusGuru,
+  JenisKelamin,
+} from '@prisma/client';
 
 export interface CreateSekolahData {
   nama_sekolah: string;
@@ -119,4 +126,11 @@ export interface SekolahStatistics {
   totalSiswa: number;
   totalKebutuhanPrioritas: number;
   totalLampiran: number;
+}
+
+export interface SekolahWhereInput {
+  id?: { not?: string };
+  nama_sekolah?: { contains: string; mode: 'insensitive' };
+  npsn?: string | { contains: string; mode: 'insensitive' };
+  kecamatan?: { contains: string; mode: 'insensitive' };
 }

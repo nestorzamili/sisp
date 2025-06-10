@@ -32,9 +32,9 @@ export const auth = betterAuth({
     database: {
       generateId: false,
     },
-    // ipAddress: {
-    //   ipAddressHeaders: ['x-client-ip', 'x-forwarded-for'],
-    //   disableIpTracking: false,
-    // },
+    ipAddress: {
+      ipAddressHeaders: ['x-client-ip', 'x-forwarded-for', 'x-real-ip'],
+      disableIpTracking: false,
+    },
   },
 });

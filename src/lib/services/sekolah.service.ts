@@ -1,5 +1,4 @@
 import prisma from '@/lib/prisma';
-import { Prisma } from '@/generated/prisma';
 import {
   CreateSekolahData,
   UpdateSekolahData,
@@ -8,6 +7,7 @@ import {
   SekolahServiceResponse,
   PaginatedSekolahResponse,
   SekolahStatistics,
+  SekolahWhereInput,
 } from '@/types/sekolah';
 
 export class SekolahService {
@@ -33,10 +33,7 @@ export class SekolahService {
         data: sekolah,
       };
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
+      if (error instanceof Error && 'code' in error && error.code === 'P2002') {
         return {
           success: false,
           error: 'NPSN sudah terdaftar',
@@ -146,7 +143,7 @@ export class SekolahService {
     try {
       const { nama_sekolah, npsn, kecamatan, limit = 10, offset = 0 } = filters;
 
-      const where: Prisma.SekolahWhereInput = {};
+      const where: SekolahWhereInput = {};
 
       if (nama_sekolah) {
         where.nama_sekolah = {
@@ -236,7 +233,8 @@ export class SekolahService {
         data: sekolah,
       };
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      console.error('Error updating sekolah:', error);
+      if (error instanceof Error && 'code' in error) {
         if (error.code === 'P2002') {
           return {
             success: false,
@@ -268,10 +266,7 @@ export class SekolahService {
         data: true,
       };
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
+      if (error instanceof Error && 'code' in error && error.code === 'P2025') {
         return {
           success: false,
           error: 'Sekolah tidak ditemukan',
@@ -337,7 +332,7 @@ export class SekolahService {
 
   async checkNpsnExists(npsn: string, excludeId?: string): Promise<boolean> {
     try {
-      const where: Prisma.SekolahWhereInput = { npsn };
+      const where: SekolahWhereInput = { npsn };
 
       if (excludeId) {
         where.id = { not: excludeId };

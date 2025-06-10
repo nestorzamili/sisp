@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -75,7 +74,7 @@ model Verification {
 }
 
 model RateLimit {
-  id          String @id @default(uuid()) @db.Uuid
+  id          String @id @default(uuid())
   key         String
   count       Int
   lastRequest BigInt @map("last_request")
