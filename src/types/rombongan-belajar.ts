@@ -69,9 +69,6 @@ export interface RombonganBelajarWhereInput {
 }
 
 export interface RombonganBelajarFormData {
-  rombelKelas7: number;
-  rombelKelas8: number;
-  rombelKelas9: number;
   siswaKelas7Laki: number;
   siswaKelas7Perempuan: number;
   siswaKelas8Laki: number;

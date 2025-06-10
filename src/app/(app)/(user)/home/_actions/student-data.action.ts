@@ -54,9 +54,6 @@ export async function getStudentDataAction(tahunAjaran?: string) {
     // Transform data to form format
     const studentData = studentResult.data || [];
     const formData: Step3Data = {
-      rombelKelas7: '0',
-      rombelKelas8: '0',
-      rombelKelas9: '0',
       siswaKelas7Laki: '0',
       siswaKelas7Perempuan: '0',
       siswaKelas8Laki: '0',
@@ -87,20 +84,6 @@ export async function getStudentDataAction(tahunAjaran?: string) {
         }
       }
     });
-
-    // Calculate rombongan belajar totals from student counts
-    // Assuming average class size of 30 students for rombel calculation
-    const avgClassSize = 30;
-    const totalKelas7 =
-      Number(formData.siswaKelas7Laki) + Number(formData.siswaKelas7Perempuan);
-    const totalKelas8 =
-      Number(formData.siswaKelas8Laki) + Number(formData.siswaKelas8Perempuan);
-    const totalKelas9 =
-      Number(formData.siswaKelas9Laki) + Number(formData.siswaKelas9Perempuan);
-
-    formData.rombelKelas7 = Math.ceil(totalKelas7 / avgClassSize).toString();
-    formData.rombelKelas8 = Math.ceil(totalKelas8 / avgClassSize).toString();
-    formData.rombelKelas9 = Math.ceil(totalKelas9 / avgClassSize).toString();
 
     return {
       success: true,
@@ -146,9 +129,6 @@ export async function saveStudentDataAction(
     // Transform form data to service format
     const currentYear = tahunAjaran || new Date().getFullYear().toString();
     const rombonganBelajarFormData: RombonganBelajarFormData = {
-      rombelKelas7: Number(data.rombelKelas7),
-      rombelKelas8: Number(data.rombelKelas8),
-      rombelKelas9: Number(data.rombelKelas9),
       siswaKelas7Laki: Number(data.siswaKelas7Laki),
       siswaKelas7Perempuan: Number(data.siswaKelas7Perempuan),
       siswaKelas8Laki: Number(data.siswaKelas8Laki),

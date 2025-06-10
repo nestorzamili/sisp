@@ -34,9 +34,6 @@ export function StudentDataForm({ onSubmit, onBack }: StudentDataFormProps) {
   const form = useForm<Step3Data>({
     resolver: zodResolver(step3Schema),
     defaultValues: {
-      rombelKelas7: '0',
-      rombelKelas8: '0',
-      rombelKelas9: '0',
       siswaKelas7Laki: '0',
       siswaKelas7Perempuan: '0',
       siswaKelas8Laki: '0',
@@ -99,11 +96,6 @@ export function StudentDataForm({ onSubmit, onBack }: StudentDataFormProps) {
   }
 
   // Calculate totals
-  const totalRombel =
-    (Number(form.watch('rombelKelas7')) || 0) +
-    (Number(form.watch('rombelKelas8')) || 0) +
-    (Number(form.watch('rombelKelas9')) || 0);
-
   const totalKelas7 =
     (Number(form.watch('siswaKelas7Laki')) || 0) +
     (Number(form.watch('siswaKelas7Perempuan')) || 0);
@@ -165,93 +157,10 @@ export function StudentDataForm({ onSubmit, onBack }: StudentDataFormProps) {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          {/* Rombongan Belajar Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground">
-              Jumlah Rombongan Belajar
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <FormField
-                control={form.control}
-                name="rombelKelas7"
-                render={({ field }) => (
-                  <FormItem className="space-y-2">
-                    <FormLabel className="text-sm font-medium">
-                      Kelas VII
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        placeholder="0"
-                        {...field}
-                        disabled={isSubmitting}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="rombelKelas8"
-                render={({ field }) => (
-                  <FormItem className="space-y-2">
-                    <FormLabel className="text-sm font-medium">
-                      Kelas VIII
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        placeholder="0"
-                        {...field}
-                        disabled={isSubmitting}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="rombelKelas9"
-                render={({ field }) => (
-                  <FormItem className="space-y-2">
-                    <FormLabel className="text-sm font-medium">
-                      Kelas IX
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        placeholder="0"
-                        {...field}
-                        disabled={isSubmitting}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormItem className="space-y-2">
-                <FormLabel className="text-sm font-medium">
-                  Total Rombongan Belajar
-                </FormLabel>
-                <div className="h-10 flex items-center justify-center bg-primary/10 rounded-md border border-primary/20">
-                  <span className="text-base font-semibold text-primary">
-                    {totalRombel}
-                  </span>
-                </div>
-              </FormItem>
-            </div>
-          </div>
-
           {/* Students Data Section */}
           <div className="space-y-5">
             <h3 className="text-lg font-semibold text-foreground">
-              Jumlah Siswa
+              Jumlah Siswa per Kelas
             </h3>
 
             {/* Kelas VII */}

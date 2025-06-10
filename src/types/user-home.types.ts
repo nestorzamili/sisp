@@ -17,9 +17,6 @@ export type Step2Data = {
 };
 
 export type Step3Data = {
-  rombelKelas7: string;
-  rombelKelas8: string;
-  rombelKelas9: string;
   siswaKelas7Laki: string;
   siswaKelas7Perempuan: string;
   siswaKelas8Laki: string;
