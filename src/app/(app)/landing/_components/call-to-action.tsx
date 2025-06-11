@@ -42,20 +42,20 @@ const CallToAction: React.FC = () => {
             </h2>
 
             <p className="text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed opacity-90">
-              Input data sarana dan prasarana sekolah Anda untuk analisis
-              prioritas kebutuhan yang akan mendukung perencanaan pembangunan
-              pendidikan di Nias Selatan.
+              Daftarkan sekolah Anda dan input data sarana prasarana untuk
+              analisis prioritas kebutuhan yang akan mendukung perencanaan
+              pembangunan pendidikan di Nias Selatan.
             </p>
 
             {/* CTA Button */}
             <div className="flex justify-center">
-              <Link href="/home">
+              <Link href="/sign-up">
                 <Button className="group relative overflow-hidden bg-background text-primary hover:bg-background/90 hover:text-primary text-lg font-semibold px-8 py-4 md:px-10 md:py-5 rounded-full shadow-2xl hover:shadow-background/20 transition-all duration-300 transform hover:scale-105 focus:ring-4 focus:ring-background/30">
                   {/* Button Background Animation */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
 
                   <span className="relative flex items-center gap-3">
-                    Mulai Input Data Sekolah
+                    Daftarkan Sekolah Anda
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
                 </Button>

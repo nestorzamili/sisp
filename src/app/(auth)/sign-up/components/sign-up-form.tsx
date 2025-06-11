@@ -102,11 +102,12 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     setIsLoading(true);
 
     try {
-      // Create user account with better-auth
+      // Create user account with better-auth (without email verification)
       const { data: authData, error: authError } = await signUp.email({
         email: values.email,
         password: values.password,
         name: values.schoolName,
+        callbackURL: '/sign-in',
       });
 
       if (authError) {
@@ -132,11 +133,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
         return;
       }
 
-      // Success
-      form.reset();
-
-      // Redirect to sign-in with success parameter
-      router.push('/sign-in?success=registration');
+      // Success - redirect to success page
+      router.push('/sign-up?success=true');
     } catch (err) {
       console.error('Registration error:', err);
       toast.error(

@@ -1,6 +1,7 @@
 'use server';
 
 import { SekolahService } from '@/lib/services/sekolah.service';
+import { WhatsAppService } from '@/lib/services/whatsapp.service';
 import {
   CreateSekolahData,
   SekolahServiceResponse,
@@ -13,6 +14,22 @@ export async function createSekolahAction(
   try {
     const sekolahService = new SekolahService();
     const result = await sekolahService.createSekolah(data);
+
+    // If sekolah creation is successful, send WhatsApp notification to admin
+    if (result.success && result.data) {
+      try {
+        const whatsappService = new WhatsAppService();
+        await whatsappService.sendAdminNotification(
+          result.data.nama_sekolah,
+          result.data.npsn,
+          result.data.user?.email || 'Email tidak tersedia',
+          result.data.phone || 'No. HP tidak tersedia',
+        );
+      } catch (whatsappError) {
+        // Don't fail the entire registration if WhatsApp notification fails
+        console.error('Failed to send WhatsApp notification:', whatsappError);
+      }
+    }
 
     return result;
   } catch (error) {

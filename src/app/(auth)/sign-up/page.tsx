@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { SignUpForm } from './components/sign-up-form';
-import AuthLayout from '../_components/auth-layout';
+import { Suspense } from 'react';
+import { SignUpPageClient } from './components/sign-up-page-client';
 
 export const metadata: Metadata = {
   title: 'Daftar Sekolah',
@@ -11,11 +11,8 @@ export const metadata: Metadata = {
 
 export default function SignUpPage() {
   return (
-    <AuthLayout
-      title="Daftarkan Sekolah"
-      subtitle="Buat akun SISP untuk sekolah Anda"
-    >
-      <SignUpForm />
-    </AuthLayout>
+    <Suspense fallback={<div>Loading...</div>}>
+      <SignUpPageClient />
+    </Suspense>
   );
 }
