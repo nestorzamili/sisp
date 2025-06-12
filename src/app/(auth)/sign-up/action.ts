@@ -54,13 +54,3 @@ export async function createSekolahAction(
     };
   }
 }
-
-export async function checkNpsnExistsAction(npsn: string): Promise<boolean> {
-  try {
-    const sekolahService = new SekolahService();
-    return await sekolahService.checkNpsnExists(npsn);
-  } catch (error) {
-    console.error('Error in checkNpsnExistsAction:', error);
-    return false;
-  }
-}
