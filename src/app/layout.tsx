@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: {
     template: '%s | SISP SMP Nias Selatan',
-    default: 'SISP SMP Nias Selatan - Sistem Informasi Sarana Prasarana',
+    default: 'SISP SMP Nias Selatan',
   },
   description:
     'Sistem Informasi Sarana dan Prasarana (SISP) SMP Di Kabupaten Nias Selatan. Platform digital untuk pendataan, pengelolaan, dan monitoring sarana prasarana sekolah menengah pertama.',

@@ -22,18 +22,17 @@ import Link from 'next/link';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
 import { signIn } from '@/lib/auth-client';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { XCircle } from 'lucide-react';
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
 type AlertType = {
-  type: 'success' | 'error';
   message: string;
 };
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [alert, setAlert] = useState<AlertType | null>(null);
+  const [error, setError] = useState<AlertType | null>(null);
 
   const formSchema = z.object({
     email: z
@@ -54,10 +53,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    setAlert(null);
+    setError(null);
 
     try {
-      const { data: authData, error: authError } = await signIn.email({
+      const { error: authError } = await signIn.email({
         email: data.email,
         password: data.password,
         rememberMe: data.rememberMe,
@@ -65,23 +64,13 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       });
 
       if (authError) {
-        setAlert({
-          type: 'error',
+        setError({
           message: authError.message || 'Gagal masuk ke akun',
-        });
-        return;
-      }
-
-      if (authData?.user) {
-        setAlert({
-          type: 'success',
-          message: 'Berhasil masuk ke akun!',
         });
       }
     } catch (error) {
       console.error('Login error:', error);
-      setAlert({
-        type: 'error',
+      setError({
         message: 'Terjadi kesalahan saat masuk. Silakan coba lagi.',
       });
     } finally {
@@ -89,31 +78,12 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     }
   }
 
-  const getAlertVariant = (type: 'success' | 'error') => {
-    return type === 'error' ? 'destructive' : 'default';
-  };
-
-  const getAlertIcon = (type: 'success' | 'error') => {
-    return type === 'success' ? (
-      <CheckCircle className="h-4 w-4 mr-2" />
-    ) : (
-      <XCircle className="h-4 w-4 mr-2" />
-    );
-  };
-
   return (
     <div className={cn('w-full', className)} {...props}>
-      {alert && (
-        <Alert
-          variant={getAlertVariant(alert.type)}
-          className={`mb-4 ${
-            alert.type === 'success'
-              ? 'bg-green-50 text-green-800 border-green-200'
-              : ''
-          }`}
-        >
-          {getAlertIcon(alert.type)}
-          <AlertDescription>{alert.message}</AlertDescription>
+      {error && (
+        <Alert variant="destructive" className="mb-4">
+          <XCircle className="h-4 w-4 mr-2" />
+          <AlertDescription>{error.message}</AlertDescription>
         </Alert>
       )}
 

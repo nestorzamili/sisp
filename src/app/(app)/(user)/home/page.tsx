@@ -24,7 +24,6 @@ import {
   Step7Data,
 } from '@/types/user-home.types';
 import { getDataCompletionStatusAction } from './_actions/data-completion.action';
-import { Loader2 } from 'lucide-react';
 
 export default function HomePage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -44,17 +43,14 @@ export default function HomePage() {
     step6: false,
     step7: false,
   });
-  const [isLoadingStatus, setIsLoadingStatus] = useState(true);
 
   // Load data completion status on component mount
   useEffect(() => {
     async function loadCompletionStatus() {
       try {
-        setIsLoadingStatus(true);
         const result = await getDataCompletionStatusAction();
 
         if (result.success && result.data) {
-          // Ensure all values are boolean, not undefined
           const safeData = {
             step1: Boolean(result.data.step1),
             step2: Boolean(result.data.step2),
@@ -67,7 +63,6 @@ export default function HomePage() {
 
           setDataCompletionStatus(safeData);
 
-          // Update completed steps based on actual data
           const completed = Object.entries(safeData)
             .filter(([, isComplete]) => isComplete)
             .map(([step]) => parseInt(step.replace('step', '')));
@@ -76,8 +71,6 @@ export default function HomePage() {
         }
       } catch (error) {
         console.error('Error loading completion status:', error);
-      } finally {
-        setIsLoadingStatus(false);
       }
     }
 
@@ -167,19 +160,6 @@ export default function HomePage() {
   const handleStepClick = (stepNumber: number) => {
     setCurrentStep(stepNumber);
   };
-
-  if (isLoadingStatus) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span className="text-sm text-muted-foreground">
-            Memuat status kelengkapan data...
-          </span>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-muted">
