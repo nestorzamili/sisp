@@ -19,8 +19,9 @@ import { PasswordInput } from '@/components/password-input';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
 import { signUp } from '@/lib/auth-client';
 import { createSekolahAction } from '../action';
-import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { XCircle } from 'lucide-react';
 
 type SignUpFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -69,6 +70,7 @@ type SchoolFormData = z.infer<typeof formSchema>;
 
 export function SignUpForm({ className, ...props }: SignUpFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const form = useForm<SchoolFormData>({
@@ -84,10 +86,8 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     mode: 'onChange',
   });
 
-  // Watch form values
   const watchedValues = form.watch();
 
-  // Form validation check
   const isSubmitDisabled = useMemo(() => {
     const { isValid, isDirty } = form.formState;
     const hasAllFields = Object.values(watchedValues).every(
@@ -97,12 +97,11 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
     return isLoading || (isDirty && (!isValid || !hasAllFields));
   }, [isLoading, form.formState, watchedValues]);
 
-  // Registration submission handler
   async function onSubmit(values: SchoolFormData) {
     setIsLoading(true);
+    setError(null); // Clear any previous errors
 
     try {
-      // Create user account with better-auth (without email verification)
       const { data: authData, error: authError } = await signUp.email({
         email: values.email,
         password: values.password,
@@ -111,16 +110,15 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       });
 
       if (authError) {
-        toast.error(authError.message || 'Gagal membuat akun');
+        setError(authError.message || 'Gagal membuat akun');
         return;
       }
 
       if (!authData?.user?.id) {
-        toast.error('User ID tidak ditemukan');
+        setError('User ID tidak ditemukan');
         return;
       }
 
-      // Create sekolah record with minimal data using server action
       const sekolahResult = await createSekolahAction({
         nama_sekolah: values.schoolName,
         npsn: values.npsn,
@@ -129,15 +127,14 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
       });
 
       if (!sekolahResult.success) {
-        toast.error(sekolahResult.error || 'Gagal membuat data sekolah');
+        setError(sekolahResult.error || 'Gagal membuat data sekolah');
         return;
       }
 
-      // Success - redirect to success page
       router.push('/sign-up?success=true');
     } catch (err) {
       console.error('Registration error:', err);
-      toast.error(
+      setError(
         'Terjadi kesalahan saat mendaftarkan sekolah. Silakan coba lagi.',
       );
     } finally {
@@ -148,6 +145,13 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
   return (
     <div className={cn('w-full', className)} {...props}>
       <div className="card-primary p-5 sm:p-6">
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <XCircle className="h-4 w-4 mr-2" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
             <div className="grid gap-3 sm:gap-4 w-full">

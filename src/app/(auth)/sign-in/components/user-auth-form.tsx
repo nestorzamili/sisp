@@ -1,11 +1,9 @@
 'use client';
 
-import { HTMLAttributes, useState, useEffect } from 'react';
+import { HTMLAttributes, useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -23,22 +21,20 @@ import { PasswordInput } from '@/components/password-input';
 import Link from 'next/link';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
 import { signIn } from '@/lib/auth-client';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { CheckCircle, XCircle } from 'lucide-react';
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
+type AlertType = {
+  type: 'success' | 'error';
+  message: string;
+};
+
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const searchParams = useSearchParams();
+  const [alert, setAlert] = useState<AlertType | null>(null);
 
-  // Check for success parameter on component mount
-  useEffect(() => {
-    const success = searchParams?.get('success');
-    if (success === 'registration') {
-      toast.success('Registrasi berhasil! Silakan masuk ke akun Anda.');
-    }
-  }, [searchParams]);
-
-  // Simplified schema for email only
   const formSchema = z.object({
     email: z
       .string()
@@ -58,6 +54,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true);
+    setAlert(null);
 
     try {
       const { data: authData, error: authError } = await signIn.email({
@@ -68,24 +65,58 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       });
 
       if (authError) {
-        toast.error(authError.message || 'Gagal masuk ke akun');
+        setAlert({
+          type: 'error',
+          message: authError.message || 'Gagal masuk ke akun',
+        });
         return;
       }
 
-      // No need for manual redirect as better-auth handles it with callbackURL
       if (authData?.user) {
-        toast.success('Berhasil masuk ke akun!');
+        setAlert({
+          type: 'success',
+          message: 'Berhasil masuk ke akun!',
+        });
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('Terjadi kesalahan saat masuk. Silakan coba lagi.');
+      setAlert({
+        type: 'error',
+        message: 'Terjadi kesalahan saat masuk. Silakan coba lagi.',
+      });
     } finally {
       setIsLoading(false);
     }
   }
 
+  const getAlertVariant = (type: 'success' | 'error') => {
+    return type === 'error' ? 'destructive' : 'default';
+  };
+
+  const getAlertIcon = (type: 'success' | 'error') => {
+    return type === 'success' ? (
+      <CheckCircle className="h-4 w-4 mr-2" />
+    ) : (
+      <XCircle className="h-4 w-4 mr-2" />
+    );
+  };
+
   return (
     <div className={cn('w-full', className)} {...props}>
+      {alert && (
+        <Alert
+          variant={getAlertVariant(alert.type)}
+          className={`mb-4 ${
+            alert.type === 'success'
+              ? 'bg-green-50 text-green-800 border-green-200'
+              : ''
+          }`}
+        >
+          {getAlertIcon(alert.type)}
+          <AlertDescription>{alert.message}</AlertDescription>
+        </Alert>
+      )}
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
           <div className="grid gap-3 sm:gap-4 w-full">

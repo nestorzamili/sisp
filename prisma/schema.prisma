@@ -21,6 +21,11 @@ model User {
   accounts Account[]
   Sekolah  Sekolah?
 
+  role       String?   @default("user")
+  banned     Boolean?  @default(true) // Default to banned, requiring admin approval
+  banReason  String?   @default("Waiting for admin approval")
+  banExpires DateTime?
+
   @@map("users")
 }
 
@@ -36,6 +41,8 @@ model Session {
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String?
 
   @@map("sessions")
 }

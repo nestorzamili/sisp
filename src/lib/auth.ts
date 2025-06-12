@@ -1,17 +1,24 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
+import { admin } from 'better-auth/plugins';
 
 import prisma from '@/lib/prisma';
 import { hashPassword, verifyPassword } from '@/lib/argon2';
 import { sendEmail } from '@/lib/mail';
-import { VerificationEmailTemplate } from '@/components/emails/verification-email';
+import { VerificationEmailTemplate } from '@/templates/verification-email';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
-  plugins: [nextCookies()],
+  plugins: [
+    nextCookies(),
+    admin({
+      bannedUserMessage:
+        'Akun Anda belum diaktifkan. Mohon tunggu persetujuan dari admin',
+    }),
+  ],
 
   emailAndPassword: {
     enabled: true,
@@ -24,6 +31,7 @@ export const auth = betterAuth({
   },
 
   emailVerification: {
+    sendOnSignUp: false,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
       try {
@@ -41,7 +49,7 @@ export const auth = betterAuth({
   rateLimit: {
     enabled: true,
     storage: 'database',
-    modelName: 'rateLimit',
+    modelName: 'rate-limits',
     window: 5 * 60,
     max: 1,
   },

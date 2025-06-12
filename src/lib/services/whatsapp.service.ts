@@ -1,4 +1,4 @@
-import { WhatsAppTemplates } from '@/lib/templates/whatsapp-templates';
+import { WhatsAppTemplates } from '@/templates/whatsapp-templates';
 
 interface WhatsAppMessage {
   numbers: string[];

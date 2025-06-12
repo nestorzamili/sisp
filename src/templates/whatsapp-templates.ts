@@ -14,21 +14,21 @@ export class WhatsAppTemplates {
       minute: '2-digit',
     });
 
-    return `🏫 *SISP SMP - PENDAFTARAN SEKOLAH BARU*
+    return `*SISP SMP – Pendaftaran Sekolah Baru*
 
-📅 Waktu: ${timestamp} WIB
+Tanggal: ${timestamp} WIB
 
-📝 *Data Sekolah:*
-• Nama: ${schoolName}
+*Data Sekolah:*
+• Nama Sekolah: ${schoolName}
 • NPSN: ${npsn}
 • Email: ${email}
 • No. HP: ${phone}
 
-⚠️ *Status:* Menunggu Persetujuan Admin
+Status: Menunggu persetujuan dari admin.
 
-🔗 Silakan login ke dashboard admin untuk memverifikasi dan menyetujui pendaftaran sekolah ini.
+Silakan login ke dashboard admin untuk melakukan verifikasi dan persetujuan pendaftaran sekolah.
 
-_Sistem Informasi Sarana Prasarana SMP_
+_Sistem Informasi Sarana dan Prasarana SMP_  
 _Dinas Pendidikan Kabupaten Nias Selatan_`;
   }
 
@@ -46,21 +46,20 @@ _Dinas Pendidikan Kabupaten Nias Selatan_`;
       minute: '2-digit',
     });
 
-    return `✅ *SISP - AKUN SEKOLAH DISETUJUI*
+    return `*SISP SMP – Akun Sekolah Disetujui*
 
-📅 Waktu: ${timestamp} WIB
+Tanggal: ${timestamp} WIB
 
-🎉 Selamat! Akun sekolah Anda telah disetujui:
+Selamat, akun sekolah Anda telah disetujui.
 
-📝 *Data Sekolah:*
-• Nama: ${schoolName}
+*Data Sekolah:*
+• Nama Sekolah: ${schoolName}
 • NPSN: ${npsn}
 
-🔗 *Link Login:* ${loginUrl}
+Silakan login ke sistem melalui tautan berikut untuk mulai menginput data sarana dan prasarana:
+${loginUrl}
 
-Silakan login ke sistem untuk mulai menginput data sarana prasarana sekolah Anda.
-
-_Sistem Informasi Sarana Prasarana SMP_
+_Sistem Informasi Sarana dan Prasarana SMP_  
 _Dinas Pendidikan Kabupaten Nias Selatan_`;
   }
 
@@ -78,21 +77,21 @@ _Dinas Pendidikan Kabupaten Nias Selatan_`;
       minute: '2-digit',
     });
 
-    return `❌ *SISP - PENDAFTARAN DITOLAK*
+    return `*SISP SMP – Pendaftaran Ditolak*
 
-📅 Waktu: ${timestamp} WIB
+Tanggal: ${timestamp} WIB
 
-Mohon maaf, pendaftaran sekolah berikut ditolak:
+Mohon maaf, pendaftaran sekolah berikut tidak dapat disetujui:
 
-📝 *Data Sekolah:*
-• Nama: ${schoolName}
+*Data Sekolah:*
+• Nama Sekolah: ${schoolName}
 • NPSN: ${npsn}
 
-📋 *Alasan:* ${reason}
+Alasan Penolakan: ${reason}
 
-Silakan hubungi admin untuk informasi lebih lanjut atau mendaftar ulang dengan data yang benar.
+Silakan hubungi admin untuk informasi lebih lanjut atau lakukan pendaftaran ulang dengan data yang sesuai.
 
-_Sistem Informasi Sarana Prasarana SMP_
+_Sistem Informasi Sarana dan Prasarana SMP_  
 _Dinas Pendidikan Kabupaten Nias Selatan_`;
   }
 }

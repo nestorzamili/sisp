@@ -11,25 +11,34 @@ export function RegistrationSuccess() {
           <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
 
-        {/* Description */}
+        {/* Success Message */}
+        <h2 className="text-lg sm:text-xl font-semibold text-foreground">
+          Pendaftaran Berhasil
+        </h2>
         <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-          Data sedang dalam proses verifikasi oleh tim admin kami.
+          Akun Anda telah terdaftar dan sedang menunggu verifikasi dari admin.
         </p>
 
-        {/* Status Card */}
+        {/* Status Info */}
         <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-          <div className="flex items-center justify-center gap-2 mb-2">
+          <div className="flex items-center justify-center gap-2">
             <Clock className="w-5 h-5 text-amber-600" />
-            <p className="font-semibold text-amber-800 text-sm sm:text-base">
-              Status: Menunggu Persetujuan Admin
+            <p className="font-medium text-amber-800 text-sm sm:text-base">
+              Menunggu Verifikasi Admin
             </p>
           </div>
-          <p className="text-amber-700 text-xs sm:text-sm">
-            Estimasi waktu verifikasi: 1-3 hari kerja
+          <p className="text-amber-700 text-xs sm:text-sm mt-1">
+            Estimasi aktivasi: 1 hari kerja
           </p>
         </div>
 
-        {/* Action Buttons */}
+        {/* Info */}
+        <p className="text-xs sm:text-sm text-muted-foreground">
+          Anda akan diberi notifikasi melalui email atau WhatsApp saat akun
+          aktif.
+        </p>
+
+        {/* Buttons */}
         <div className="flex flex-col gap-3 w-full">
           <Link href="/" className="w-full">
             <Button
@@ -42,7 +51,7 @@ export function RegistrationSuccess() {
           </Link>
           <Link href="/sign-in" className="w-full">
             <Button className="btn-primary w-full h-9 sm:h-10 text-sm">
-              Coba Masuk (Jika Sudah Disetujui)
+              Masuk
             </Button>
           </Link>
         </div>
