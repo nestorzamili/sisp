@@ -14,21 +14,35 @@ export async function createSekolahAction(
   try {
     const sekolahService = new SekolahService();
     const result = await sekolahService.createSekolah(data);
+
     if (result.success && result.data) {
       const { nama_sekolah, npsn, user, phone } = result.data;
-      Promise.resolve().then(async () => {
-        try {
-          const whatsappService = new WhatsAppService();
-          await whatsappService.sendAdminNotification(
-            nama_sekolah,
-            npsn,
-            user?.email || 'Email tidak tersedia',
-            phone || 'No. HP tidak tersedia',
-          );
-        } catch (whatsappError) {
-          console.error('Failed to send WhatsApp notification:', whatsappError);
-        }
-      });
+
+      // Check if WhatsApp notifications are enabled
+      const isWhatsAppEnabled = process.env.WHATSAPP_ENABLED === 'true';
+
+      if (isWhatsAppEnabled) {
+        Promise.resolve().then(async () => {
+          try {
+            const whatsappService = new WhatsAppService();
+            await whatsappService.sendAdminNotification(
+              nama_sekolah,
+              npsn,
+              user?.email || 'Email tidak tersedia',
+              phone || 'No. HP tidak tersedia',
+            );
+          } catch (whatsappError) {
+            console.error(
+              'Failed to send WhatsApp notification:',
+              whatsappError,
+            );
+          }
+        });
+      } else {
+        console.log(
+          'WhatsApp notifications are disabled. Skipping notification.',
+        );
+      }
     }
 
     return result;
