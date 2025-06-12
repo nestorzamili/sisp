@@ -56,18 +56,27 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setError(null);
 
     try {
-      const { error: authError } = await signIn.email({
-        email: data.email,
-        password: data.password,
-        rememberMe: data.rememberMe,
-        callbackURL: '/home',
-      });
-
-      if (authError) {
-        setError({
-          message: authError.message || 'Gagal masuk ke akun',
-        });
-      }
+      await signIn.email(
+        {
+          email: data.email,
+          password: data.password,
+          rememberMe: data.rememberMe,
+          callbackURL: '/home',
+        },
+        {
+          onError: (ctx) => {
+            if (ctx.error.status === 401) {
+              setError({
+                message: 'Email atau password Anda tidak valid.',
+              });
+            } else {
+              setError({
+                message: ctx.error.message || 'Gagal masuk ke akun',
+              });
+            }
+          },
+        },
+      );
     } catch (error) {
       console.error('Login error:', error);
       setError({
