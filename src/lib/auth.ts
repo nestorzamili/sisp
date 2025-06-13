@@ -7,6 +7,7 @@ import prisma from '@/lib/prisma';
 import { hashPassword, verifyPassword } from '@/lib/argon2';
 import { sendEmail } from '@/lib/mail';
 import { VerificationEmailTemplate } from '@/templates/verification-email';
+import { ResetPasswordEmailTemplate } from '@/templates/password-reset-email';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -27,6 +28,18 @@ export const auth = betterAuth({
     password: {
       hash: hashPassword,
       verify: verifyPassword,
+    },
+
+    sendResetPassword: async ({ user, url }) => {
+      try {
+        await sendEmail({
+          to: user.email,
+          subject: 'Reset Password - SISP Nias Selatan',
+          html: ResetPasswordEmailTemplate(url, user.name),
+        });
+      } catch (error) {
+        throw error;
+      }
     },
   },
 

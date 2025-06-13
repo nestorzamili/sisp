@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { AlertCircle, CheckCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
+import { forgetPassword } from '@/lib/auth-client';
 
 type ForgotFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -46,26 +47,37 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
     setFormState({ status: 'idle', message: '' });
 
     try {
-      // TODO: Implement password reset logic
-      console.log('Reset password for:', data.email);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Success simulation
-      setFormState({
-        status: 'success',
-        message:
-          'Link reset password telah dikirim ke email Anda. Silakan periksa kotak masuk dan folder spam.',
-      });
-
-      // Clear the form on success
-      form.reset();
+      await forgetPassword(
+        {
+          email: data.email,
+          redirectTo: '/reset-password',
+        },
+        {
+          onSuccess: () => {
+            setFormState({
+              status: 'success',
+              message:
+                'Link reset password telah dikirim ke email Anda. Silakan periksa kotak masuk dan folder spam.',
+            });
+            form.reset();
+          },
+          onError: (ctx) => {
+            console.error('Error during password reset:', ctx.error);
+            setFormState({
+              status: 'error',
+              message:
+                ctx.error.message ||
+                'Gagal mengirim email reset password. Silakan coba lagi.',
+            });
+          },
+        },
+      );
     } catch (error) {
       console.error('Error during password reset:', error);
       setFormState({
         status: 'error',
-        message: 'Gagal mengirim email reset password. Silakan coba lagi.',
+        message:
+          'Terjadi kesalahan saat mengirim email reset password. Silakan coba lagi.',
       });
     } finally {
       setIsLoading(false);

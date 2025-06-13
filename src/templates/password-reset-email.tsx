@@ -1,11 +1,11 @@
-export function VerificationEmailTemplate(url: string, name?: string) {
+export function ResetPasswordEmailTemplate(url: string, name?: string) {
   return `
     <!DOCTYPE html>
     <html lang="id">
     <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Verifikasi Email - SISP Nias Selatan</title>
+      <title>Reset Password - SISP Nias Selatan</title>
       <style>
         body {
           font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -85,11 +85,11 @@ export function VerificationEmailTemplate(url: string, name?: string) {
         
         <div class="greeting">Halo${name ? ' ' + name : ''},</div>
         <div class="description">
-          Akun Anda telah disetujui oleh administrator. Untuk alasan keamanan, silakan verifikasi alamat email Anda dengan mengklik tombol di bawah ini:
+          Kami menerima permintaan untuk mereset password akun Anda. Silakan klik tombol di bawah untuk mengatur password baru:
         </div>
 
         <div class="button-container">
-          <a href="${url}" class="button">Verifikasi Email</a>
+          <a href="${url}" class="button">Reset Password</a>
         </div>
 
         <div class="fallback">
@@ -98,7 +98,7 @@ export function VerificationEmailTemplate(url: string, name?: string) {
         </div>
 
         <div class="note">
-          Jika Anda tidak merasa mengajukan pendaftaran, abaikan email ini. Tautan ini akan kedaluwarsa dalam 24 jam.
+          Jika Anda tidak meminta reset password, Anda dapat mengabaikan email ini. Tautan ini akan kedaluwarsa dalam 24 jam demi keamanan akun Anda.
         </div>
 
         <div class="footer">

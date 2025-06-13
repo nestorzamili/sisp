@@ -1,9 +1,10 @@
 'use client';
 
-import { HTMLAttributes, useState } from 'react';
+import { HTMLAttributes, useState, useEffect } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -22,7 +23,7 @@ import Link from 'next/link';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
 import { signIn } from '@/lib/auth-client';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { XCircle } from 'lucide-react';
+import { XCircle, CheckCircle } from 'lucide-react';
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -33,6 +34,18 @@ type AlertType = {
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<AlertType | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    const message = searchParams?.get('message');
+    if (message === 'password_reset_success') {
+      setSuccessMessage(
+        'Password berhasil diubah! Silakan masuk dengan password baru Anda.',
+      );
+    }
+  }, [searchParams]);
 
   const formSchema = z.object({
     email: z
@@ -54,6 +67,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setError(null);
+    // Clear success message and URL parameters when user tries to sign in
+    setSuccessMessage(null);
+    if (searchParams?.get('message')) {
+      router.replace('/sign-in', { scroll: false });
+    }
 
     try {
       await signIn.email(
@@ -89,6 +107,16 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   return (
     <div className={cn('w-full', className)} {...props}>
+      {successMessage && (
+        <Alert
+          variant="default"
+          className="border-green-500 text-green-700 bg-green-50 dark:bg-green-950 dark:text-green-400 mb-4"
+        >
+          <CheckCircle className="h-4 w-4 mr-2" />
+          <AlertDescription>{successMessage}</AlertDescription>
+        </Alert>
+      )}
+
       {error && (
         <Alert variant="destructive" className="mb-4">
           <XCircle className="h-4 w-4 mr-2" />

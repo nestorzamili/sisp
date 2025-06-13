@@ -16,9 +16,10 @@ import {
 } from '@/components/ui/form';
 import { PasswordInput } from '@/components/password-input';
 import { useRouter } from 'next/navigation';
-import { IconAlertCircle, IconCheck } from '@tabler/icons-react';
+import { IconAlertCircle } from '@tabler/icons-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
+import { resetPassword } from '@/lib/auth-client';
 
 type ResetFormProps = HTMLAttributes<HTMLDivElement> & {
   token: string;
@@ -64,34 +65,32 @@ export function ResetForm({ className, token, ...props }: ResetFormProps) {
     setFormState({ status: 'idle', message: '' });
 
     try {
-      // TODO: Implement password reset logic
-      console.log(
-        'Reset password with token:',
-        token,
-        'New password:',
-        data.password,
+      await resetPassword(
+        {
+          newPassword: data.password,
+          token: token,
+        },
+        {
+          onSuccess: () => {
+            form.reset();
+            router.push('/sign-in?message=password_reset_success');
+          },
+          onError: (ctx) => {
+            console.error('Error during password reset:', ctx.error);
+            setFormState({
+              status: 'error',
+              message:
+                ctx.error.message ||
+                'Gagal mengubah password. Silakan coba lagi.',
+            });
+          },
+        },
       );
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Success simulation
-      setFormState({
-        status: 'success',
-        message:
-          'Password berhasil diubah! Anda akan diarahkan ke halaman login.',
-      });
-
-      // Clear form and redirect after success
-      form.reset();
-      setTimeout(() => {
-        router.push('/sign-in?message=password_reset_success');
-      }, 2000);
     } catch (error) {
       console.error('Error during password reset:', error);
       setFormState({
         status: 'error',
-        message: 'Gagal mengubah password. Silakan coba lagi.',
+        message: 'Terjadi kesalahan saat mengubah password. Silakan coba lagi.',
       });
     } finally {
       setIsLoading(false);
@@ -100,21 +99,10 @@ export function ResetForm({ className, token, ...props }: ResetFormProps) {
 
   return (
     <div className={cn('w-full', className)} {...props}>
-      {formState.status !== 'idle' && (
-        <Alert
-          variant={formState.status === 'success' ? 'default' : 'destructive'}
-          className={
-            formState.status === 'success'
-              ? 'border-green-500 text-green-700 bg-green-50 dark:bg-green-950 dark:text-green-400 mb-4'
-              : 'mb-4'
-          }
-        >
+      {formState.status === 'error' && (
+        <Alert variant="destructive" className="mb-4">
           <div className="flex items-center gap-2">
-            {formState.status === 'success' ? (
-              <IconCheck className="h-4 w-4" />
-            ) : (
-              <IconAlertCircle className="h-4 w-4" />
-            )}
+            <IconAlertCircle className="h-4 w-4" />
             <AlertDescription className="text-sm leading-relaxed">
               {formState.message}
             </AlertDescription>
