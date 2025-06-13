@@ -70,7 +70,7 @@
 
 :root {
   --radius: 0.75rem;
-  
+
   /* Light mode - Professional blue-based theme for school */
   --background: #ffffff;
   --foreground: #1f2937;
@@ -91,14 +91,14 @@
   --border: #e2e8f0; /* slate-200 */
   --input: #f8fafc; /* slate-50 */
   --ring: #1e40af; /* blue-800 */
-  
+
   /* Chart colors - Professional blue/teal variations */
   --chart-1: #1e40af; /* blue-800 */
   --chart-2: #1e3a8a; /* blue-900 */
   --chart-3: #0f766e; /* teal-700 */
   --chart-4: #0891b2; /* cyan-600 */
   --chart-5: #0c4a6e; /* sky-900 */
-  
+
   /* Sidebar colors */
   --sidebar: #f8fafc; /* slate-50 */
   --sidebar-foreground: #1f2937;
@@ -108,12 +108,12 @@
   --sidebar-accent-foreground: #0c4a6e; /* sky-900 */
   --sidebar-border: #e2e8f0; /* slate-200 */
   --sidebar-ring: #1e40af; /* blue-800 */
-  
+
   /* Typography */
   --font-sans: Inter, system-ui, -apple-system, sans-serif;
   --font-serif: Merriweather, Georgia, serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  
+
   /* Shadows */
   --shadow-color: hsl(0 0% 0%);
   --shadow-opacity: 0.1;
@@ -155,14 +155,14 @@
   --border: #475569; /* slate-600 */
   --input: #334155; /* slate-700 */
   --ring: #3b82f6; /* blue-500 */
-  
+
   /* Chart colors - Dark mode variations */
   --chart-1: #3b82f6; /* blue-500 */
   --chart-2: #2563eb; /* blue-600 */
   --chart-3: #0d9488; /* teal-600 */
   --chart-4: #0891b2; /* cyan-600 */
   --chart-5: #0284c7; /* sky-600 */
-  
+
   /* Sidebar colors - Dark mode */
   --sidebar: #1e293b; /* slate-800 */
   --sidebar-foreground: #f1f5f9; /* slate-100 */
@@ -178,23 +178,23 @@
   * {
     @apply border-border outline-ring/50;
   }
-  
+
   html {
     @apply scroll-smooth;
   }
-  
+
   body {
     @apply bg-background text-foreground antialiased;
     letter-spacing: var(--tracking-normal);
     font-feature-settings: "cv11", "ss01";
     font-variation-settings: "opsz" 32;
   }
-  
+
   /* Auth page specific styles */
   .auth-page-loaded {
     @apply bg-gradient-to-br from-slate-50 via-white to-blue-50/50;
   }
-  
+
   .dark .auth-page-loaded {
     @apply bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950/30;
   }
@@ -205,92 +205,92 @@
   .btn-primary {
     @apply bg-blue-800 hover:bg-blue-900 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02];
   }
-  
+
   .btn-secondary {
     @apply bg-white hover:bg-slate-50 text-blue-800 border border-blue-200 font-semibold px-6 py-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-200;
   }
-  
+
   .btn-ghost {
     @apply bg-transparent hover:bg-blue-50 text-blue-800 font-medium px-4 py-2 rounded-lg transition-colors duration-200;
   }
-  
+
   /* Card styles */
   .card-primary {
     @apply bg-white border border-slate-200/50 shadow-xl backdrop-blur-sm rounded-2xl;
   }
-  
+
   .dark .card-primary {
     @apply bg-slate-800/90 border-slate-700/50 shadow-2xl;
   }
-  
+
   /* Input styles */
   .input-primary {
     @apply border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-xl;
   }
-  
+
   .dark .input-primary {
     @apply border-slate-600 focus:border-blue-400 focus:ring-blue-400 bg-slate-700 text-slate-100;
   }
-  
+
   /* Text styles */
   .text-primary-brand {
     @apply text-blue-800;
   }
-  
+
   .dark .text-primary-brand {
     @apply text-blue-400;
   }
-  
+
   .text-secondary-brand {
     @apply text-slate-600;
   }
-  
+
   .dark .text-secondary-brand {
     @apply text-slate-400;
   }
-  
+
   /* Background patterns for auth pages - more subtle and professional */
   .bg-auth-pattern {
     background-image: radial-gradient(circle at 20% 50%, rgba(30, 64, 175, 0.04) 0%, transparent 50%),
                       radial-gradient(circle at 80% 20%, rgba(8, 145, 178, 0.04) 0%, transparent 50%),
                       radial-gradient(circle at 40% 80%, rgba(15, 118, 110, 0.03) 0%, transparent 50%);
   }
-  
+
   .dark .bg-auth-pattern {
     background-image: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
                       radial-gradient(circle at 80% 20%, rgba(8, 145, 178, 0.05) 0%, transparent 50%),
                       radial-gradient(circle at 40% 80%, rgba(13, 148, 136, 0.04) 0%, transparent 50%);
   }
-  
+
   /* Auth decorative shapes */
   .auth-shape-primary {
     @apply border-primary/25;
   }
-  
+
   .dark .auth-shape-primary {
     @apply border-primary/30;
   }
-  
+
   .auth-shape-secondary {
     @apply border-orange-200/25;
   }
-  
+
   .dark .auth-shape-secondary {
     @apply border-orange-400/20;
   }
-  
+
   .auth-bg-primary {
     @apply bg-primary/10;
   }
-  
+
   .dark .auth-bg-primary {
     @apply bg-primary/15;
   }
-  
+
   .auth-bg-secondary {
     @apply bg-orange-100/40;
   }
-  
+
   .dark .auth-bg-secondary {
     @apply bg-orange-400/10;
   }
@@ -299,36 +299,36 @@
   .hero-gradient {
     @apply bg-gradient-to-r from-white via-white/90 to-transparent;
   }
-  
+
   .dark .hero-gradient {
     @apply bg-gradient-to-r from-slate-900 via-slate-900/90 to-transparent;
   }
-  
+
   .feature-card {
     @apply bg-white border border-gray-200 hover:shadow-lg transition-shadow duration-300 rounded-xl;
   }
-  
+
   .dark .feature-card {
     @apply bg-slate-800 border-slate-700 hover:shadow-2xl;
   }
-  
+
   /* Form enhancements */
   .form-field {
     @apply space-y-2;
   }
-  
+
   .form-label {
     @apply text-sm font-medium text-gray-700;
   }
-  
+
   .dark .form-label {
     @apply text-slate-200;
   }
-  
+
   .form-error {
     @apply text-xs font-medium text-red-600;
   }
-  
+
   .dark .form-error {
     @apply text-red-400;
   }
@@ -339,25 +339,25 @@
   .animate-fade-in {
     animation: fade-in 0.8s ease-out;
   }
-  
+
   .animate-slide-in-up {
     animation: slide-in-up 0.6s ease-out;
   }
-  
+
   .animate-scale-in {
     animation: scale-in 0.4s ease-out;
   }
-  
+
   /* Backdrop blur utilities */
   .backdrop-blur-glass {
     backdrop-filter: blur(12px) saturate(180%);
   }
-  
+
   /* Custom border radius matching landing page */
   .rounded-button {
     border-radius: 12px;
   }
-  
+
   /* Gradient text */
   .text-gradient-red {
     background: linear-gradient(135deg, #dc2626, #ea580c);
@@ -365,7 +365,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
+
   /* Shape utilities for auth pages */
   .auth-triangle {
     width: 0;
@@ -373,20 +373,20 @@
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
   }
-  
+
   .auth-hexagon {
     clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
   }
-  
+
   /* Subtle floating animation for some shapes */
   .auth-float {
     animation: auth-float 8s ease-in-out infinite;
   }
-  
+
   .auth-float-delayed {
     animation: auth-float 8s ease-in-out infinite 2s;
   }
-  
+
   .auth-float-slow {
     animation: auth-float 10s ease-in-out infinite 1s;
   }
@@ -480,4 +480,13 @@
 
 .dark ::selection {
   @apply bg-blue-900 text-blue-100;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

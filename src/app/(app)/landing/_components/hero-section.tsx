@@ -11,7 +11,7 @@ const HeroSection: React.FC = () => {
       <section id="home" className="pt-24 relative overflow-hidden h-[950px]">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/sekolah.png"
+            src="/school.png"
             alt="Sekolah SMP"
             fill
             priority

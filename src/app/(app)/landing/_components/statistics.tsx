@@ -42,7 +42,7 @@ const Statistics: React.FC = () => {
 
             <div>
               <Image
-                src="/sekolah.png"
+                src="/school.png"
                 alt="Peta Sebaran SMP Nias Selatan"
                 className="rounded-lg shadow-lg w-full h-auto"
                 height={500}
