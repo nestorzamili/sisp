@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSessionCookie } from 'better-auth/cookies';
+import type { auth } from '@/lib/auth';
+import { betterFetch } from '@better-fetch/fetch';
+
+type Session = typeof auth.$Infer.Session;
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Public routes that don't require authentication
   const publicRoutes = [
     '/',
     '/sign-in',
@@ -13,7 +15,6 @@ export async function middleware(request: NextRequest) {
     '/reset-password',
   ];
 
-  // Auth-related paths that should allow nested routes
   const authPaths = [
     '/sign-in',
     '/sign-up',
@@ -21,20 +22,37 @@ export async function middleware(request: NextRequest) {
     '/reset-password',
   ];
 
-  // Check if current path is public
   const isPublicRoute =
     publicRoutes.includes(pathname) ||
     authPaths.some((authPath) => pathname.startsWith(authPath + '/'));
 
-  const sessionCookie = getSessionCookie(request);
+  const { data: session } = await betterFetch<Session>(
+    '/api/auth/get-session',
+    {
+      baseURL: request.nextUrl.origin,
+      headers: {
+        cookie: request.headers.get('cookie') || '',
+      },
+    },
+  );
 
-  // If user is not authenticated and trying to access protected route
-  if (!sessionCookie && !isPublicRoute) {
+  // role check
+  if (session?.user.role === 'admin' && pathname.startsWith('/admin')) {
+    return NextResponse.next();
+  }
+  if (session?.user.role === 'user' && pathname.startsWith('/admin')) {
+    return NextResponse.redirect(new URL('/home', request.url));
+  }
+
+  if (session?.user.role === 'admin' && !pathname.startsWith('/admin')) {
+    return NextResponse.redirect(new URL('/admin/home', request.url));
+  }
+
+  if (!session && !isPublicRoute) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  // If user is authenticated and trying to access auth pages, redirect to home
-  if (sessionCookie && (pathname === '/sign-in' || pathname === '/sign-up')) {
+  if (session && (pathname === '/sign-in' || pathname === '/sign-up')) {
     return NextResponse.redirect(new URL('/home', request.url));
   }
 
