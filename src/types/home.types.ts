@@ -56,6 +56,11 @@ export interface HomeSekolahData {
     jumlah_kondisi_rusak: number;
     tahun_ajaran: string;
   }>;
+  lampiran?: Array<{
+    id: string;
+    nama_dokumen: string;
+    url: string;
+  }>;
 }
 
 export interface UserHomeData {

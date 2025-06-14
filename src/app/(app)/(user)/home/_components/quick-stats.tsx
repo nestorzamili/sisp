@@ -2,7 +2,13 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, GraduationCap, Building2, Wrench } from 'lucide-react';
+import {
+  Users,
+  GraduationCap,
+  Building2,
+  Wrench,
+  FileText,
+} from 'lucide-react';
 import { HomeSekolahData } from '@/types/home.types';
 
 interface QuickStatsProps {
@@ -17,6 +23,7 @@ export function QuickStats({ sekolah }: QuickStatsProps) {
     0;
   const totalSarana = sekolah?.sarana?.length || 0;
   const totalPrasarana = sekolah?.prasarana?.length || 0;
+  const totalLampiran = sekolah?.lampiran?.length || 0;
 
   const stats = [
     {
@@ -47,10 +54,16 @@ export function QuickStats({ sekolah }: QuickStatsProps) {
       color: 'text-purple-600',
       bgColor: 'bg-purple-50',
     },
+    {
+      title: 'Total Lampiran',
+      value: totalLampiran,
+      icon: FileText,
+      color: 'text-indigo-600',
+      bgColor: 'bg-indigo-50',
+    },
   ];
-
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
       {stats.map((stat, index) => {
         const IconComponent = stat.icon;
         return (

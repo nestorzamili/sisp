@@ -2,7 +2,7 @@
 
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
-import prisma from '@/lib/prisma';
+import { SekolahService } from '@/lib/services/sekolah.service';
 import { HomeDataResponse } from '@/types/home.types';
 
 export async function getUserSekolahDataAction(): Promise<HomeDataResponse> {
@@ -17,74 +17,36 @@ export async function getUserSekolahDataAction(): Promise<HomeDataResponse> {
         success: false,
         error: 'User not authenticated',
       };
+    } // First get the basic sekolah to find the ID
+    const result = await SekolahService.getSekolahByUserId(session.user.id);
+
+    if (!result.success || !result.data) {
+      return {
+        success: true,
+        data: {
+          user: session.user,
+          sekolah: null,
+        },
+      };
     }
 
-    // Get sekolah data for the user with related data
-    const sekolah = await prisma.sekolah.findUnique({
-      where: { userId: session.user.id },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        reviewedBy: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-          },
-        },
-        guru: {
-          select: {
-            id: true,
-            status_guru: true,
-            jenis_kelamin: true,
-            jumlah: true,
-            tahun_ajaran: true,
-          },
-        },
-        rombonganBelajar: {
-          select: {
-            id: true,
-            tingkatan_kelas: true,
-            jenis_kelamin: true,
-            jumlah_siswa: true,
-            tahun_ajaran: true,
-          },
-        },
-        sarana: {
-          select: {
-            id: true,
-            jenis_sarana: true,
-            nama_sarana: true,
-            jumlah_total: true,
-            jumlah_kondisi_baik: true,
-            jumlah_kondisi_rusak: true,
-            tahun_ajaran: true,
-          },
-        },
-        prasarana: {
-          select: {
-            id: true,
-            jenis_prasarana: true,
-            nama_prasarana: true,
-            jumlah_total: true,
-            jumlah_kondisi_baik: true,
-            jumlah_kondisi_rusak: true,
-            tahun_ajaran: true,
-          },
-        },
-      },
-    });
+    // Get detailed sekolah data including all relations
+    const detailedResult = await SekolahService.getSekolahById(
+      result.data.id,
+      true,
+    );
 
+    if (!detailedResult.success || !detailedResult.data) {
+      return {
+        success: false,
+        error: 'Gagal mengambil detail data sekolah',
+      };
+    }
     return {
       success: true,
       data: {
         user: session.user,
-        sekolah: sekolah,
+        sekolah: detailedResult.data,
       },
     };
   } catch (error) {
