@@ -66,14 +66,14 @@ export function ResetPasswordEmailTemplate(url: string, name?: string) {
           font-size: 13px;
           color: #718096;
           margin-top: 30px;
-        }
-        .footer {
+        }        .footer {
           text-align: center;
           font-size: 12px;
           color: #a0aec0;
           margin-top: 40px;
           border-top: 1px solid #e2e8f0;
           padding-top: 16px;
+          line-height: 1.4;
         }
       </style>
     </head>
@@ -99,10 +99,9 @@ export function ResetPasswordEmailTemplate(url: string, name?: string) {
 
         <div class="note">
           Jika Anda tidak meminta reset password, Anda dapat mengabaikan email ini. Tautan ini akan kedaluwarsa dalam 24 jam demi keamanan akun Anda.
-        </div>
-
-        <div class="footer">
-          &copy; ${new Date().getFullYear()} Dinas Pendidikan Kabupaten Nias Selatan
+        </div>        <div class="footer">
+          &copy; 2025 Dinas Pendidikan Kabupaten Nias Selatan. Hak cipta dilindungi undang-undang.<br>
+          Dibuat oleh <a href="https://nestorzamili.works" target="_blank" style="color: #4c51bf; text-decoration: none;">Nestor Zamili</a>
         </div>
       </div>
     </body>

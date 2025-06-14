@@ -8,7 +8,6 @@ import { GuruFormData } from '@/types/guru';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 
-const sekolahService = new SekolahService();
 const guruService = new GuruService();
 
 // Get existing teacher data for the current user's school
@@ -26,7 +25,7 @@ export async function getTeacherDataAction(tahunAjaran?: string) {
     }
 
     // Get school data first
-    const schoolResult = await sekolahService.getSekolahByUserId(
+    const schoolResult = await SekolahService.getSekolahByUserId(
       session.user.id,
     );
     if (!schoolResult.success || !schoolResult.data) {
@@ -115,7 +114,7 @@ export async function saveTeacherDataAction(
     }
 
     // Get school data first
-    const schoolResult = await sekolahService.getSekolahByUserId(
+    const schoolResult = await SekolahService.getSekolahByUserId(
       session.user.id,
     );
     if (!schoolResult.success || !schoolResult.data) {
@@ -180,7 +179,7 @@ export async function getTeacherStatisticsAction(tahunAjaran?: string) {
     }
 
     // Get school data first
-    const schoolResult = await sekolahService.getSekolahByUserId(
+    const schoolResult = await SekolahService.getSekolahByUserId(
       session.user.id,
     );
     if (!schoolResult.success || !schoolResult.data) {

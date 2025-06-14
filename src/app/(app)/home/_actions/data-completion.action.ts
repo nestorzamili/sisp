@@ -6,7 +6,6 @@ import { GuruService } from '@/lib/services/guru.service';
 import { RombonganBelajarService } from '@/lib/services/rombongan-belajar.service';
 import { headers } from 'next/headers';
 
-const sekolahService = new SekolahService();
 const guruService = new GuruService();
 const rombonganBelajarService = new RombonganBelajarService();
 
@@ -24,7 +23,7 @@ export async function getDataCompletionStatusAction() {
     }
 
     // Get school data first
-    const schoolResult = await sekolahService.getSekolahByUserId(
+    const schoolResult = await SekolahService.getSekolahByUserId(
       session.user.id,
     );
     if (!schoolResult.success || !schoolResult.data) {

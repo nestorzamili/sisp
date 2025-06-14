@@ -14,4 +14,5 @@ export const {
   useSession,
   forgetPassword,
   resetPassword,
+  sendVerificationEmail,
 } = authClient;

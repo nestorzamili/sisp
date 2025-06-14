@@ -25,9 +25,9 @@ export default function AdminLayout({
             <div
               id="content"
               className={cn(
-                'max-w-full w-full ml-auto',
-                'peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon)-1rem)]',
-                'peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width))]',
+                'max-w-none w-full ml-auto',
+                'peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon)-0.5rem)]',
+                'peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width)-0.5rem)]',
                 'transition-[width] ease-linear duration-200',
                 'h-svh flex flex-col',
                 'group-data-[scroll-locked=1]/body:h-full',
@@ -41,7 +41,9 @@ export default function AdminLayout({
                   <ProfileDropdown />
                 </div>
               </Header>
-              <Main>{children}</Main>
+              <Main className="px-6 py-20 flex-1 overflow-auto">
+                {children}
+              </Main>
               <AppFooter />
             </div>
           </SidebarProvider>

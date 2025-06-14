@@ -24,6 +24,11 @@ export const sidebarData: SidebarData = {
           icon: IconLayoutDashboard,
         },
         {
+          title: 'Permintaan Pendaftaran',
+          url: '/admin/permintaan-pendaftaran',
+          icon: IconChecklist,
+        },
+        {
           title: 'Sekolah',
           url: '/admin/sekolah',
           icon: IconChecklist,

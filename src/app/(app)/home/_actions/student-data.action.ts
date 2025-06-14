@@ -8,7 +8,6 @@ import { RombonganBelajarFormData } from '@/types/rombongan-belajar';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 
-const sekolahService = new SekolahService();
 const rombonganBelajarService = new RombonganBelajarService();
 
 // Get existing student data for the current user's school
@@ -26,7 +25,7 @@ export async function getStudentDataAction(tahunAjaran?: string) {
     }
 
     // Get school data first
-    const schoolResult = await sekolahService.getSekolahByUserId(
+    const schoolResult = await SekolahService.getSekolahByUserId(
       session.user.id,
     );
     if (!schoolResult.success || !schoolResult.data) {
@@ -116,7 +115,7 @@ export async function saveStudentDataAction(
     }
 
     // Get school data first
-    const schoolResult = await sekolahService.getSekolahByUserId(
+    const schoolResult = await SekolahService.getSekolahByUserId(
       session.user.id,
     );
     if (!schoolResult.success || !schoolResult.data) {
@@ -181,7 +180,7 @@ export async function getStudentStatisticsAction(tahunAjaran?: string) {
     }
 
     // Get school data first
-    const schoolResult = await sekolahService.getSekolahByUserId(
+    const schoolResult = await SekolahService.getSekolahByUserId(
       session.user.id,
     );
     if (!schoolResult.success || !schoolResult.data) {

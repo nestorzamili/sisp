@@ -101,9 +101,8 @@ model Sekolah {
   alamat_sekolah      String?
   kecamatan           String?
   phone               String? @unique
-
   userId String @unique
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   sarana             Sarana[]
   prasarana          Prasarana[]

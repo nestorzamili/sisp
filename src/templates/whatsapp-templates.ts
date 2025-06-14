@@ -5,18 +5,7 @@ export class WhatsAppTemplates {
     email: string,
     phone: string,
   ): string {
-    const timestamp = new Date().toLocaleString('id-ID', {
-      timeZone: 'Asia/Jakarta',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-
     return `*SISP SMP – Pendaftaran Sekolah Baru*
-
-Tanggal: ${timestamp} WIB
 
 *Data Sekolah:*
 • Nama Sekolah: ${schoolName}
@@ -31,24 +20,12 @@ Silakan login ke dashboard admin untuk melakukan verifikasi dan persetujuan pend
 _Sistem Informasi Sarana dan Prasarana SMP_  
 _Dinas Pendidikan Kabupaten Nias Selatan_`;
   }
-
   static createApprovalMessage(
     schoolName: string,
     npsn: string,
     loginUrl: string,
   ): string {
-    const timestamp = new Date().toLocaleString('id-ID', {
-      timeZone: 'Asia/Jakarta',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-
     return `*SISP SMP – Akun Sekolah Disetujui*
-
-Tanggal: ${timestamp} WIB
 
 Selamat, akun sekolah Anda telah disetujui.
 
@@ -62,24 +39,12 @@ ${loginUrl}
 _Sistem Informasi Sarana dan Prasarana SMP_  
 _Dinas Pendidikan Kabupaten Nias Selatan_`;
   }
-
   static createRejectionMessage(
     schoolName: string,
     npsn: string,
     reason: string,
   ): string {
-    const timestamp = new Date().toLocaleString('id-ID', {
-      timeZone: 'Asia/Jakarta',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-
     return `*SISP SMP – Pendaftaran Ditolak*
-
-Tanggal: ${timestamp} WIB
 
 Mohon maaf, pendaftaran sekolah berikut tidak dapat disetujui:
 

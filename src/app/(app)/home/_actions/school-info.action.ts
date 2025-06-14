@@ -6,8 +6,6 @@ import { Step1Data } from '../_schema/school-info.schema';
 import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 
-const sekolahService = new SekolahService();
-
 // Get existing school info for the current user
 export async function getSchoolInfoAction() {
   try {
@@ -22,7 +20,7 @@ export async function getSchoolInfoAction() {
       };
     }
 
-    const result = await sekolahService.getSekolahByUserId(session.user.id);
+    const result = await SekolahService.getSekolahByUserId(session.user.id);
 
     if (!result.success || !result.data) {
       return {
@@ -66,10 +64,8 @@ export async function updateSchoolInfoAction(data: Step1Data) {
         success: false,
         error: 'Unauthorized',
       };
-    }
-
-    // Get existing school data
-    const existingResult = await sekolahService.getSekolahByUserId(
+    } // Get existing school data
+    const existingResult = await SekolahService.getSekolahByUserId(
       session.user.id,
     );
 
@@ -88,10 +84,9 @@ export async function updateSchoolInfoAction(data: Step1Data) {
       nip_kepala_sekolah: data.nipKepalaSekolah,
       alamat_sekolah: data.alamatSekolah,
       kecamatan: data.kecamatan,
-      updatedAt: new Date(), // Changed from updated_at to updatedAt
     };
 
-    const result = await sekolahService.updateSekolah(
+    const result = await SekolahService.updateSekolah(
       existingResult.data.id,
       updateData,
     );

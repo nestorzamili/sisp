@@ -125,4 +125,48 @@ export class WhatsAppService {
     });
     return result;
   }
+
+  async sendRejectionNotification(
+    schoolPhone: string,
+    schoolName: string,
+    npsn: string,
+    reason: string,
+  ): Promise<WhatsAppApiResponse> {
+    const message = WhatsAppTemplates.createRejectionMessage(
+      schoolName,
+      npsn,
+      reason,
+    );
+
+    const payload: WhatsAppMessage = {
+      numbers: [schoolPhone],
+      content: message,
+    };
+
+    const response = await fetch(this.baseUrl, {
+      method: 'POST',
+      headers: {
+        'x-api-key': this.apiKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      const result = {
+        status: false,
+        message: errorData.message || `HTTP error: ${response.status}`,
+      };
+      console.log('WhatsApp rejection notification:', result);
+      return result;
+    }
+
+    const result = await response.json();
+    console.log('WhatsApp rejection notification:', {
+      status: result.status,
+      message: result.message,
+    });
+    return result;
+  }
 }

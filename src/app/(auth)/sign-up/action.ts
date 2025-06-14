@@ -12,8 +12,7 @@ export async function createSekolahAction(
   data: CreateSekolahData,
 ): Promise<SekolahServiceResponse<SekolahWithDetails>> {
   try {
-    const sekolahService = new SekolahService();
-    const result = await sekolahService.createSekolah(data);
+    const result = await SekolahService.createSekolah(data);
 
     if (result.success && result.data) {
       const { nama_sekolah, npsn, user, phone } = result.data;

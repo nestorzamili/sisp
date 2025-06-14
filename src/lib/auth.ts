@@ -6,7 +6,7 @@ import { admin } from 'better-auth/plugins';
 import prisma from '@/lib/prisma';
 import { hashPassword, verifyPassword } from '@/lib/argon2';
 import { sendEmail } from '@/lib/mail';
-import { VerificationEmailTemplate } from '@/templates/verification-email';
+import { VerificationEmailTemplate } from '@/templates/account-approved';
 import { ResetPasswordEmailTemplate } from '@/templates/password-reset-email';
 
 export const auth = betterAuth({
