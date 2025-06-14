@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { FormHeader } from './_components/form-header';
 import { StepIndicator } from './_components/step-indicator';
 import { SchoolInfoForm } from './_components/school-info-form';
@@ -12,7 +11,8 @@ import { FacilityDataForm } from './_components/facility-data-form';
 import { InfrastructureDataForm } from './_components/infrastructure-data-form';
 import { PriorityNeedsForm } from './_components/priority-needs-form';
 import { AttachmentsForm } from './_components/attachments-form';
-import { CheckCircle } from 'lucide-react';
+import { ConfirmationDialog } from './_components/confirmation-dialog';
+import { SuccessDialog } from './_components/success-dialog';
 import { toast } from 'sonner';
 import {
   Step1Data,
@@ -49,6 +49,12 @@ export default function FormulirPage() {
     step6: false,
     step7: false,
   });
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [pendingSubmitData, setPendingSubmitData] = useState<Step7Data | null>(
+    null,
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Load data completion status on component mount
   useEffect(() => {
@@ -221,20 +227,32 @@ export default function FormulirPage() {
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
-  const onStep7Submit = async (data: Step7Data) => {
+  const onStep7Submit = (data: Step7Data) => {
+    // Store the data and show confirmation dialog
+    setPendingSubmitData(data);
+    setShowConfirmationDialog(true);
+  };
+
+  const handleConfirmSubmit = async () => {
+    if (!pendingSubmitData) return;
+
+    setIsSubmitting(true);
     try {
-      const result = await saveLampiranDataAction(data);
+      const result = await saveLampiranDataAction(pendingSubmitData);
       if (result.success) {
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 7), 7]);
         await refreshCompletionStatus();
-        toast.success('Data lampiran berhasil disimpan');
-        setCurrentStep(8); // Move to success page
+        setShowConfirmationDialog(false);
+        setShowSuccessDialog(true);
+        setPendingSubmitData(null);
       } else {
         toast.error(result.error || 'Gagal menyimpan data lampiran');
       }
     } catch (error) {
       console.error('Unexpected error saving lampiran data:', error);
       toast.error('Terjadi kesalahan saat menyimpan data');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -247,7 +265,6 @@ export default function FormulirPage() {
       <main className="container mx-auto px-4 md:px-6 py-6 max-w-5xl">
         <FormHeader />
       </main>
-
       {/* Step Indicator - Full Width */}
       <div className="w-full mb-6">
         <StepIndicator
@@ -257,7 +274,6 @@ export default function FormulirPage() {
           onStepClick={handleStepClick}
         />
       </div>
-
       {/* Form Content - Container with max-width */}
       <div className="container mx-auto px-4 md:px-6 pb-6 max-w-5xl">
         <Card className="p-4 md:p-6 shadow-sm border border-border/60 bg-background">
@@ -292,47 +308,27 @@ export default function FormulirPage() {
               onSubmit={onStep6Submit}
               onBack={() => setCurrentStep(5)}
             />
-          )}
+          )}{' '}
           {currentStep === 7 && (
             <AttachmentsForm
               onSubmit={onStep7Submit}
               onBack={() => setCurrentStep(6)}
             />
           )}
-          {/* Success Page */}
-          {completedSteps.includes(7) && currentStep > 7 && (
-            <div className="text-center py-12">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-10 h-10 text-green-600" />
-              </div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">
-                Data Berhasil Disimpan!
-              </h3>
-              <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-                Terima kasih telah melengkapi seluruh data sarana dan prasarana
-                sekolah beserta lampiran pendukung. Data Anda akan diverifikasi
-                dan dianalisis untuk menentukan prioritas kebutuhan pembangunan
-                fasilitas pendidikan.
-              </p>
-              <div className="flex justify-center gap-4">
-                {' '}
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setCurrentStep(1);
-                    setCompletedSteps([]);
-                    // Reset step 4 initial data
-                    setStep4InitialData(null);
-                  }}
-                >
-                  Input Data Baru
-                </Button>
-                <Button onClick={() => window.print()}>Cetak Ringkasan</Button>
-              </div>
-            </div>
-          )}{' '}
         </Card>
       </div>
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        open={showConfirmationDialog}
+        onOpenChange={setShowConfirmationDialog}
+        onConfirm={handleConfirmSubmit}
+        isLoading={isSubmitting}
+      />{' '}
+      {/* Success Dialog */}
+      <SuccessDialog
+        open={showSuccessDialog}
+        onOpenChange={setShowSuccessDialog}
+      />
     </>
   );
 }
