@@ -30,6 +30,11 @@ export const sidebarData: SidebarData = {
           icon: IconChecklist,
         },
         {
+          title: 'Permintaan Review',
+          url: '/admin/permintaan-review',
+          icon: IconChecklist,
+        },
+        {
           title: 'Sekolah',
           url: '/admin/sekolah',
           icon: IconSchool,
