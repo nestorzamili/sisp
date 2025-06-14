@@ -280,7 +280,7 @@ export function AttachmentsForm({
                 >
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="font-medium text-foreground">
-                      Lampiran #{index + 1}
+                      Lampiran {index + 1}
                     </h4>
                     <div className="flex items-center gap-2">
                       {form.watch(`lampiran.${index}.url`) && (

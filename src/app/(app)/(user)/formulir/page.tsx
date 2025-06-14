@@ -78,7 +78,7 @@ export default function FormulirPage() {
           textColor: 'text-green-800',
           title: 'Data Disetujui',
           message:
-            'Data Anda telah diverifikasi dan disetujui oleh Dinas Pendidikan. Form dalam mode read-only.',
+            'Data Anda telah diverifikasi dan disetujui oleh Dinas Pendidikan.',
         };
       default:
         return {

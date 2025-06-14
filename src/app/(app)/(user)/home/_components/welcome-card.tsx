@@ -3,14 +3,15 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { School, FileText, Calendar } from 'lucide-react';
+import { School, FileText, Calendar, Eye } from 'lucide-react';
 import Link from 'next/link';
 
 interface WelcomeCardProps {
   userName: string;
+  sekolahStatus?: string;
 }
 
-export function WelcomeCard({ userName }: WelcomeCardProps) {
+export function WelcomeCard({ userName, sekolahStatus }: WelcomeCardProps) {
   const currentDate = new Date().toLocaleDateString('id-ID', {
     weekday: 'long',
     year: 'numeric',
@@ -43,13 +44,21 @@ export function WelcomeCard({ userName }: WelcomeCardProps) {
             Dinas Pendidikan Nias Selatan. Di sini Anda dapat mengelola dan
             memantau data sarana prasarana sekolah Anda.
           </p>
-        </div>
-
+        </div>{' '}
         <div className="flex flex-col sm:flex-row gap-3">
           <Link href="/formulir" className="flex-1">
             <Button className="w-full" size="lg">
-              <FileText className="w-4 h-4 mr-2" />
-              Isi/Edit Data Sekolah
+              {sekolahStatus === 'APPROVED' || sekolahStatus === 'PENDING' ? (
+                <>
+                  <Eye className="w-4 h-4 mr-2" />
+                  Lihat Data Sekolah
+                </>
+              ) : (
+                <>
+                  <FileText className="w-4 h-4 mr-2" />
+                  Isi Formulir
+                </>
+              )}
             </Button>
           </Link>
         </div>

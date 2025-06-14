@@ -74,7 +74,10 @@ export default function HomePage() {
       <div className="space-y-6">
         {' '}
         {/* Welcome Section */}
-        <WelcomeCard userName={data.user.name} />
+        <WelcomeCard
+          userName={data.user.name}
+          sekolahStatus={data.sekolah?.status}
+        />
         {data.sekolah ? (
           <>
             {/* Thank You Message for Approved Status */}
@@ -95,11 +98,6 @@ export default function HomePage() {
                       kami merencanakan pembangunan dan pengembangan fasilitas
                       pendidikan yang lebih baik.
                     </p>
-                    <p className="text-green-700 text-sm">
-                      Data Anda akan digunakan sebagai dasar dalam penentuan
-                      prioritas pembangunan sarana dan prasarana pendidikan di
-                      wilayah Nias Selatan.
-                    </p>
                   </div>
                 </div>
               </div>
@@ -117,12 +115,10 @@ export default function HomePage() {
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-4">
                 Status Review
-              </h2>
+              </h2>{' '}
               <StatusCard
                 status={data.sekolah.status}
-                reviewedAt={data.sekolah.reviewedAt}
                 reviewNotes={data.sekolah.reviewNotes}
-                reviewedBy={data.sekolah.reviewedBy}
               />
             </div>
           </>

@@ -4,23 +4,13 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  CheckCircle,
-  Clock,
-  AlertCircle,
-  FileText,
-  Calendar,
-} from 'lucide-react';
+import { CheckCircle, Clock, AlertCircle, FileText } from 'lucide-react';
 
 type ReviewStatus = 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED';
 
 interface StatusCardProps {
   status: ReviewStatus;
-  reviewedAt?: Date | null;
   reviewNotes?: string | null;
-  reviewedBy?: {
-    name: string;
-  } | null;
 }
 
 const getStatusConfig = (status: ReviewStatus) => {
@@ -74,61 +64,28 @@ const getStatusConfig = (status: ReviewStatus) => {
   }
 };
 
-export function StatusCard({
-  status,
-  reviewedAt,
-  reviewNotes,
-  reviewedBy,
-}: StatusCardProps) {
+export function StatusCard({ status, reviewNotes }: StatusCardProps) {
   const config = getStatusConfig(status);
   const StatusIcon = config.icon;
 
   return (
     <Card>
+      {' '}
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <div className={`p-2 rounded-lg ${config.bgColor}`}>
-            <StatusIcon className={`w-5 h-5 ${config.color}`} />
-          </div>
-          Status Review Data
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">
-            Status saat ini:
-          </span>
+          <CardTitle className="flex items-center gap-2">
+            <div className={`p-2 rounded-lg ${config.bgColor}`}>
+              <StatusIcon className={`w-5 h-5 ${config.color}`} />
+            </div>
+            Status Review Data
+          </CardTitle>
           <Badge variant={config.variant} className="font-medium">
             {config.label}
           </Badge>
         </div>
-
-        <p className="text-sm text-muted-foreground">{config.description}</p>
-
-        {reviewedAt && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="w-4 h-4" />
-            <span>
-              Direview pada:{' '}
-              {new Date(reviewedAt).toLocaleDateString('id-ID', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </span>
-          </div>
-        )}
-
-        {reviewedBy && (
-          <div className="text-sm text-muted-foreground">
-            <span className="font-medium">Direview oleh:</span>{' '}
-            {reviewedBy.name}
-          </div>
-        )}
-
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-sm">{config.description}</p>
         {reviewNotes && (
           <Alert>
             <AlertCircle className="w-4 h-4" />
