@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { DashboardHeader } from './_components/header';
 import { FormHeader } from './_components/form-header';
 import { StepIndicator } from './_components/step-indicator';
 import { SchoolInfoForm } from './_components/school-info-form';
@@ -32,7 +31,7 @@ import {
 import { saveInfrastructureDataAction } from './_actions/infrastructure-data.action';
 import { savePriorityNeedsDataAction } from './_actions/priority-needs-data.action';
 
-export default function HomePage() {
+export default function FormulirPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
@@ -216,11 +215,8 @@ export default function HomePage() {
   const handleStepClick = (stepNumber: number) => {
     setCurrentStep(stepNumber);
   };
-
   return (
-    <div className="min-h-screen bg-muted">
-      <DashboardHeader />
-
+    <>
       {/* Main Content - Form Header */}
       <main className="container mx-auto px-4 md:px-6 py-6 max-w-5xl">
         <FormHeader />
@@ -311,9 +307,9 @@ export default function HomePage() {
                 <Button onClick={() => window.print()}>Cetak Ringkasan</Button>
               </div>
             </div>
-          )}
+          )}{' '}
         </Card>
       </div>
-    </div>
+    </>
   );
 }
