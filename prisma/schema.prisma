@@ -233,6 +233,9 @@ enum JenisRuangan {
   Perpustakaan
   JambanGuru
   JambanSiswa
+  MejaKursiSiswa
+  Komputer
+  PrasaranaLainnya
 }
 
 enum JenisKebutuhan {

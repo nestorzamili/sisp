@@ -14,6 +14,7 @@ import { InfrastructureDataForm } from './_components/infrastructure-data-form';
 import { PriorityNeedsForm } from './_components/priority-needs-form';
 import { AttachmentsForm } from './_components/attachments-form';
 import { CheckCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   Step1Data,
   Step2Data,
@@ -24,6 +25,11 @@ import {
   Step7Data,
 } from '@/types/user-home.types';
 import { getDataCompletionStatusAction } from './_actions/data-completion.action';
+import {
+  saveFacilityDataAction,
+  getFacilityDataAction,
+} from './_actions/facility-data.action';
+import { saveInfrastructureDataAction } from './_actions/infrastructure-data.action';
 
 export default function HomePage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -32,6 +38,8 @@ export default function HomePage() {
   const [step2Data, setStep2Data] = useState<Step2Data | null>(null);
   const [step3Data, setStep3Data] = useState<Step3Data | null>(null);
   const [step4Data, setStep4Data] = useState<Step4Data | null>(null);
+  const [step4InitialData, setStep4InitialData] =
+    useState<Partial<Step4Data> | null>(null);
   const [step5Data, setStep5Data] = useState<Step5Data | null>(null);
   const [step6Data, setStep6Data] = useState<Step6Data | null>(null);
   const [dataCompletionStatus, setDataCompletionStatus] = useState({
@@ -73,9 +81,26 @@ export default function HomePage() {
         console.error('Error loading completion status:', error);
       }
     }
-
     loadCompletionStatus();
   }, []);
+
+  // Load facility data when step 4 is accessed
+  useEffect(() => {
+    async function loadFacilityData() {
+      if (currentStep === 4 && !step4InitialData) {
+        try {
+          const result = await getFacilityDataAction();
+          if (result.success && result.data) {
+            setStep4InitialData(result.data);
+          }
+        } catch (error) {
+          console.error('Error loading facility data:', error);
+        }
+      }
+    }
+
+    loadFacilityData();
+  }, [currentStep, step4InitialData]);
 
   // Refresh completion status after form submissions
   const refreshCompletionStatus = async () => {
@@ -121,19 +146,39 @@ export default function HomePage() {
     await refreshCompletionStatus();
     setCurrentStep(4);
   };
-
   const onStep4Submit = async (data: Step4Data) => {
-    setStep4Data(data);
-    setCompletedSteps((prev) => [...prev.filter((s) => s !== 4), 4]);
-    await refreshCompletionStatus();
-    setCurrentStep(5);
+    try {
+      const result = await saveFacilityDataAction(data);
+      if (result.success) {
+        setStep4Data(data);
+        setCompletedSteps((prev) => [...prev.filter((s) => s !== 4), 4]);
+        await refreshCompletionStatus();
+        toast.success('Data sarana berhasil disimpan');
+        setCurrentStep(5);
+      } else {
+        toast.error(result.error || 'Gagal menyimpan data sarana');
+      }
+    } catch (error) {
+      console.error('Unexpected error saving facility data:', error);
+      toast.error('Terjadi kesalahan saat menyimpan data');
+    }
   };
-
   const onStep5Submit = async (data: Step5Data) => {
-    setStep5Data(data);
-    setCompletedSteps((prev) => [...prev.filter((s) => s !== 5), 5]);
-    await refreshCompletionStatus();
-    setCurrentStep(6);
+    try {
+      const result = await saveInfrastructureDataAction(data);
+      if (result.success) {
+        setStep5Data(data);
+        setCompletedSteps((prev) => [...prev.filter((s) => s !== 5), 5]);
+        await refreshCompletionStatus();
+        toast.success('Data prasarana berhasil disimpan');
+        setCurrentStep(6);
+      } else {
+        toast.error(result.error || 'Gagal menyimpan data prasarana');
+      }
+    } catch (error) {
+      console.error('Unexpected error saving infrastructure data:', error);
+      toast.error('Terjadi kesalahan saat menyimpan data');
+    }
   };
 
   const onStep6Submit = async (data: Step6Data) => {
@@ -184,49 +229,43 @@ export default function HomePage() {
       <div className="container mx-auto px-4 md:px-6 pb-6 max-w-5xl">
         <Card className="p-4 md:p-6 shadow-sm border border-border/60 bg-background">
           {currentStep === 1 && <SchoolInfoForm onSubmit={onStep1Submit} />}
-
           {currentStep === 2 && (
             <TeacherDataForm
               onSubmit={onStep2Submit}
               onBack={() => setCurrentStep(1)}
             />
           )}
-
           {currentStep === 3 && (
             <StudentDataForm
               onSubmit={onStep3Submit}
               onBack={() => setCurrentStep(2)}
             />
-          )}
-
+          )}{' '}
           {currentStep === 4 && (
             <FacilityDataForm
               onSubmit={onStep4Submit}
               onBack={() => setCurrentStep(3)}
+              initialData={step4InitialData || undefined}
             />
           )}
-
           {currentStep === 5 && (
             <InfrastructureDataForm
               onSubmit={onStep5Submit}
               onBack={() => setCurrentStep(4)}
             />
           )}
-
           {currentStep === 6 && (
             <PriorityNeedsForm
               onSubmit={onStep6Submit}
               onBack={() => setCurrentStep(5)}
             />
           )}
-
           {currentStep === 7 && (
             <AttachmentsForm
               onSubmit={onStep7Submit}
               onBack={() => setCurrentStep(6)}
             />
           )}
-
           {/* Success Page */}
           {completedSteps.includes(7) && currentStep > 7 && (
             <div className="text-center py-12">
