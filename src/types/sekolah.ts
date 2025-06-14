@@ -3,6 +3,7 @@ import {
   JenisKebutuhan,
   StatusGuru,
   JenisKelamin,
+  ReviewStatus,
 } from '@prisma/client';
 
 export {
@@ -10,6 +11,7 @@ export {
   JenisKebutuhan,
   StatusGuru,
   JenisKelamin,
+  ReviewStatus,
 } from '@prisma/client';
 
 export interface SekolahWithDetails {
@@ -24,7 +26,16 @@ export interface SekolahWithDetails {
   kecamatan: string | null;
   phone: string | null;
   userId: string;
+  status: ReviewStatus;
+  reviewedAt: Date | null;
+  reviewedById: string | null;
+  reviewNotes: string | null;
   user?: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  reviewedBy?: {
     id: string;
     name: string;
     email: string;

@@ -17,9 +17,10 @@ model User {
   emailVerified Boolean
   image         String?
 
-  sessions Session[]
-  accounts Account[]
-  Sekolah  Sekolah?
+  sessions        Session[]
+  accounts        Account[]
+  reviewedSekolah Sekolah[] @relation("Reviewer")
+  Sekolah         Sekolah?
 
   role       String?   @default("user")
   banned     Boolean?  @default(true) // Default to banned, requiring admin approval
@@ -101,8 +102,14 @@ model Sekolah {
   alamat_sekolah      String?
   kecamatan           String?
   phone               String? @unique
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId              String  @unique
+  user                User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status       ReviewStatus @default(DRAFT)
+  reviewedAt   DateTime?
+  reviewedById String?
+  reviewedBy   User?        @relation("Reviewer", fields: [reviewedById], references: [id])
+  reviewNotes  String?
 
   sarana             Sarana[]
   prasarana          Prasarana[]
@@ -215,8 +222,6 @@ model RombonganBelajar {
   @@map("rombongan_belajar")
 }
 
-// Enums
-
 enum JenisRuangan {
   RuangKepalaSekolah
   RuangGuru
@@ -244,4 +249,11 @@ enum StatusGuru {
 enum JenisKelamin {
   L
   P
+}
+
+enum ReviewStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
 }

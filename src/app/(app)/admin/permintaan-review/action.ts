@@ -1,0 +1,161 @@
+'use server';
+
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { ReviewData } from '@/types/review';
+import { ReviewService } from '@/lib/services/review.service';
+
+/**
+ * Get all pending reviews with pagination and filtering
+ */
+export async function getAllPendingReviews(options?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}) {
+  try {
+    const page = options?.page ?? 1;
+    const limit = options?.limit ?? 10;
+    const search = options?.search ?? '';
+    const sortBy = options?.sortBy ?? 'createdAt';
+    const sortOrder = options?.sortOrder ?? 'desc';
+    const result = await ReviewService.getPendingReviews({
+      page,
+      pageSize: limit,
+      search: search.trim(),
+      sortField: sortBy,
+      sortDirection: sortOrder,
+    });
+    if (result.success && result.data) {
+      return {
+        success: true,
+        data: result.data.reviews,
+        totalRows: result.data.pagination.totalCount,
+      };
+    }
+
+    return {
+      success: false,
+      error: result.error || 'Gagal mengambil data permintaan review',
+      data: [] as ReviewData[],
+      totalRows: 0,
+    };
+  } catch (error) {
+    console.error('Error fetching pending reviews:', error);
+    return {
+      success: false,
+      error: 'Gagal mengambil data permintaan review',
+      data: [] as ReviewData[],
+      totalRows: 0,
+    };
+  }
+}
+
+/**
+ * Approve a pending review
+ */
+export async function approveReview(sekolahId: string, notes?: string) {
+  try {
+    // Get current admin user session
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: 'Unauthorized - Admin access required',
+      };
+    }
+
+    if (!sekolahId || sekolahId.trim() === '') {
+      return {
+        success: false,
+        error: 'ID sekolah tidak valid',
+      };
+    }
+
+    const result = await ReviewService.approveReview(
+      sekolahId.trim(),
+      session.user.id, // reviewedById from current admin user
+      notes?.trim(),
+    );
+
+    if (result.success) {
+      return {
+        success: true,
+        message: 'Review berhasil disetujui',
+      };
+    }
+
+    return {
+      success: false,
+      error: result.error || 'Gagal menyetujui review',
+    };
+  } catch (error) {
+    console.error('Error approving review:', error);
+    return {
+      success: false,
+      error: 'Gagal menyetujui review',
+    };
+  }
+}
+
+/**
+ * Request revision for a review
+ */
+export async function requestRevision(sekolahId: string, reason: string) {
+  try {
+    // Get current admin user session
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user?.id) {
+      return {
+        success: false,
+        error: 'Unauthorized - Admin access required',
+      };
+    }
+
+    if (!sekolahId || sekolahId.trim() === '') {
+      return {
+        success: false,
+        error: 'ID sekolah tidak valid',
+      };
+    }
+
+    if (!reason || reason.trim() === '') {
+      return {
+        success: false,
+        error: 'Alasan revisi harus diisi',
+      };
+    }
+
+    const result = await ReviewService.requestRevision(
+      sekolahId.trim(),
+      reason.trim(),
+      session.user.id, // reviewedById from current admin user
+    );
+
+    if (result.success) {
+      return {
+        success: true,
+        message: 'Permintaan revisi berhasil dikirim',
+      };
+    }
+
+    return {
+      success: false,
+      error: result.error || 'Gagal mengirim permintaan revisi',
+    };
+  } catch (error) {
+    console.error('Error requesting revision:', error);
+    return {
+      success: false,
+      error: 'Gagal mengirim permintaan revisi',
+    };
+  }
+}
