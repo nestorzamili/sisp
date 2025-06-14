@@ -183,3 +183,14 @@ export interface CreateSekolahData {
   email?: string; // For direct email field if schema is updated
   banned?: boolean; // For direct banned field if schema is updated
 }
+
+export interface UpdateSekolahData {
+  nama_sekolah?: string;
+  npsn?: string;
+  nama_kepala_sekolah?: string;
+  nip_kepala_sekolah?: string;
+  alamat_sekolah?: string;
+  kecamatan?: string;
+  phone?: string;
+  status?: ReviewStatus;
+}

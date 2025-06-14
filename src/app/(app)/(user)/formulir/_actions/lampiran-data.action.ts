@@ -33,9 +33,7 @@ export async function saveLampiranDataAction(data: Step7Data) {
     const sekolah = schoolResult.data;
 
     // Delete existing lampiran for this school first
-    await LampiranService.deleteAllLampiranBySekolahId(sekolah.id);
-
-    // Save new lampiran data if provided
+    await LampiranService.deleteAllLampiranBySekolahId(sekolah.id); // Save new lampiran data if provided
     if (data.lampiran && data.lampiran.length > 0) {
       for (const lampiran of data.lampiran) {
         await LampiranService.createLampiran(sekolah.id, {
@@ -46,9 +44,15 @@ export async function saveLampiranDataAction(data: Step7Data) {
       }
     }
 
+    // Update school status to PENDING when final step is submitted
+    await SekolahService.updateSekolah(sekolah.id, {
+      status: 'PENDING',
+    });
+
     return {
       success: true,
-      message: 'Data lampiran berhasil disimpan',
+      message:
+        'Data lampiran berhasil disimpan dan status sekolah diperbarui ke PENDING',
     };
   } catch (error) {
     console.error('Error saving lampiran data:', error);

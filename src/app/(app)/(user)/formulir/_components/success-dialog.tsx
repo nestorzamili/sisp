@@ -15,6 +15,12 @@ interface SuccessDialogProps {
 }
 
 export function SuccessDialog({ open, onOpenChange }: SuccessDialogProps) {
+  const handleClose = () => {
+    onOpenChange(false);
+    // Refresh and redirect to home page
+    window.location.href = '/home';
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[650px] max-w-[95vw]">
@@ -55,9 +61,9 @@ export function SuccessDialog({ open, onOpenChange }: SuccessDialogProps) {
               </ul>
             </div>
           </div>
-        </div>
+        </div>{' '}
         <DialogFooter>
-          <Button onClick={() => onOpenChange(false)} className="w-full">
+          <Button onClick={handleClose} className="w-full">
             Tutup
           </Button>
         </DialogFooter>

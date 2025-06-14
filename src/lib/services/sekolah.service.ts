@@ -6,6 +6,7 @@ import {
   SekolahPaginationParams,
   SekolahPaginationResult,
   CreateSekolahData,
+  UpdateSekolahData,
 } from '@/types/sekolah';
 
 export class SekolahService {
@@ -607,18 +608,9 @@ export class SekolahService {
 
   /**
    * Update sekolah information
-   */
-  static async updateSekolah(
+   */ static async updateSekolah(
     sekolahId: string,
-    updateData: {
-      nama_sekolah?: string;
-      npsn?: string;
-      nama_kepala_sekolah?: string;
-      nip_kepala_sekolah?: string;
-      alamat_sekolah?: string;
-      kecamatan?: string;
-      phone?: string;
-    },
+    updateData: UpdateSekolahData,
   ): Promise<SekolahServiceResponse<SekolahWithDetails>> {
     try {
       // Check if sekolah exists
