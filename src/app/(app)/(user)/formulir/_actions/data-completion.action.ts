@@ -106,26 +106,29 @@ export async function getDataCompletionStatusAction() {
       await PrasaranaService.getPrasaranaBySekolahIdAndTahunAjaran(
         sekolah.id,
         tahunAjaran,
-      );
-
-    // Check if at least some prasarana data exists and has meaningful data
+      ); // Check if at least some prasarana data exists and has meaningful data
     const hasPrasaranaData = prasaranaData.some(
       (p) =>
         p.jumlah_total > 0 ||
         p.jumlah_kondisi_baik > 0 ||
         p.jumlah_kondisi_rusak > 0,
     );
-    const step5Complete = prasaranaData.length > 0 && hasPrasaranaData; // Check Step 6: Priority Needs Data Completion
+    const step5Complete = prasaranaData.length > 0 && hasPrasaranaData;
+
+    // Check Step 6: Priority Needs Data Completion
     const step6Complete =
       await KebutuhanPrioritasService.hasKebutuhanPrioritasData(
         sekolah.id,
         tahunAjaran,
-      ); // Check Step 7: Lampiran Data Completion (optional, always true)
+      );
+
+    // Check Step 7: Lampiran Data Completion (optional, always true)
     const step7Complete = true; // Lampiran is optional, so it's always considered complete
 
     return {
       success: true,
       data: {
+        sekolahStatus: sekolah.status, // Add school status
         step1: step1Complete,
         step2: step2Complete,
         step3: step3Complete,

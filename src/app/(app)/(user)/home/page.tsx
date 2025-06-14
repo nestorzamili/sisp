@@ -6,7 +6,7 @@ import { StatusCard } from './_components/status-card';
 import { QuickStats } from './_components/quick-stats';
 import { getUserSekolahDataAction } from './home.action';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { AlertCircle, Loader2, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { UserHomeData } from '@/types/home.types';
@@ -77,6 +77,34 @@ export default function HomePage() {
         <WelcomeCard userName={data.user.name} />
         {data.sekolah ? (
           <>
+            {/* Thank You Message for Approved Status */}
+            {data.sekolah.status === 'APPROVED' && (
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 bg-green-100 rounded-full flex-shrink-0">
+                    <CheckCircle className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-green-900 mb-2">
+                      Terima Kasih atas Partisipasi Anda! 🎉
+                    </h3>
+                    <p className="text-green-800 mb-3">
+                      Data sarana dan prasarana sekolah Anda telah berhasil
+                      diverifikasi dan disetujui oleh Dinas Pendidikan Nias
+                      Selatan. Kontribusi Anda sangat berharga dalam membantu
+                      kami merencanakan pembangunan dan pengembangan fasilitas
+                      pendidikan yang lebih baik.
+                    </p>
+                    <p className="text-green-700 text-sm">
+                      Data Anda akan digunakan sebagai dasar dalam penentuan
+                      prioritas pembangunan sarana dan prasarana pendidikan di
+                      wilayah Nias Selatan.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Quick Stats */}
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-4">

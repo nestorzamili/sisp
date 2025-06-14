@@ -40,9 +40,14 @@ import Image from 'next/image';
 interface AttachmentsFormProps {
   onSubmit: (data: Step7Data) => void;
   onBack: () => void;
+  disabled?: boolean;
 }
 
-export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
+export function AttachmentsForm({
+  onSubmit,
+  onBack,
+  disabled = false,
+}: AttachmentsFormProps) {
   const [uploading, setUploading] = useState<{ [key: number]: boolean }>({});
   const [loading, setLoading] = useState(true);
 
@@ -257,6 +262,7 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
                 variant="outline"
                 onClick={addLampiran}
                 className="flex items-center gap-2"
+                disabled={disabled}
               >
                 <Plus className="w-4 h-4" />
                 Tambah Lampiran (Opsional)
@@ -333,6 +339,7 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
                         size="sm"
                         onClick={() => remove(index)}
                         className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        disabled={disabled}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
@@ -354,6 +361,7 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
                               placeholder="Masukkan nama dokumen..."
                               {...field}
                               readOnly={uploading[index]}
+                              disabled={disabled}
                             />
                           </FormControl>
                           <FormMessage />
@@ -396,6 +404,7 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
                                 );
                               }}
                               className="text-red-600 hover:text-red-700"
+                              disabled={disabled}
                             >
                               <X className="w-4 h-4" />
                             </Button>
@@ -413,7 +422,7 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
                                   handleFileUpload(index, file);
                                 }
                               }}
-                              disabled={uploading[index]}
+                              disabled={uploading[index] || disabled}
                             />
                             <label
                               htmlFor={`file-${index}`}
@@ -459,6 +468,7 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
                             className="resize-none"
                             rows={3}
                             {...field}
+                            disabled={disabled}
                           />
                         </FormControl>
                         <FormMessage />
@@ -475,6 +485,7 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
                   variant="outline"
                   onClick={addLampiran}
                   className="flex items-center gap-2"
+                  disabled={disabled}
                 >
                   <Plus className="w-4 h-4" />
                   Tambah Lampiran Lainnya
@@ -489,7 +500,9 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
           <Button type="button" variant="outline" onClick={onBack}>
             Kembali
           </Button>
-          <Button type="submit">Selesai & Kirim Data</Button>
+          <Button type="submit" disabled={disabled}>
+            Selesai & Kirim Data
+          </Button>
         </div>
       </form>
     </Form>

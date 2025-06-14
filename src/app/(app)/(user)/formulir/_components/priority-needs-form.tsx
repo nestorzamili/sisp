@@ -20,11 +20,13 @@ import { getPriorityNeedsDataAction } from '../_actions/priority-needs-data.acti
 interface PriorityNeedsFormProps {
   onSubmit: (data: Step6Data) => void;
   onBack: () => void;
+  disabled?: boolean;
 }
 
 export function PriorityNeedsForm({
   onSubmit,
   onBack,
+  disabled = false,
 }: PriorityNeedsFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -142,7 +144,7 @@ export function PriorityNeedsForm({
                     <Textarea
                       placeholder="Contoh: Pembangunan 2 ruang kelas baru karena kekurangan ruang untuk menampung 180 siswa, renovasi laboratorium IPA yang atapnya bocor, pengadaan 50 set meja kursi siswa untuk mengganti yang rusak, perbaikan toilet siswa yang tidak berfungsi, dll..."
                       className="min-h-32 resize-y"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || disabled}
                       {...field}
                     />
                   </FormControl>
@@ -161,14 +163,14 @@ export function PriorityNeedsForm({
               variant="outline"
               onClick={onBack}
               className="text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               Kembali
             </Button>
             <Button
               type="submit"
               className="btn-primary text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               {isSubmitting ? (
                 <>

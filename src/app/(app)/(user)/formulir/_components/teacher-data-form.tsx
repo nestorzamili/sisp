@@ -24,9 +24,14 @@ import {
 interface TeacherDataFormProps {
   onSubmit: (data: Step2Data) => void;
   onBack: () => void;
+  disabled?: boolean;
 }
 
-export function TeacherDataForm({ onSubmit, onBack }: TeacherDataFormProps) {
+export function TeacherDataForm({
+  onSubmit,
+  onBack,
+  disabled = false,
+}: TeacherDataFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -148,7 +153,7 @@ export function TeacherDataForm({ onSubmit, onBack }: TeacherDataFormProps) {
                   min="0"
                   placeholder="0"
                   {...field}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || disabled}
                   className="text-center"
                 />
               </FormControl>
@@ -170,7 +175,7 @@ export function TeacherDataForm({ onSubmit, onBack }: TeacherDataFormProps) {
                   min="0"
                   placeholder="0"
                   {...field}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || disabled}
                   className="text-center"
                 />
               </FormControl>
@@ -263,14 +268,14 @@ export function TeacherDataForm({ onSubmit, onBack }: TeacherDataFormProps) {
               variant="outline"
               onClick={onBack}
               className="text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               Kembali
             </Button>
             <Button
               type="submit"
               className="btn-primary text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               {isSubmitting ? (
                 <>

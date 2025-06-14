@@ -29,9 +29,14 @@ import {
 interface StudentDataFormProps {
   onSubmit: (data: Step3Data) => void;
   onBack: () => void;
+  disabled?: boolean;
 }
 
-export function StudentDataForm({ onSubmit, onBack }: StudentDataFormProps) {
+export function StudentDataForm({
+  onSubmit,
+  onBack,
+  disabled = false,
+}: StudentDataFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -151,7 +156,7 @@ export function StudentDataForm({ onSubmit, onBack }: StudentDataFormProps) {
                   min="0"
                   placeholder="0"
                   {...field}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || disabled}
                   className="text-center"
                 />
               </FormControl>
@@ -173,7 +178,7 @@ export function StudentDataForm({ onSubmit, onBack }: StudentDataFormProps) {
                   min="0"
                   placeholder="0"
                   {...field}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || disabled}
                   className="text-center"
                 />
               </FormControl>
@@ -266,7 +271,7 @@ export function StudentDataForm({ onSubmit, onBack }: StudentDataFormProps) {
             <Button
               type="submit"
               className="btn-primary text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               {isSubmitting ? (
                 <>

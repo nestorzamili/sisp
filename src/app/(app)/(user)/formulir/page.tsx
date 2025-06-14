@@ -41,6 +41,7 @@ export default function FormulirPage() {
   const [step4InitialData, setStep4InitialData] =
     useState<Partial<Step4Data> | null>(null);
   const [dataCompletionStatus, setDataCompletionStatus] = useState({
+    sekolahStatus: '',
     step1: false,
     step2: false,
     step3: false,
@@ -55,6 +56,39 @@ export default function FormulirPage() {
     null,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Check if forms should be disabled based on school status
+  const isFormDisabled =
+    dataCompletionStatus.sekolahStatus === 'PENDING' ||
+    dataCompletionStatus.sekolahStatus === 'APPROVED';
+
+  // Get status message based on school status
+  const getStatusMessage = () => {
+    switch (dataCompletionStatus.sekolahStatus) {
+      case 'PENDING':
+        return {
+          bgColor: 'bg-yellow-50 border-yellow-200',
+          textColor: 'text-yellow-800',
+          title: 'Menunggu Verifikasi',
+          message:
+            'Data telah disubmit dan sedang dalam proses verifikasi oleh Dinas Pendidikan. Form tidak dapat diedit saat ini.',
+        };
+      case 'APPROVED':
+        return {
+          bgColor: 'bg-green-50 border-green-200',
+          textColor: 'text-green-800',
+          title: 'Data Disetujui',
+          message:
+            'Data Anda telah diverifikasi dan disetujui oleh Dinas Pendidikan. Form dalam mode read-only.',
+        };
+      default:
+        return {
+          bgColor: 'bg-blue-50 border-blue-200',
+          textColor: 'text-blue-800',
+          title: 'Informasi',
+          message: 'Form tidak dapat diedit saat ini.',
+        };
+    }
+  };
 
   // Load data completion status on component mount
   useEffect(() => {
@@ -64,6 +98,7 @@ export default function FormulirPage() {
 
         if (result.success && result.data) {
           const safeData = {
+            sekolahStatus: result.data.sekolahStatus || '',
             step1: Boolean(result.data.step1),
             step2: Boolean(result.data.step2),
             step3: Boolean(result.data.step3),
@@ -76,7 +111,7 @@ export default function FormulirPage() {
           setDataCompletionStatus(safeData);
 
           const completed = Object.entries(safeData)
-            .filter(([, isComplete]) => isComplete)
+            .filter(([key, isComplete]) => key.startsWith('step') && isComplete)
             .map(([step]) => parseInt(step.replace('step', '')));
 
           setCompletedSteps(completed);
@@ -105,12 +140,12 @@ export default function FormulirPage() {
 
     loadFacilityData();
   }, [currentStep, step4InitialData]);
-
   // Refresh completion status after form submissions
   const refreshCompletionStatus = async () => {
     const result = await getDataCompletionStatusAction();
     if (result.success && result.data) {
       const safeData = {
+        sekolahStatus: result.data.sekolahStatus || '',
         step1: Boolean(result.data.step1),
         step2: Boolean(result.data.step2),
         step3: Boolean(result.data.step3),
@@ -123,7 +158,7 @@ export default function FormulirPage() {
       setDataCompletionStatus(safeData);
 
       const completed = Object.entries(safeData)
-        .filter(([, isComplete]) => isComplete)
+        .filter(([key, isComplete]) => key.startsWith('step') && isComplete)
         .map(([step]) => parseInt(step.replace('step', '')));
 
       setCompletedSteps(completed);
@@ -267,6 +302,7 @@ export default function FormulirPage() {
       </main>
       {/* Step Indicator - Full Width */}
       <div className="w-full mb-6">
+        {' '}
         <StepIndicator
           currentStep={currentStep}
           completedSteps={completedSteps}
@@ -274,20 +310,40 @@ export default function FormulirPage() {
           onStepClick={handleStepClick}
         />
       </div>
-      {/* Form Content - Container with max-width */}
+      {/* Form Content - Container with max-width */}{' '}
       <div className="container mx-auto px-4 md:px-6 pb-6 max-w-5xl">
+        {' '}
+        {/* Show status message if form is disabled */}
+        {isFormDisabled &&
+          (() => {
+            const statusInfo = getStatusMessage();
+            return (
+              <div className={`mb-4 p-4 rounded-lg ${statusInfo.bgColor}`}>
+                <p className={`${statusInfo.textColor} text-sm`}>
+                  <strong>{statusInfo.title}:</strong> {statusInfo.message}
+                </p>
+              </div>
+            );
+          })()}
         <Card className="p-4 md:p-6 shadow-sm border border-border/60 bg-background">
-          {currentStep === 1 && <SchoolInfoForm onSubmit={onStep1Submit} />}
+          {currentStep === 1 && (
+            <SchoolInfoForm
+              onSubmit={onStep1Submit}
+              disabled={isFormDisabled}
+            />
+          )}
           {currentStep === 2 && (
             <TeacherDataForm
               onSubmit={onStep2Submit}
               onBack={() => setCurrentStep(1)}
+              disabled={isFormDisabled}
             />
           )}
           {currentStep === 3 && (
             <StudentDataForm
               onSubmit={onStep3Submit}
               onBack={() => setCurrentStep(2)}
+              disabled={isFormDisabled}
             />
           )}{' '}
           {currentStep === 4 && (
@@ -295,24 +351,28 @@ export default function FormulirPage() {
               onSubmit={onStep4Submit}
               onBack={() => setCurrentStep(3)}
               initialData={step4InitialData || undefined}
+              disabled={isFormDisabled}
             />
           )}
           {currentStep === 5 && (
             <InfrastructureDataForm
               onSubmit={onStep5Submit}
               onBack={() => setCurrentStep(4)}
+              disabled={isFormDisabled}
             />
           )}
           {currentStep === 6 && (
             <PriorityNeedsForm
               onSubmit={onStep6Submit}
               onBack={() => setCurrentStep(5)}
+              disabled={isFormDisabled}
             />
           )}{' '}
           {currentStep === 7 && (
             <AttachmentsForm
               onSubmit={onStep7Submit}
               onBack={() => setCurrentStep(6)}
+              disabled={isFormDisabled}
             />
           )}
         </Card>

@@ -15,6 +15,7 @@ interface StepIndicatorProps {
   currentStep: number;
   completedSteps: number[];
   dataCompletionStatus: {
+    sekolahStatus?: string;
     step1: boolean;
     step2: boolean;
     step3: boolean;
@@ -96,13 +97,14 @@ export function StepIndicator({
 
           return (
             <React.Fragment key={step.number}>
+              {' '}
               <div
                 className={`flex items-center space-x-2 px-2 md:px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 whitespace-nowrap ${
                   currentStep === step.number
                     ? 'bg-primary/10 text-primary shadow-sm border border-primary/20'
                     : hasData
-                    ? 'bg-green-50 text-green-600 shadow-sm border border-green-200'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      ? 'bg-green-50 text-green-600 shadow-sm border border-green-200'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 }`}
                 onClick={() => onStepClick(step.number)}
               >
@@ -114,7 +116,6 @@ export function StepIndicator({
                   {step.number}
                 </span>
               </div>
-
               {index < steps.length - 1 && (
                 <ChevronRight className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground/60 flex-shrink-0" />
               )}

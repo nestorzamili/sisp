@@ -50,7 +50,8 @@ const getStatusConfig = (status: ReviewStatus) => {
         icon: CheckCircle,
         color: 'text-green-600',
         bgColor: 'bg-green-50',
-        description: 'Data telah disetujui dan diverifikasi',
+        description:
+          'Data telah disetujui dan diverifikasi oleh Dinas Pendidikan.',
       };
     case 'REJECTED':
       return {

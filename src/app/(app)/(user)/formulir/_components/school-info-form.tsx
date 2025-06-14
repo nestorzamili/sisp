@@ -35,9 +35,13 @@ import { KECAMATAN_LIST } from '@/constants/kecamatan';
 
 interface SchoolInfoFormProps {
   onSubmit: (data: Step1Data) => void;
+  disabled?: boolean;
 }
 
-export function SchoolInfoForm({ onSubmit }: SchoolInfoFormProps) {
+export function SchoolInfoForm({
+  onSubmit,
+  disabled = false,
+}: SchoolInfoFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -212,7 +216,7 @@ export function SchoolInfoForm({ onSubmit }: SchoolInfoFormProps) {
                     <Input
                       placeholder="Masukkan nama sekolah"
                       {...field}
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || disabled}
                       className={
                         hasExistingData('namaSekolah') ? 'border-green-200' : ''
                       }
@@ -239,7 +243,7 @@ export function SchoolInfoForm({ onSubmit }: SchoolInfoFormProps) {
                       placeholder="8 digit NPSN"
                       maxLength={8}
                       {...field}
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || disabled}
                       className={
                         hasExistingData('npsn') ? 'border-green-200' : ''
                       }
@@ -265,7 +269,7 @@ export function SchoolInfoForm({ onSubmit }: SchoolInfoFormProps) {
                     <Input
                       placeholder="Masukkan nama kepala sekolah"
                       {...field}
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || disabled}
                       className={
                         hasExistingData('namaKepalaSekolah')
                           ? 'border-green-200'
@@ -294,7 +298,7 @@ export function SchoolInfoForm({ onSubmit }: SchoolInfoFormProps) {
                       placeholder="18 digit NIP"
                       maxLength={18}
                       {...field}
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || disabled}
                       className={
                         hasExistingData('nipKepalaSekolah')
                           ? 'border-green-200'
@@ -320,8 +324,8 @@ export function SchoolInfoForm({ onSubmit }: SchoolInfoFormProps) {
                   </FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    disabled={isSubmitting}
+                    value={field.value}
+                    disabled={isSubmitting || disabled}
                   >
                     <FormControl>
                       <SelectTrigger
@@ -360,11 +364,11 @@ export function SchoolInfoForm({ onSubmit }: SchoolInfoFormProps) {
                 <FormControl>
                   <Textarea
                     placeholder="Masukkan alamat lengkap sekolah"
-                    className={`min-h-20 ${
+                    {...field}
+                    disabled={isSubmitting || disabled}
+                    className={`min-h-[100px] ${
                       hasExistingData('alamatSekolah') ? 'border-green-200' : ''
                     }`}
-                    {...field}
-                    disabled={isSubmitting}
                   />
                 </FormControl>
                 <FormMessage />
@@ -376,7 +380,7 @@ export function SchoolInfoForm({ onSubmit }: SchoolInfoFormProps) {
             <Button
               type="submit"
               className="btn-primary text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               {isSubmitting ? (
                 <>

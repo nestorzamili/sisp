@@ -47,11 +47,13 @@ const kondisiOptions = [
 interface InfrastructureDataFormProps {
   onSubmit: (data: Step5Data) => void;
   onBack: () => void;
+  disabled?: boolean;
 }
 
 export function InfrastructureDataForm({
   onSubmit,
   onBack,
+  disabled = false,
 }: InfrastructureDataFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -174,7 +176,7 @@ export function InfrastructureDataForm({
                 type="number"
                 min="0"
                 placeholder="0"
-                disabled={isSubmitting}
+                disabled={isSubmitting || disabled}
                 {...field}
               />
             </FormControl>
@@ -199,7 +201,7 @@ export function InfrastructureDataForm({
                 type="number"
                 min="0"
                 placeholder="0"
-                disabled={isSubmitting}
+                disabled={isSubmitting || disabled}
                 {...field}
               />
             </FormControl>
@@ -226,7 +228,7 @@ export function InfrastructureDataForm({
                 type="number"
                 min="0"
                 placeholder="0"
-                disabled={isSubmitting}
+                disabled={isSubmitting || disabled}
                 {...field}
               />
             </FormControl>
@@ -319,7 +321,7 @@ export function InfrastructureDataForm({
                   size="sm"
                   onClick={addPrasaranaLainnya}
                   className="flex items-center gap-2"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || disabled}
                 >
                   <Plus className="w-4 h-4" />
                   Tambah Prasarana
@@ -343,7 +345,7 @@ export function InfrastructureDataForm({
                                 <FormControl>
                                   <Input
                                     placeholder="Contoh: Papan Tulis"
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || disabled}
                                     {...field}
                                   />
                                 </FormControl>
@@ -364,7 +366,7 @@ export function InfrastructureDataForm({
                                     type="number"
                                     min="1"
                                     placeholder="0"
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || disabled}
                                     {...field}
                                   />
                                 </FormControl>
@@ -383,7 +385,7 @@ export function InfrastructureDataForm({
                                 <Select
                                   onValueChange={field.onChange}
                                   value={field.value}
-                                  disabled={isSubmitting}
+                                  disabled={isSubmitting || disabled}
                                 >
                                   <FormControl>
                                     <SelectTrigger>
@@ -415,7 +417,7 @@ export function InfrastructureDataForm({
                             onClick={() => remove(index)}
                             className="text-red-600 hover:text-red-700 hover:bg-red-50 h-10 w-10 p-0"
                             title="Hapus prasarana"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || disabled}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
@@ -433,14 +435,14 @@ export function InfrastructureDataForm({
               variant="outline"
               onClick={onBack}
               className="text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               Kembali
             </Button>
             <Button
               type="submit"
               className="btn-primary text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               {isSubmitting ? (
                 <>

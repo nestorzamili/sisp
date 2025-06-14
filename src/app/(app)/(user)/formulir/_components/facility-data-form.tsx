@@ -42,12 +42,14 @@ interface FacilityDataFormProps {
   onSubmit: (data: Step4Data) => void;
   onBack: () => void;
   initialData?: Partial<Step4Data>;
+  disabled?: boolean;
 }
 
 export function FacilityDataForm({
   onSubmit,
   onBack,
   initialData,
+  disabled = false,
 }: FacilityDataFormProps) {
   const [isFormLoading, setIsFormLoading] = useState(true);
   const [hasExistingData, setHasExistingData] = useState(false);
@@ -153,7 +155,13 @@ export function FacilityDataForm({
           <FormItem className="space-y-2">
             <FormLabel className="text-sm font-medium">Jumlah Total</FormLabel>
             <FormControl>
-              <Input type="number" min="0" placeholder="0" {...field} />
+              <Input
+                type="number"
+                min="0"
+                placeholder="0"
+                {...field}
+                disabled={isSubmitting || disabled}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -166,7 +174,13 @@ export function FacilityDataForm({
           <FormItem className="space-y-2">
             <FormLabel className="text-sm font-medium">Kondisi Baik</FormLabel>
             <FormControl>
-              <Input type="number" min="0" placeholder="0" {...field} />
+              <Input
+                type="number"
+                min="0"
+                placeholder="0"
+                {...field}
+                disabled={isSubmitting || disabled}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -181,7 +195,13 @@ export function FacilityDataForm({
               Kondisi Rusak/Tidak Layak
             </FormLabel>
             <FormControl>
-              <Input type="number" min="0" placeholder="0" {...field} />
+              <Input
+                type="number"
+                min="0"
+                placeholder="0"
+                {...field}
+                disabled={isSubmitting || disabled}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -214,7 +234,11 @@ export function FacilityDataForm({
             <FormLabel className="text-sm font-medium">
               Kondisi {title}
             </FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              disabled={isSubmitting || disabled}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Pilih kondisi" />
@@ -253,6 +277,7 @@ export function FacilityDataForm({
                 placeholder="Keterangan tambahan..."
                 className="min-h-10"
                 {...field}
+                disabled={isSubmitting || disabled}
               />
             </FormControl>
             <FormMessage />
@@ -362,14 +387,14 @@ export function FacilityDataForm({
               variant="outline"
               onClick={onBack}
               className="text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               Kembali
             </Button>
             <Button
               type="submit"
               className="btn-primary text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={isSubmitting || disabled}
             >
               {isSubmitting ? 'Menyimpan...' : 'Lanjut ke Data Prasarana'}
             </Button>
