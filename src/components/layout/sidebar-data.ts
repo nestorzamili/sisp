@@ -3,6 +3,7 @@ import {
   IconHelp,
   IconLayoutDashboard,
   IconUsers,
+  IconSchool,
 } from '@tabler/icons-react';
 import { type SidebarData } from './types';
 
@@ -31,7 +32,7 @@ export const sidebarData: SidebarData = {
         {
           title: 'Sekolah',
           url: '/admin/sekolah',
-          icon: IconChecklist,
+          icon: IconSchool,
         },
         {
           title: 'Pengguna',
