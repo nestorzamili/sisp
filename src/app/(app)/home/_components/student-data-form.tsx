@@ -12,7 +12,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+
+import {
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  GraduationCap,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { step3Schema, Step3Data } from '../_schema/student-data.schema';
 import {
@@ -95,30 +101,89 @@ export function StudentDataForm({ onSubmit, onBack }: StudentDataFormProps) {
     }
   }
 
-  // Calculate totals
-  const totalKelas7 =
-    (Number(form.watch('siswaKelas7Laki')) || 0) +
-    (Number(form.watch('siswaKelas7Perempuan')) || 0);
+  // Calculate completion status
+  const getCompletionStatus = () => {
+    const fields = [
+      'siswaKelas7Laki',
+      'siswaKelas7Perempuan',
+      'siswaKelas8Laki',
+      'siswaKelas8Perempuan',
+      'siswaKelas9Laki',
+      'siswaKelas9Perempuan',
+    ] as const;
+    const completed = fields.filter((field) =>
+      Boolean(form.getValues(field) && Number(form.getValues(field)) > 0),
+    ).length;
+    return { completed, total: fields.length };
+  };
+  const completionStatus = getCompletionStatus();
+  const completionPercentage = Math.round(
+    (completionStatus.completed / completionStatus.total) * 100,
+  );
 
-  const totalKelas8 =
-    (Number(form.watch('siswaKelas8Laki')) || 0) +
-    (Number(form.watch('siswaKelas8Perempuan')) || 0);
-
-  const totalKelas9 =
-    (Number(form.watch('siswaKelas9Laki')) || 0) +
-    (Number(form.watch('siswaKelas9Perempuan')) || 0);
-
-  const totalLaki =
-    (Number(form.watch('siswaKelas7Laki')) || 0) +
-    (Number(form.watch('siswaKelas8Laki')) || 0) +
-    (Number(form.watch('siswaKelas9Laki')) || 0);
-
-  const totalPerempuan =
-    (Number(form.watch('siswaKelas7Perempuan')) || 0) +
-    (Number(form.watch('siswaKelas8Perempuan')) || 0) +
-    (Number(form.watch('siswaKelas9Perempuan')) || 0);
-
-  const totalSiswa = totalLaki + totalPerempuan;
+  // Reusable class section component
+  const ClassSection = ({
+    title,
+    lakiFieldName,
+    perempuanFieldName,
+  }: {
+    title: string;
+    lakiFieldName: keyof Step3Data;
+    perempuanFieldName: keyof Step3Data;
+  }) => (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3 pb-2 border-b border-slate-200">
+        <GraduationCap className="w-5 h-5 text-primary" />
+        <h4 className="text-lg font-semibold text-foreground">{title}</h4>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+          control={form.control}
+          name={lakiFieldName}
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <FormLabel className="text-sm font-medium text-foreground">
+                Laki-laki
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  {...field}
+                  disabled={isSubmitting}
+                  className="text-center"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name={perempuanFieldName}
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <FormLabel className="text-sm font-medium text-foreground">
+                Perempuan
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  {...field}
+                  disabled={isSubmitting}
+                  className="text-center"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+    </div>
+  );
 
   if (isLoading) {
     return (
@@ -141,245 +206,53 @@ export function StudentDataForm({ onSubmit, onBack }: StudentDataFormProps) {
       </Alert>
     );
   }
-
   return (
     <div className="space-y-6">
-      {/* Status indicator */}
+      {/* Form Header */}
+      <div className="text-center">
+        <h3 className="text-xl font-bold text-foreground mb-2">
+          Data Peserta Didik
+        </h3>
+        <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
+          Masukkan jumlah siswa berdasarkan tingkat kelas dan jenis kelamin di
+          sekolah Anda
+        </p>
+      </div>
+      {/* Progress indicator */}
       {hasExistingData && (
         <Alert className="border-green-200 bg-green-50">
           <CheckCircle2 className="h-4 w-4 text-green-600" />
           <AlertDescription className="text-green-800">
-            Data siswa sudah tersimpan sebelumnya. Anda dapat memperbarui data
-            atau melanjutkan ke tahap selanjutnya.
+            Data siswa sudah tersimpan sebelumnya. Kelengkapan data:{' '}
+            {completionStatus.completed}/{completionStatus.total} field (
+            {completionPercentage}%)
           </AlertDescription>
         </Alert>
-      )}
-
+      )}{' '}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          {/* Students Data Section */}
           <div className="space-y-5">
-            <h3 className="text-lg font-semibold text-foreground">
-              Jumlah Siswa per Kelas
-            </h3>
-
             {/* Kelas VII */}
-            <div className="space-y-3">
-              <h4 className="text-base font-medium text-foreground border-l-4 border-primary pl-3">
-                Kelas VII
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  control={form.control}
-                  name="siswaKelas7Laki"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Laki-laki
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="siswaKelas7Perempuan"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Perempuan
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormItem className="space-y-2">
-                  <FormLabel className="text-sm font-medium">Total</FormLabel>
-                  <div className="h-10 flex items-center justify-center bg-muted rounded-md border">
-                    <span className="text-base font-semibold">
-                      {totalKelas7}
-                    </span>
-                  </div>
-                </FormItem>
-              </div>
-            </div>
+            <ClassSection
+              title="Kelas VII"
+              lakiFieldName="siswaKelas7Laki"
+              perempuanFieldName="siswaKelas7Perempuan"
+            />
 
             {/* Kelas VIII */}
-            <div className="space-y-3">
-              <h4 className="text-base font-medium text-foreground border-l-4 border-primary pl-3">
-                Kelas VIII
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  control={form.control}
-                  name="siswaKelas8Laki"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Laki-laki
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="siswaKelas8Perempuan"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Perempuan
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormItem className="space-y-2">
-                  <FormLabel className="text-sm font-medium">Total</FormLabel>
-                  <div className="h-10 flex items-center justify-center bg-muted rounded-md border">
-                    <span className="text-base font-semibold">
-                      {totalKelas8}
-                    </span>
-                  </div>
-                </FormItem>
-              </div>
-            </div>
+            <ClassSection
+              title="Kelas VIII"
+              lakiFieldName="siswaKelas8Laki"
+              perempuanFieldName="siswaKelas8Perempuan"
+            />
 
             {/* Kelas IX */}
-            <div className="space-y-3">
-              <h4 className="text-base font-medium text-foreground border-l-4 border-primary pl-3">
-                Kelas IX
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  control={form.control}
-                  name="siswaKelas9Laki"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Laki-laki
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="siswaKelas9Perempuan"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Perempuan
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormItem className="space-y-2">
-                  <FormLabel className="text-sm font-medium">Total</FormLabel>
-                  <div className="h-10 flex items-center justify-center bg-muted rounded-md border">
-                    <span className="text-base font-semibold">
-                      {totalKelas9}
-                    </span>
-                  </div>
-                </FormItem>
-              </div>
-            </div>
-
-            {/* Total Seluruh Siswa */}
-            <div className="space-y-4 bg-primary/5 p-4 rounded-lg border border-primary/20 mt-5">
-              <h4 className="text-base font-medium text-foreground">
-                Total Seluruh Siswa
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <div className="text-sm font-medium text-primary">
-                    Total Laki-laki
-                  </div>
-                  <div className="h-12 flex items-center justify-center bg-primary/10 rounded-md border border-primary/20">
-                    <span className="text-xl font-bold text-primary">
-                      {totalLaki}
-                    </span>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-sm font-medium text-primary">
-                    Total Perempuan
-                  </div>
-                  <div className="h-12 flex items-center justify-center bg-primary/10 rounded-md border border-primary/20">
-                    <span className="text-xl font-bold text-primary">
-                      {totalPerempuan}
-                    </span>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-sm font-medium text-primary">
-                    Total Keseluruhan
-                  </div>
-                  <div className="h-12 flex items-center justify-center bg-primary/5 rounded-md border-2 border-primary/30">
-                    <span className="text-2xl font-bold text-primary">
-                      {totalSiswa}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <ClassSection
+              title="Kelas IX"
+              lakiFieldName="siswaKelas9Laki"
+              perempuanFieldName="siswaKelas9Perempuan"
+            />
           </div>
-
           <div className="flex justify-between pt-6">
             <Button
               type="button"

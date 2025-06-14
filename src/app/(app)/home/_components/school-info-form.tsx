@@ -25,13 +25,13 @@ import { toast } from 'sonner';
 import {
   step1Schema,
   Step1Data,
-  kecamatanOptions,
   ExistingSchoolData,
 } from '../_schema/school-info.schema';
 import {
   getSchoolInfoAction,
   updateSchoolInfoAction,
 } from '../_actions/school-info.action';
+import { KECAMATAN_LIST } from '@/constants/kecamatan';
 
 interface SchoolInfoFormProps {
   onSubmit: (data: Step1Data) => void;
@@ -331,9 +331,9 @@ export function SchoolInfoForm({ onSubmit }: SchoolInfoFormProps) {
                       >
                         <SelectValue placeholder="Pilih kecamatan" />
                       </SelectTrigger>
-                    </FormControl>
+                    </FormControl>{' '}
                     <SelectContent>
-                      {kecamatanOptions.map((kecamatan) => (
+                      {KECAMATAN_LIST.map((kecamatan) => (
                         <SelectItem key={kecamatan} value={kecamatan}>
                           {kecamatan}
                         </SelectItem>

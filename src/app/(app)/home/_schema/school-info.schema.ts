@@ -22,20 +22,5 @@ export const existingSchoolDataSchema = z.object({
   kecamatan: z.string(),
 });
 
-export const kecamatanOptions = [
-  'Gomo',
-  'Hilimbowo',
-  'Susua',
-  'Toma',
-  'Umbunasi',
-  'Fanayama',
-  'Mazino',
-  'Afulu',
-  'Lolofitu Moi',
-  'Simuk',
-  'Aramo',
-  'Bölöwaliwa',
-];
-
 export type Step1Data = z.infer<typeof step1Schema>;
 export type ExistingSchoolData = z.infer<typeof existingSchoolDataSchema>;

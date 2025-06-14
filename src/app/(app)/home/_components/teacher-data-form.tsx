@@ -12,7 +12,8 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+
+import { Loader2, CheckCircle2, AlertCircle, Users, User } from 'lucide-react';
 import { toast } from 'sonner';
 import { step2Schema, Step2Data } from '../_schema/teacher-data.schema';
 import {
@@ -95,17 +96,91 @@ export function TeacherDataForm({ onSubmit, onBack }: TeacherDataFormProps) {
     }
   }
 
-  // Calculate totals
-  const totalPNS =
-    (Number(form.watch('guruPnsLaki')) || 0) +
-    (Number(form.watch('guruPnsPerempuan')) || 0);
-  const totalPPPK =
-    (Number(form.watch('guruPpppLaki')) || 0) +
-    (Number(form.watch('guruPpppPerempuan')) || 0);
-  const totalGTT =
-    (Number(form.watch('guruGttLaki')) || 0) +
-    (Number(form.watch('guruGttPerempuan')) || 0);
-  const grandTotal = totalPNS + totalPPPK + totalGTT;
+  // Calculate completion status
+  const getCompletionStatus = () => {
+    const fields = [
+      'guruPnsLaki',
+      'guruPnsPerempuan',
+      'guruPpppLaki',
+      'guruPpppPerempuan',
+      'guruGttLaki',
+      'guruGttPerempuan',
+    ] as const;
+    const completed = fields.filter((field) =>
+      Boolean(form.getValues(field) && Number(form.getValues(field)) > 0),
+    ).length;
+    return { completed, total: fields.length };
+  };
+  const completionStatus = getCompletionStatus();
+  const completionPercentage = Math.round(
+    (completionStatus.completed / completionStatus.total) * 100,
+  );
+
+  // Reusable teacher category component
+  const TeacherCategorySection = ({
+    title,
+    lakiFieldName,
+    perempuanFieldName,
+    icon: Icon,
+  }: {
+    title: string;
+    lakiFieldName: keyof Step2Data;
+    perempuanFieldName: keyof Step2Data;
+    icon: React.ComponentType<{ className?: string }>;
+  }) => (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3 pb-2 border-b border-slate-200">
+        <Icon className="w-5 h-5 text-primary" />
+        <h4 className="text-lg font-semibold text-foreground">{title}</h4>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormField
+          control={form.control}
+          name={lakiFieldName}
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <FormLabel className="text-sm font-medium text-foreground">
+                Laki-laki
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  {...field}
+                  disabled={isSubmitting}
+                  className="text-center"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name={perempuanFieldName}
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <FormLabel className="text-sm font-medium text-foreground">
+                Perempuan
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  {...field}
+                  disabled={isSubmitting}
+                  className="text-center"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+    </div>
+  );
 
   if (isLoading) {
     return (
@@ -131,204 +206,57 @@ export function TeacherDataForm({ onSubmit, onBack }: TeacherDataFormProps) {
 
   return (
     <div className="space-y-6">
-      {/* Status indicator */}
+      {/* Form Header */}
+      <div className="text-center">
+        <h3 className="text-xl font-bold text-foreground mb-2">
+          Data Tenaga Pendidik
+        </h3>
+        <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
+          Masukkan jumlah guru berdasarkan status kepegawaian dan jenis kelamin
+          di sekolah Anda
+        </p>
+      </div>
+
+      {/* Progress indicator */}
       {hasExistingData && (
         <Alert className="border-green-200 bg-green-50">
           <CheckCircle2 className="h-4 w-4 text-green-600" />
           <AlertDescription className="text-green-800">
-            Data guru sudah tersimpan sebelumnya. Anda dapat memperbarui data
-            atau melanjutkan ke tahap selanjutnya.
+            Data guru sudah tersimpan sebelumnya. Kelengkapan data:{' '}
+            {completionStatus.completed}/{completionStatus.total} field (
+            {completionPercentage}%)
           </AlertDescription>
         </Alert>
       )}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="space-y-6">
+          {' '}
+          <div className="space-y-5">
             {/* Guru PNS */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground">
-                Guru PNS
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  control={form.control}
-                  name="guruPnsLaki"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Laki-laki
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="guruPnsPerempuan"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Perempuan
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormItem className="space-y-2">
-                  <FormLabel className="text-sm font-medium">Total</FormLabel>
-                  <div className="h-10 flex items-center justify-center bg-muted rounded-md border">
-                    <span className="text-base font-semibold">{totalPNS}</span>
-                  </div>
-                </FormItem>
-              </div>
-            </div>
+            <TeacherCategorySection
+              title="Guru PNS"
+              lakiFieldName="guruPnsLaki"
+              perempuanFieldName="guruPnsPerempuan"
+              icon={Users}
+            />
 
             {/* Guru PPPK */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground">
-                Guru PPPK
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  control={form.control}
-                  name="guruPpppLaki"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Laki-laki
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="guruPpppPerempuan"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Perempuan
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormItem className="space-y-2">
-                  <FormLabel className="text-sm font-medium">Total</FormLabel>
-                  <div className="h-10 flex items-center justify-center bg-muted rounded-md border">
-                    <span className="text-base font-semibold">{totalPPPK}</span>
-                  </div>
-                </FormItem>
-              </div>
-            </div>
+            <TeacherCategorySection
+              title="Guru PPPK"
+              lakiFieldName="guruPpppLaki"
+              perempuanFieldName="guruPpppPerempuan"
+              icon={Users}
+            />
 
             {/* Guru GTT/Honorer */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-foreground">
-                Guru GTT/Honorer
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  control={form.control}
-                  name="guruGttLaki"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Laki-laki
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="guruGttPerempuan"
-                  render={({ field }) => (
-                    <FormItem className="space-y-2">
-                      <FormLabel className="text-sm font-medium">
-                        Perempuan
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          {...field}
-                          disabled={isSubmitting}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormItem className="space-y-2">
-                  <FormLabel className="text-sm font-medium">Total</FormLabel>
-                  <div className="h-10 flex items-center justify-center bg-muted rounded-md border">
-                    <span className="text-base font-semibold">{totalGTT}</span>
-                  </div>
-                </FormItem>
-              </div>
-            </div>
-
-            {/* Grand Total */}
-            <div className="border-t pt-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-foreground">
-                  Total Keseluruhan Guru
-                </h3>
-                <div className="text-2xl font-bold text-primary">
-                  {grandTotal} Orang
-                </div>
-              </div>
-            </div>
+            <TeacherCategorySection
+              title="Guru GTT/Honorer"
+              lakiFieldName="guruGttLaki"
+              perempuanFieldName="guruGttPerempuan"
+              icon={User}
+            />
           </div>
-
           <div className="flex justify-between pt-6">
             <Button
               type="button"
