@@ -115,16 +115,13 @@ export async function getDataCompletionStatusAction() {
         p.jumlah_kondisi_baik > 0 ||
         p.jumlah_kondisi_rusak > 0,
     );
-    const step5Complete = prasaranaData.length > 0 && hasPrasaranaData;
-
-    // Check Step 6: Priority Needs Data Completion
+    const step5Complete = prasaranaData.length > 0 && hasPrasaranaData; // Check Step 6: Priority Needs Data Completion
     const step6Complete =
       await KebutuhanPrioritasService.hasKebutuhanPrioritasData(
         sekolah.id,
         tahunAjaran,
-      );
-
-    const step7Complete = false; // Lampiran
+      ); // Check Step 7: Lampiran Data Completion (optional, always true)
+    const step7Complete = true; // Lampiran is optional, so it's always considered complete
 
     return {
       success: true,

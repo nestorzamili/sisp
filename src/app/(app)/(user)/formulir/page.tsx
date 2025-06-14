@@ -21,8 +21,8 @@ import {
   Step4Data,
   Step5Data,
   Step6Data,
-  Step7Data,
 } from '@/types/user-home.types';
+import { Step7Data } from './_schema/attachments.schema';
 import { getDataCompletionStatusAction } from './_actions/data-completion.action';
 import {
   saveFacilityDataAction,
@@ -30,18 +30,16 @@ import {
 } from './_actions/facility-data.action';
 import { saveInfrastructureDataAction } from './_actions/infrastructure-data.action';
 import { savePriorityNeedsDataAction } from './_actions/priority-needs-data.action';
+import { saveLampiranDataAction } from './_actions/lampiran-data.action';
+import { updateSchoolInfoAction } from './_actions/school-info.action';
+import { saveTeacherDataAction } from './_actions/teacher-data.action';
+import { saveStudentDataAction } from './_actions/student-data.action';
 
 export default function FormulirPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
-  const [step2Data, setStep2Data] = useState<Step2Data | null>(null);
-  const [step3Data, setStep3Data] = useState<Step3Data | null>(null);
-  const [step4Data, setStep4Data] = useState<Step4Data | null>(null);
   const [step4InitialData, setStep4InitialData] =
     useState<Partial<Step4Data> | null>(null);
-  const [step5Data, setStep5Data] = useState<Step5Data | null>(null);
-  const [step6Data, setStep6Data] = useState<Step6Data | null>(null);
   const [dataCompletionStatus, setDataCompletionStatus] = useState({
     step1: false,
     step2: false,
@@ -125,32 +123,60 @@ export default function FormulirPage() {
       setCompletedSteps(completed);
     }
   };
-
   const onStep1Submit = async (data: Step1Data) => {
-    setStep1Data(data);
-    setCompletedSteps((prev) => [...prev.filter((s) => s !== 1), 1]);
-    await refreshCompletionStatus();
-    setCurrentStep(2);
+    try {
+      const result = await updateSchoolInfoAction(data);
+      if (result.success) {
+        setCompletedSteps((prev) => [...prev.filter((s) => s !== 1), 1]);
+        await refreshCompletionStatus();
+        toast.success('Informasi sekolah berhasil disimpan');
+        setCurrentStep(2);
+      } else {
+        toast.error(result.error || 'Gagal menyimpan informasi sekolah');
+      }
+    } catch (error) {
+      console.error('Unexpected error saving school info:', error);
+      toast.error('Terjadi kesalahan saat menyimpan data');
+    }
   };
 
   const onStep2Submit = async (data: Step2Data) => {
-    setStep2Data(data);
-    setCompletedSteps((prev) => [...prev.filter((s) => s !== 2), 2]);
-    await refreshCompletionStatus();
-    setCurrentStep(3);
+    try {
+      const result = await saveTeacherDataAction(data);
+      if (result.success) {
+        setCompletedSteps((prev) => [...prev.filter((s) => s !== 2), 2]);
+        await refreshCompletionStatus();
+        toast.success('Data guru berhasil disimpan');
+        setCurrentStep(3);
+      } else {
+        toast.error(result.error || 'Gagal menyimpan data guru');
+      }
+    } catch (error) {
+      console.error('Unexpected error saving teacher data:', error);
+      toast.error('Terjadi kesalahan saat menyimpan data');
+    }
   };
 
   const onStep3Submit = async (data: Step3Data) => {
-    setStep3Data(data);
-    setCompletedSteps((prev) => [...prev.filter((s) => s !== 3), 3]);
-    await refreshCompletionStatus();
-    setCurrentStep(4);
+    try {
+      const result = await saveStudentDataAction(data);
+      if (result.success) {
+        setCompletedSteps((prev) => [...prev.filter((s) => s !== 3), 3]);
+        await refreshCompletionStatus();
+        toast.success('Data siswa berhasil disimpan');
+        setCurrentStep(4);
+      } else {
+        toast.error(result.error || 'Gagal menyimpan data siswa');
+      }
+    } catch (error) {
+      console.error('Unexpected error saving student data:', error);
+      toast.error('Terjadi kesalahan saat menyimpan data');
+    }
   };
   const onStep4Submit = async (data: Step4Data) => {
     try {
       const result = await saveFacilityDataAction(data);
       if (result.success) {
-        setStep4Data(data);
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 4), 4]);
         await refreshCompletionStatus();
         toast.success('Data sarana berhasil disimpan');
@@ -167,7 +193,6 @@ export default function FormulirPage() {
     try {
       const result = await saveInfrastructureDataAction(data);
       if (result.success) {
-        setStep5Data(data);
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 5), 5]);
         await refreshCompletionStatus();
         toast.success('Data prasarana berhasil disimpan');
@@ -184,7 +209,6 @@ export default function FormulirPage() {
     try {
       const result = await savePriorityNeedsDataAction(data);
       if (result.success) {
-        setStep6Data(data);
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 6), 6]);
         await refreshCompletionStatus();
         toast.success('Data kebutuhan prioritas berhasil disimpan');
@@ -197,19 +221,21 @@ export default function FormulirPage() {
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
-
   const onStep7Submit = async (data: Step7Data) => {
-    setCompletedSteps((prev) => [...prev.filter((s) => s !== 7), 7]);
-    await refreshCompletionStatus();
-    console.log('All Form Data:');
-    console.log('Step 1 Data:', step1Data);
-    console.log('Step 2 Data:', step2Data);
-    console.log('Step 3 Data:', step3Data);
-    console.log('Step 4 Data:', step4Data);
-    console.log('Step 5 Data:', step5Data);
-    console.log('Step 6 Data:', step6Data);
-    console.log('Step 7 Data:', data);
-    // TODO: Submit to backend
+    try {
+      const result = await saveLampiranDataAction(data);
+      if (result.success) {
+        setCompletedSteps((prev) => [...prev.filter((s) => s !== 7), 7]);
+        await refreshCompletionStatus();
+        toast.success('Data lampiran berhasil disimpan');
+        setCurrentStep(8); // Move to success page
+      } else {
+        toast.error(result.error || 'Gagal menyimpan data lampiran');
+      }
+    } catch (error) {
+      console.error('Unexpected error saving lampiran data:', error);
+      toast.error('Terjadi kesalahan saat menyimpan data');
+    }
   };
 
   const handleStepClick = (stepNumber: number) => {
@@ -289,17 +315,14 @@ export default function FormulirPage() {
                 fasilitas pendidikan.
               </p>
               <div className="flex justify-center gap-4">
+                {' '}
                 <Button
                   variant="outline"
                   onClick={() => {
                     setCurrentStep(1);
                     setCompletedSteps([]);
-                    setStep1Data(null);
-                    setStep2Data(null);
-                    setStep3Data(null);
-                    setStep4Data(null);
-                    setStep5Data(null);
-                    setStep6Data(null);
+                    // Reset step 4 initial data
+                    setStep4InitialData(null);
                   }}
                 >
                   Input Data Baru

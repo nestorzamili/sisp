@@ -182,6 +182,7 @@ model Lampiran {
   sekolahId    String
   nama_dokumen String
   url          String
+  keterangan   String
 
   sekolah Sekolah @relation(fields: [sekolahId], references: [id], onDelete: Cascade)
 

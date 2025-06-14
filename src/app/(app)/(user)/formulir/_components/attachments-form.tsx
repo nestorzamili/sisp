@@ -10,14 +10,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   Upload,
   X,
@@ -26,12 +20,11 @@ import {
   FileImage,
   FileIcon,
   AlertCircle,
+  Loader2,
 } from 'lucide-react';
-import {
-  step7Schema,
-  Step7Data,
-  jenisLampiranOptions,
-} from '../_schema/attachments.schema';
+import { toast } from 'sonner';
+import { step7Schema, Step7Data } from '../_schema/attachments.schema';
+import { UploadResponse } from '@/types/lampiran';
 
 interface AttachmentsFormProps {
   onSubmit: (data: Step7Data) => void;
@@ -39,9 +32,7 @@ interface AttachmentsFormProps {
 }
 
 export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
-  const [uploadedFiles, setUploadedFiles] = useState<{ [key: number]: File }>(
-    {},
-  );
+  const [uploading, setUploading] = useState<{ [key: number]: boolean }>({});
 
   const form = useForm<Step7Data>({
     resolver: zodResolver(step7Schema),
@@ -55,42 +46,75 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
     name: 'lampiran',
   });
 
-  const handleFileUpload = (index: number, file: File) => {
-    setUploadedFiles((prev) => ({ ...prev, [index]: file }));
-    form.setValue(`lampiran.${index}.namaFile`, file.name);
-  };
+  const handleFileUpload = async (index: number, file: File) => {
+    if (!file) return; // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Ukuran file maksimal 5MB');
+      return;
+    }
 
-  const removeFile = (index: number) => {
-    setUploadedFiles((prev) => {
-      const newFiles = { ...prev };
-      delete newFiles[index];
-      return newFiles;
-    });
-    form.setValue(`lampiran.${index}.namaFile`, '');
+    // Validate file type - only images and PDFs
+    const allowedTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/webp',
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      toast.error(
+        'Format file tidak didukung. Gunakan PDF, JPG, JPEG, PNG, atau WebP',
+      );
+      return;
+    }
+
+    setUploading((prev) => ({ ...prev, [index]: true }));
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', 'sisp/lampiran');
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result: UploadResponse = await response.json();
+
+      if (result.success && result.url) {
+        // Update form with the uploaded file URL and name
+        form.setValue(`lampiran.${index}.url`, result.url);
+        form.setValue(`lampiran.${index}.nama_dokumen`, file.name);
+        toast.success('File berhasil diupload');
+      } else {
+        toast.error(result.error || 'Gagal mengupload file');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error('Terjadi kesalahan saat mengupload file');
+    } finally {
+      setUploading((prev) => ({ ...prev, [index]: false }));
+    }
   };
 
   const addLampiran = () => {
     append({
-      jenisLampiran: '',
-      namaFile: '',
+      nama_dokumen: '',
+      url: '',
       keterangan: '',
     });
   };
 
   const getFileIcon = (fileName: string) => {
     const extension = fileName.split('.').pop()?.toLowerCase();
-    if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(extension || '')) {
+    if (
+      ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(extension || '')
+    ) {
       return FileImage;
     }
     return FileIcon;
-  };
-
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   return (
@@ -115,10 +139,10 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
               <div>
                 <h4 className="font-medium text-blue-900 mb-2">
                   Panduan Upload Dokumen
-                </h4>
+                </h4>{' '}
                 <ul className="text-sm text-blue-800 space-y-1">
                   <li>
-                    • Format file yang didukung: PDF, DOC, DOCX, JPG, JPEG, PNG
+                    • Format file yang didukung: PDF, JPG, JPEG, PNG, WebP
                     (Maksimal 5MB per file)
                   </li>
                   <li>
@@ -162,51 +186,34 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
                     <h4 className="font-medium text-foreground">
                       Lampiran #{index + 1}
                     </h4>
-                    {fields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          remove(index);
-                          removeFile(index);
-                        }}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => remove(index)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    {/* Document Name Field */}
                     <FormField
                       control={form.control}
-                      name={`lampiran.${index}.jenisLampiran`}
+                      name={`lampiran.${index}.nama_dokumen`}
                       render={({ field }) => (
                         <FormItem className="space-y-2">
                           <FormLabel className="text-sm font-medium">
-                            Jenis Lampiran
+                            Nama Dokumen
                           </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Pilih jenis lampiran" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {jenisLampiranOptions.map((option) => (
-                                <SelectItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <FormControl>
+                            <Input
+                              placeholder="Masukkan nama dokumen..."
+                              {...field}
+                              readOnly={uploading[index]}
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -217,73 +224,91 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
                       <FormLabel className="text-sm font-medium">
                         Upload File
                       </FormLabel>
-                      {uploadedFiles[index] ? (
-                        <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-md">
-                          <div className="flex items-center gap-2 flex-1">
-                            {React.createElement(
-                              getFileIcon(uploadedFiles[index].name),
-                              {
-                                className: 'w-5 h-5 text-green-600',
-                              },
-                            )}
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-green-900 truncate">
-                                {uploadedFiles[index].name}
-                              </p>
-                              <p className="text-xs text-green-600">
-                                {formatFileSize(uploadedFiles[index].size)}
-                              </p>
+                      <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
+                        {form.watch(`lampiran.${index}.url`) ? (
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              {React.createElement(
+                                getFileIcon(
+                                  form.watch(
+                                    `lampiran.${index}.nama_dokumen`,
+                                  ) || '',
+                                ),
+                                {
+                                  className: 'w-5 h-5 text-primary',
+                                },
+                              )}
+                              <span className="text-sm text-foreground truncate">
+                                {form.watch(`lampiran.${index}.nama_dokumen`)}
+                              </span>
                             </div>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                form.setValue(`lampiran.${index}.url`, '');
+                                form.setValue(
+                                  `lampiran.${index}.nama_dokumen`,
+                                  '',
+                                );
+                              }}
+                              className="text-red-600 hover:text-red-700"
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
                           </div>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeFile(index)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="border-2 border-dashed border-border rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
-                          <input
-                            type="file"
-                            id={`file-${index}`}
-                            className="hidden"
-                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) {
-                                handleFileUpload(index, file);
-                              }
-                            }}
-                          />
-                          <label
-                            htmlFor={`file-${index}`}
-                            className="cursor-pointer flex flex-col items-center gap-2"
-                          >
-                            <Upload className="w-8 h-8 text-muted-foreground" />
-                            <div className="text-sm text-muted-foreground">
-                              <span className="font-medium text-primary">
-                                Klik untuk upload
-                              </span>{' '}
-                              atau drag file ke sini
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              PDF, DOC, DOCX, JPG, PNG (Max. 5MB)
-                            </div>
-                          </label>
-                        </div>
-                      )}
+                        ) : (
+                          <div>
+                            {' '}
+                            <input
+                              type="file"
+                              id={`file-${index}`}
+                              className="hidden"
+                              accept=".pdf,.jpg,.jpeg,.png,.webp"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  handleFileUpload(index, file);
+                                }
+                              }}
+                              disabled={uploading[index]}
+                            />
+                            <label
+                              htmlFor={`file-${index}`}
+                              className={`cursor-pointer ${uploading[index] ? 'cursor-not-allowed' : ''}`}
+                            >
+                              {uploading[index] ? (
+                                <div className="flex items-center justify-center gap-2">
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  <span className="text-sm text-muted-foreground">
+                                    Mengupload...
+                                  </span>
+                                </div>
+                              ) : (
+                                <div className="flex flex-col items-center gap-2">
+                                  <Upload className="w-6 h-6 text-muted-foreground" />
+                                  <span className="text-sm text-muted-foreground">
+                                    Klik untuk upload file
+                                  </span>{' '}
+                                  <span className="text-xs text-muted-foreground">
+                                    PDF, JPG, JPEG, PNG, WebP (max 5MB)
+                                  </span>
+                                </div>
+                              )}
+                            </label>
+                          </div>
+                        )}
+                      </div>
                       <FormField
                         control={form.control}
-                        name={`lampiran.${index}.namaFile`}
+                        name={`lampiran.${index}.url`}
                         render={() => <FormMessage />}
                       />
                     </div>
                   </div>
 
+                  {/* Description Field */}
                   <FormField
                     control={form.control}
                     name={`lampiran.${index}.keterangan`}
@@ -342,7 +367,11 @@ export function AttachmentsForm({ onSubmit, onBack }: AttachmentsFormProps) {
               <p className="text-sm text-muted-foreground">
                 File terupload:{' '}
                 <span className="font-medium text-primary">
-                  {Object.keys(uploadedFiles).length}
+                  {
+                    fields.filter((_, index) =>
+                      form.watch(`lampiran.${index}.url`),
+                    ).length
+                  }
                 </span>{' '}
                 file
               </p>
