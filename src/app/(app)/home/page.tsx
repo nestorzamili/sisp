@@ -30,6 +30,7 @@ import {
   getFacilityDataAction,
 } from './_actions/facility-data.action';
 import { saveInfrastructureDataAction } from './_actions/infrastructure-data.action';
+import { savePriorityNeedsDataAction } from './_actions/priority-needs-data.action';
 
 export default function HomePage() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -180,12 +181,22 @@ export default function HomePage() {
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
-
   const onStep6Submit = async (data: Step6Data) => {
-    setStep6Data(data);
-    setCompletedSteps((prev) => [...prev.filter((s) => s !== 6), 6]);
-    await refreshCompletionStatus();
-    setCurrentStep(7);
+    try {
+      const result = await savePriorityNeedsDataAction(data);
+      if (result.success) {
+        setStep6Data(data);
+        setCompletedSteps((prev) => [...prev.filter((s) => s !== 6), 6]);
+        await refreshCompletionStatus();
+        toast.success('Data kebutuhan prioritas berhasil disimpan');
+        setCurrentStep(7);
+      } else {
+        toast.error(result.error || 'Gagal menyimpan data kebutuhan prioritas');
+      }
+    } catch (error) {
+      console.error('Unexpected error saving priority needs data:', error);
+      toast.error('Terjadi kesalahan saat menyimpan data');
+    }
   };
 
   const onStep7Submit = async (data: Step7Data) => {

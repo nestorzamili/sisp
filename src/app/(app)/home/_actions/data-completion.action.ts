@@ -6,6 +6,7 @@ import { GuruService } from '@/lib/services/guru.service';
 import { RombonganBelajarService } from '@/lib/services/rombongan-belajar.service';
 import { SaranaService } from '@/lib/services/sarana.service';
 import { PrasaranaService } from '@/lib/services/prasarana.service';
+import { KebutuhanPrioritasService } from '@/lib/services/kebutuhan-prioritas.service';
 import { JenisRuangan } from '@/types/sarana';
 import { headers } from 'next/headers';
 
@@ -114,9 +115,15 @@ export async function getDataCompletionStatusAction() {
         p.jumlah_kondisi_baik > 0 ||
         p.jumlah_kondisi_rusak > 0,
     );
-
     const step5Complete = prasaranaData.length > 0 && hasPrasaranaData;
-    const step6Complete = false; // Kebutuhan Prioritas
+
+    // Check Step 6: Priority Needs Data Completion
+    const step6Complete =
+      await KebutuhanPrioritasService.hasKebutuhanPrioritasData(
+        sekolah.id,
+        tahunAjaran,
+      );
+
     const step7Complete = false; // Lampiran
 
     return {
