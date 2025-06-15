@@ -87,21 +87,30 @@ export function ReviewDetailCard({
             <span className="flex items-center gap-1">
               <School className="h-4 w-4" />
               NPSN: {data.npsn}
-            </span>
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-              Menunggu Review
+            </span>{' '}
+            <Badge
+              variant="secondary"
+              className={
+                data.status === 'PENDING'
+                  ? 'bg-blue-100 text-blue-800'
+                  : 'bg-red-100 text-red-800'
+              }
+            >
+              {data.status === 'PENDING' ? 'Menunggu Review' : 'Ditolak'}
             </Badge>
           </div>
-        </div>
+        </div>{' '}
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={onRequestRevision}
-            disabled={isLoading}
-            className="text-orange-600 border-orange-600 hover:bg-orange-50"
-          >
-            Minta Revisi
-          </Button>
+          {data.status === 'PENDING' && (
+            <Button
+              variant="outline"
+              onClick={onRequestRevision}
+              disabled={isLoading}
+              className="text-orange-600 border-orange-600 hover:bg-orange-50"
+            >
+              Minta Revisi
+            </Button>
+          )}
           <Button
             onClick={onApprove}
             disabled={isLoading}

@@ -176,13 +176,26 @@ export const PhoneCell = ({
   </div>
 );
 
-export const StatusCell = ({ isLoading }: { isLoading: boolean }) => (
+export const StatusCell = ({
+  isLoading,
+  status,
+}: {
+  isLoading: boolean;
+  status?: string;
+}) => (
   <div className="min-w-[150px]">
     {isLoading ? (
       <SkeletonBadge />
     ) : (
-      <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-        Menunggu Review
+      <Badge
+        variant="secondary"
+        className={
+          status === 'PENDING'
+            ? 'bg-blue-100 text-blue-800'
+            : 'bg-red-100 text-red-800'
+        }
+      >
+        {status === 'PENDING' ? 'Menunggu Review' : 'Ditolak'}
       </Badge>
     )}
   </div>
@@ -246,13 +259,15 @@ export const ActionsCell = ({
             <Check className="mr-2 h-4 w-4" />
             Setujui
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => onRequestRevision(review)}
-            className="cursor-pointer text-orange-600"
-          >
-            <Edit className="mr-2 h-4 w-4" />
-            Minta Revisi
-          </DropdownMenuItem>
+          {review.status === 'PENDING' && (
+            <DropdownMenuItem
+              onClick={() => onRequestRevision(review)}
+              className="cursor-pointer text-orange-600"
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              Minta Revisi
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     )}
@@ -324,7 +339,9 @@ export const createReviewColumns = ({
   {
     id: 'status',
     header: 'Status',
-    cell: () => <StatusCell isLoading={isLoading} />,
+    cell: ({ row }) => (
+      <StatusCell isLoading={isLoading} status={row.original.status} />
+    ),
     enableSorting: false,
     size: 170,
   },

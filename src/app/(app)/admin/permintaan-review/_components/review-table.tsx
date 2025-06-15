@@ -10,7 +10,7 @@ import { ReviewTableFilters } from './review-table-filters';
 import { ReviewApprovalDialog } from './review-approval-dialog';
 import { ReviewRevisionDialog } from './review-revision-dialog';
 import {
-  getAllPendingReviews,
+  getAllRequestReviews,
   approveReview,
   requestRevision,
 } from '../action';
@@ -78,11 +78,10 @@ export function ReviewTable() {
     () => createSkeletonData(pageSize),
     [pageSize, createSkeletonData],
   );
-
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await getAllPendingReviews({
+      const response = await getAllRequestReviews({
         page: currentPage + 1,
         limit: pageSize,
         search,

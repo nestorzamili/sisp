@@ -7,9 +7,9 @@ import { ReviewService } from '@/lib/services/review.service';
 import { SekolahService } from '@/lib/services/sekolah.service';
 
 /**
- * Get all pending reviews with pagination and filtering
+ * Get all request reviews with pagination and filtering
  */
-export async function getAllPendingReviews(options?: {
+export async function getAllRequestReviews(options?: {
   page?: number;
   limit?: number;
   search?: string;
@@ -22,7 +22,7 @@ export async function getAllPendingReviews(options?: {
     const search = options?.search ?? '';
     const sortBy = options?.sortBy ?? 'createdAt';
     const sortOrder = options?.sortOrder ?? 'desc';
-    const result = await ReviewService.getPendingReviews({
+    const result = await ReviewService.getRequestReviews({
       page,
       pageSize: limit,
       search: search.trim(),
@@ -36,7 +36,6 @@ export async function getAllPendingReviews(options?: {
         totalRows: result.data.pagination.totalCount,
       };
     }
-
     return {
       success: false,
       error: result.error || 'Gagal mengambil data permintaan review',
@@ -44,7 +43,7 @@ export async function getAllPendingReviews(options?: {
       totalRows: 0,
     };
   } catch (error) {
-    console.error('Error fetching pending reviews:', error);
+    console.error('Error fetching request reviews:', error);
     return {
       success: false,
       error: 'Gagal mengambil data permintaan review',
@@ -174,13 +173,12 @@ export async function getReviewDetail(sekolahId: string) {
     }
 
     const result = await SekolahService.getSekolahById(sekolahId.trim(), true);
-
     if (result.success && result.data) {
-      // Check if the sekolah is in pending status for review
-      if (result.data.status !== 'PENDING') {
+      // Check if the sekolah is in pending or rejected status for review
+      if (!['PENDING', 'REJECTED'].includes(result.data.status)) {
         return {
           success: false,
-          error: 'Data sekolah tidak dalam status pending review',
+          error: 'Data sekolah tidak dalam status permintaan review',
         };
       }
 

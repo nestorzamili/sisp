@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import { ReviewStatus } from '@prisma/client';
 import {
   ReviewData,
   ReviewServiceResponse,
@@ -10,9 +11,9 @@ import {
 
 export class ReviewService {
   /**
-   * Get paginated pending reviews (sekolah with PENDING status)
+   * Get paginated request reviews (sekolah with PENDING or REJECTED status)
    */
-  static async getPendingReviews({
+  static async getRequestReviews({
     page = 1,
     pageSize = 10,
     sortField = 'createdAt',
@@ -22,9 +23,9 @@ export class ReviewService {
     ReviewServiceResponse<ReviewPaginationResult>
   > {
     try {
-      // Build where clause for pending reviews
+      // Build where clause for request reviews
       const where = {
-        status: 'PENDING' as const,
+        status: { in: [ReviewStatus.PENDING, ReviewStatus.REJECTED] },
         ...(search && {
           OR: [
             {
@@ -109,7 +110,7 @@ export class ReviewService {
         },
       };
     } catch (error) {
-      console.error('Error getting pending reviews:', error);
+      console.error('Error getting request reviews:', error);
       return {
         success: false,
         error: 'Gagal mengambil data review yang tertunda',
@@ -125,7 +126,7 @@ export class ReviewService {
     notes?: string,
   ): Promise<ReviewServiceResponse<void>> {
     try {
-      // Check if sekolah exists and is pending
+      // Check if sekolah exists and is pending or rejected
       const sekolah = await prisma.sekolah.findUnique({
         where: { id: sekolahId },
         include: {
@@ -139,19 +140,19 @@ export class ReviewService {
           error: 'Sekolah tidak ditemukan',
         };
       }
-
-      if (sekolah.status !== 'PENDING') {
+      if (
+        sekolah.status !== ReviewStatus.PENDING &&
+        sekolah.status !== ReviewStatus.REJECTED
+      ) {
         return {
           success: false,
-          error: 'Sekolah tidak dalam status pending review',
+          error: 'Sekolah tidak dalam status pending atau rejected review',
         };
-      }
-
-      // Update sekolah status to approved
+      } // Update sekolah status to approved
       await prisma.sekolah.update({
         where: { id: sekolahId },
         data: {
-          status: 'APPROVED',
+          status: ReviewStatus.APPROVED,
           reviewedAt: new Date(),
           reviewNotes: notes,
           reviewedById: reviewedById,
@@ -172,7 +173,6 @@ export class ReviewService {
       };
     }
   }
-
   /**
    * Request revision for a review
    */ static async requestRevision(
@@ -181,7 +181,7 @@ export class ReviewService {
     reviewedById?: string,
   ): Promise<ReviewServiceResponse<void>> {
     try {
-      // Check if sekolah exists and is pending
+      // Check if sekolah exists and is pending (can only request revision for pending status)
       const sekolah = await prisma.sekolah.findUnique({
         where: { id: sekolahId },
         include: {
@@ -195,19 +195,17 @@ export class ReviewService {
           error: 'Sekolah tidak ditemukan',
         };
       }
-
-      if (sekolah.status !== 'PENDING') {
+      if (sekolah.status !== ReviewStatus.PENDING) {
         return {
           success: false,
-          error: 'Sekolah tidak dalam status pending review',
+          error:
+            'Hanya bisa meminta revisi untuk sekolah dengan status pending',
         };
-      }
-
-      // Update sekolah status back to draft with revision notes
+      } // Update sekolah status back to draft with revision notes
       await prisma.sekolah.update({
         where: { id: sekolahId },
         data: {
-          status: 'DRAFT',
+          status: ReviewStatus.DRAFT,
           reviewedAt: new Date(),
           reviewNotes: reason,
           reviewedById: reviewedById,
@@ -286,10 +284,10 @@ export class ReviewService {
   > {
     try {
       const [pending, approved, rejected, draft] = await Promise.all([
-        prisma.sekolah.count({ where: { status: 'PENDING' } }),
-        prisma.sekolah.count({ where: { status: 'APPROVED' } }),
-        prisma.sekolah.count({ where: { status: 'REJECTED' } }),
-        prisma.sekolah.count({ where: { status: 'DRAFT' } }),
+        prisma.sekolah.count({ where: { status: ReviewStatus.PENDING } }),
+        prisma.sekolah.count({ where: { status: ReviewStatus.APPROVED } }),
+        prisma.sekolah.count({ where: { status: ReviewStatus.REJECTED } }),
+        prisma.sekolah.count({ where: { status: ReviewStatus.DRAFT } }),
       ]);
 
       return {
