@@ -2,16 +2,12 @@
 
 import * as React from 'react';
 import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { DataTable } from '@/components/data-table';
-import { SekolahDetailDialog } from './sekolah-detail-dialog';
 import { SekolahTableFilters } from './sekolah-table-filters';
 import { createSekolahColumns } from './sekolah-table-columns';
 import { SekolahWithDetails } from '@/types/sekolah';
-import {
-  getAllSekolahWithCount,
-  approveSekolah,
-  rejectSekolah,
-} from '../action';
+import { getAllSekolahWithCount } from '../action';
 import { toast } from 'sonner';
 
 // Types for better type safety
@@ -24,19 +20,17 @@ interface SortState {
 const DEFAULT_PAGE_SIZE = 10;
 
 export function SekolahTable() {
+  const router = useRouter();
+
   // State management
   const [data, setData] = useState<SekolahWithDetails[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalRows, setTotalRows] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
-
   // Filters
   const [search, setSearch] = useState('');
   const [kecamatanFilter, setKecamatanFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState<
-    'all' | 'approved' | 'pending'
-  >('all');
 
   // Sorting
   const [sortBy, setSortBy] = useState<SortState>({
@@ -45,10 +39,7 @@ export function SekolahTable() {
   });
 
   // UI state
-  const [rowSelection, setRowSelection] = useState({});
-  const [detailDialog, setDetailDialog] = useState(false);
-  const [detailId, setDetailId] = useState<string | null>(null);
-  // Helper function to create skeleton data
+  const [rowSelection, setRowSelection] = useState({}); // Helper function to create skeleton data
   const createSkeletonData = useCallback(
     (count: number): SekolahWithDetails[] => {
       return Array.from({ length: count }, (_, index) => ({
@@ -63,6 +54,10 @@ export function SekolahTable() {
         kecamatan: '',
         phone: '',
         userId: '',
+        status: 'APPROVED',
+        reviewedAt: null,
+        reviewedById: null,
+        reviewNotes: null,
         user: {
           id: '',
           name: '',
@@ -86,7 +81,7 @@ export function SekolahTable() {
         limit: pageSize,
         search: search,
         kecamatan: kecamatanFilter !== 'all' ? kecamatanFilter : undefined,
-        status: statusFilter,
+        status: 'approved', // Always filter for approved schools only
         sortBy: sortBy.id,
         sortOrder: sortBy.desc ? 'desc' : 'asc',
       });
@@ -106,7 +101,7 @@ export function SekolahTable() {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, search, kecamatanFilter, statusFilter, sortBy]); // Debounced search with automatic page reset
+  }, [currentPage, pageSize, search, kecamatanFilter, sortBy]); // Debounced search with automatic page reset
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentPage(0);
@@ -114,11 +109,10 @@ export function SekolahTable() {
     }, 300);
     return () => clearTimeout(timer);
   }, [search, fetchData]);
-
   // Effect for other filters and pagination
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, sortBy, statusFilter, kecamatanFilter, fetchData]);
+  }, [currentPage, pageSize, sortBy, kecamatanFilter, fetchData]);
   // Optimized handlers with useCallback
   const handlePaginationChange = useCallback(
     (newPagination: { pageIndex: number; pageSize: number }) => {
@@ -135,7 +129,6 @@ export function SekolahTable() {
         : { id: 'nama_sekolah', desc: false },
     );
   }, []);
-
   const handleFilterChange = useCallback((type: string, value: string) => {
     setCurrentPage(0); // Reset to first page when filtering
     switch (type) {
@@ -145,77 +138,39 @@ export function SekolahTable() {
       case 'kecamatan':
         setKecamatanFilter(value);
         break;
-      case 'status':
-        setStatusFilter(value as typeof statusFilter);
-        break;
     }
   }, []);
 
   const handleClearFilters = useCallback(() => {
     setSearch('');
     setKecamatanFilter('all');
-    setStatusFilter('all');
     setCurrentPage(0);
-  }, []);
-  // Dialog handlers
-  const handleViewDetails = useCallback((sekolah: SekolahWithDetails) => {
-    if (sekolah?.id && !sekolah.id.startsWith('skeleton-')) {
-      setDetailId(sekolah.id);
-      setDetailDialog(true);
-    }
-  }, []);
-
-  // Action handlers with error handling
-  const handleApproveSekolah = useCallback(
-    async (sekolah: SekolahWithDetails) => {
-      if (sekolah.id.startsWith('skeleton-')) return;
-
-      try {
-        const result = await approveSekolah(sekolah.id);
-        if (result.success) {
-          toast.success(result.message || 'Sekolah berhasil disetujui');
-          fetchData();
-        } else {
-          toast.error(result.error || 'Gagal menyetujui sekolah');
-        }
-      } catch (error) {
-        console.error('Error approving sekolah:', error);
-        toast.error('Terjadi kesalahan saat menyetujui sekolah');
+  }, []); // Dialog handlers
+  const handleViewDetails = useCallback(
+    (sekolah: SekolahWithDetails) => {
+      if (sekolah?.id && !sekolah.id.startsWith('skeleton-')) {
+        router.push(`/admin/sekolah/${sekolah.id}`);
       }
     },
-    [fetchData],
+    [router],
   );
 
-  const handleRejectSekolah = useCallback(
-    async (sekolah: SekolahWithDetails) => {
-      if (sekolah.id.startsWith('skeleton-')) return;
+  // Download handler (placeholder for now)
+  const handleDownloadData = useCallback((sekolah: SekolahWithDetails) => {
+    if (sekolah.id.startsWith('skeleton-')) return;
 
-      try {
-        const result = await rejectSekolah(sekolah.id);
-        if (result.success) {
-          toast.success(result.message || 'Sekolah berhasil ditolak');
-          fetchData();
-        } else {
-          toast.error(result.error || 'Gagal menolak sekolah');
-        }
-      } catch (error) {
-        console.error('Error rejecting sekolah:', error);
-        toast.error('Terjadi kesalahan saat menolak sekolah');
-      }
-    },
-    [fetchData],
-  );
-
+    // TODO: Implement download functionality
+    toast.info('Fitur unduh data akan segera tersedia');
+  }, []);
   // Memoized columns using factory function
   const columns = useMemo(
     () =>
       createSekolahColumns({
         isLoading,
         onViewDetails: handleViewDetails,
-        onApprove: handleApproveSekolah,
-        onReject: handleRejectSekolah,
+        onDownloadData: handleDownloadData,
       }),
-    [isLoading, handleViewDetails, handleApproveSekolah, handleRejectSekolah],
+    [isLoading, handleViewDetails, handleDownloadData],
   );
   return (
     <div className="space-y-4">
@@ -225,8 +180,6 @@ export function SekolahTable() {
         onSearchChange={(value) => handleFilterChange('search', value)}
         selectedKecamatan={kecamatanFilter}
         onKecamatanChange={(value) => handleFilterChange('kecamatan', value)}
-        selectedStatus={statusFilter}
-        onStatusChange={(value) => handleFilterChange('status', value)}
         onClearFilters={handleClearFilters}
       />
       <DataTable
@@ -256,13 +209,6 @@ export function SekolahTable() {
         rowSelection={rowSelection}
         onRowSelectionChange={setRowSelection}
       />
-      {detailDialog && (
-        <SekolahDetailDialog
-          open={detailDialog}
-          onOpenChange={setDetailDialog}
-          sekolahId={detailId}
-        />
-      )}
     </div>
   );
 }

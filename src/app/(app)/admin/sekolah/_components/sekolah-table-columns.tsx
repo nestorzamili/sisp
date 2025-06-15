@@ -1,7 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal, Eye, Check, X } from 'lucide-react';
+import { MoreHorizontal, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
@@ -13,42 +12,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
   SkeletonCell,
-  SkeletonBadge,
   SkeletonActions,
   SkeletonCheckbox,
 } from '@/components/skeleton-cells';
 import { SelectAllHeader } from './table-headers';
 import { SekolahWithDetails } from '@/types/sekolah';
-
-// Status Badge Component
-export const StatusBadge = ({ banned }: { banned: boolean }) => {
-  if (banned) {
-    return (
-      <Badge variant="destructive" className="flex items-center gap-1">
-        <svg
-          className="h-3 w-3"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12,6 12,12 16,14" />
-        </svg>
-        Menunggu Persetujuan
-      </Badge>
-    );
-  }
-
-  return (
-    <Badge
-      variant="default"
-      className="flex items-center gap-1 bg-green-600 hover:bg-green-700"
-    >
-      <Check className="h-3 w-3" />
-      Disetujui
-    </Badge>
-  );
-};
 
 // Table Cell Components
 export const SelectCell = ({
@@ -143,33 +111,17 @@ export const EmailCell = ({
   </div>
 );
 
-export const StatusCell = ({
-  isLoading,
-  banned,
-}: {
-  isLoading: boolean;
-  banned: boolean;
-}) => (
-  <div className="min-w-[150px]">
-    {isLoading ? <SkeletonBadge /> : <StatusBadge banned={banned} />}
-  </div>
-);
-
 // Actions Cell Component
 export const ActionsCell = ({
   isLoading,
   sekolah,
-  userBanned,
   onViewDetails,
-  onApprove,
-  onReject,
+  onDownloadData,
 }: {
   isLoading: boolean;
   sekolah: SekolahWithDetails;
-  userBanned: boolean;
   onViewDetails: (sekolah: SekolahWithDetails) => void;
-  onApprove: (sekolah: SekolahWithDetails) => void;
-  onReject: (sekolah: SekolahWithDetails) => void;
+  onDownloadData: (sekolah: SekolahWithDetails) => void;
 }) => (
   <div className="text-right min-w-[60px]">
     {isLoading ? (
@@ -191,23 +143,25 @@ export const ActionsCell = ({
           >
             Lihat Detail <Eye className="h-4 w-4" />
           </DropdownMenuItem>
-
-          {userBanned && (
-            <>
-              <DropdownMenuItem
-                className="flex justify-between cursor-pointer text-green-600"
-                onClick={() => onApprove(sekolah)}
-              >
-                Setujui <Check className="h-4 w-4" />
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="flex justify-between cursor-pointer text-red-600"
-                onClick={() => onReject(sekolah)}
-              >
-                Tolak <X className="h-4 w-4" />
-              </DropdownMenuItem>
-            </>
-          )}
+          <DropdownMenuItem
+            className="flex justify-between cursor-pointer"
+            onClick={() => onDownloadData(sekolah)}
+          >
+            Unduh Data{' '}
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              />
+            </svg>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     )}
@@ -218,13 +172,11 @@ export const ActionsCell = ({
 export const createSekolahColumns = ({
   isLoading,
   onViewDetails,
-  onApprove,
-  onReject,
+  onDownloadData,
 }: {
   isLoading: boolean;
   onViewDetails: (sekolah: SekolahWithDetails) => void;
-  onApprove: (sekolah: SekolahWithDetails) => void;
-  onReject: (sekolah: SekolahWithDetails) => void;
+  onDownloadData: (sekolah: SekolahWithDetails) => void;
 }): ColumnDef<SekolahWithDetails>[] => [
   {
     id: 'select',
@@ -302,29 +254,16 @@ export const createSekolahColumns = ({
     size: 220,
   },
   {
-    id: 'status',
-    header: 'Status',
-    cell: ({ row }) => {
-      const user = row.original.user as { banned?: boolean } | undefined;
-      return <StatusCell isLoading={isLoading} banned={user?.banned ?? true} />;
-    },
-    enableSorting: false,
-    size: 170,
-  },
-  {
     id: 'actions',
     header: '',
     cell: ({ row }) => {
       const sekolah = row.original;
-      const user = sekolah.user as { banned: boolean } | undefined;
       return (
         <ActionsCell
           isLoading={isLoading}
           sekolah={sekolah}
-          userBanned={user?.banned ?? true}
           onViewDetails={onViewDetails}
-          onApprove={onApprove}
-          onReject={onReject}
+          onDownloadData={onDownloadData}
         />
       );
     },

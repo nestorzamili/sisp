@@ -17,8 +17,6 @@ interface SekolahTableFiltersProps {
   onSearchChange: (value: string) => void;
   selectedKecamatan: string;
   onKecamatanChange: (value: string) => void;
-  selectedStatus: string;
-  onStatusChange: (value: string) => void;
   onClearFilters: () => void;
 }
 
@@ -27,14 +25,10 @@ export function SekolahTableFilters({
   onSearchChange,
   selectedKecamatan,
   onKecamatanChange,
-  selectedStatus,
-  onStatusChange,
   onClearFilters,
 }: SekolahTableFiltersProps) {
   const hasActiveFilters =
-    searchValue ||
-    (selectedKecamatan && selectedKecamatan !== 'all') ||
-    (selectedStatus && selectedStatus !== 'all');
+    searchValue || (selectedKecamatan && selectedKecamatan !== 'all');
 
   return (
     <div className="flex items-center gap-4">
@@ -49,17 +43,6 @@ export function SekolahTableFilters({
           className="pl-9"
         />
       </div>
-      {/* Status Filter */}
-      <Select value={selectedStatus} onValueChange={onStatusChange}>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Pilih status" />
-        </SelectTrigger>{' '}
-        <SelectContent>
-          <SelectItem value="all">Semua Status</SelectItem>
-          <SelectItem value="approved">Disetujui</SelectItem>
-          <SelectItem value="pending">Menunggu Persetujuan</SelectItem>
-        </SelectContent>
-      </Select>
       {/* Kecamatan Filter */}
       <Select value={selectedKecamatan} onValueChange={onKecamatanChange}>
         <SelectTrigger className="w-[200px]">
