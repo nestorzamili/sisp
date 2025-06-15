@@ -21,7 +21,7 @@ export default function AdminLayout({
       <SidebarProvider>
         <SearchProvider>
           <SidebarProvider defaultOpen={true}>
-            <AppSidebar />
+            <AppSidebar />{' '}
             <div
               id="content"
               className={cn(
@@ -29,9 +29,9 @@ export default function AdminLayout({
                 'peer-data-[state=collapsed]:w-[calc(100%-var(--sidebar-width-icon)-0.5rem)]',
                 'peer-data-[state=expanded]:w-[calc(100%-var(--sidebar-width)-0.5rem)]',
                 'transition-[width] ease-linear duration-200',
-                'h-svh flex flex-col',
-                'group-data-[scroll-locked=1]/body:h-full',
-                'group-data-[scroll-locked=1]/body:has-[main.fixed-main]:h-svh',
+                'min-h-svh flex flex-col',
+                'group-data-[scroll-locked=1]/body:min-h-full',
+                'group-data-[scroll-locked=1]/body:has-[main.fixed-main]:min-h-svh',
               )}
             >
               <Header fixed>
@@ -41,9 +41,7 @@ export default function AdminLayout({
                   <ProfileDropdown />
                 </div>
               </Header>
-              <Main className="px-6 py-20 flex-1 overflow-auto">
-                {children}
-              </Main>
+              <Main className="px-6 py-20 flex-1">{children}</Main>
               <AppFooter />
             </div>
           </SidebarProvider>
