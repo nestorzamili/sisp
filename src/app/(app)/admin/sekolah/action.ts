@@ -11,7 +11,7 @@ export async function getAllSekolahWithCount(options?: {
   limit?: number;
   search?: string;
   kecamatan?: string;
-  status?: 'all' | 'approved' | 'pending'; // Only 2 statuses: approved (!banned) and pending (banned)
+  status?: 'all' | 'APPROVED' | 'PENDING' | 'DRAFT' | 'REJECTED'; // Use actual ReviewStatus enum values
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
 }) {
@@ -22,14 +22,16 @@ export async function getAllSekolahWithCount(options?: {
     const kecamatan = options?.kecamatan ?? '';
     const status = options?.status ?? 'all';
     const sortBy = options?.sortBy ?? 'nama_sekolah';
-    const sortOrder = options?.sortOrder ?? 'asc';
-
-    // Convert status to userBanned boolean
-    let userBanned: boolean | undefined;
-    if (status === 'approved') {
-      userBanned = false; // Approved = not banned
-    } else if (status === 'pending') {
-      userBanned = true; // Pending = banned
+    const sortOrder = options?.sortOrder ?? 'asc'; // Convert status to sekolah status filter
+    let sekolahStatus: string | undefined;
+    if (status === 'APPROVED') {
+      sekolahStatus = 'APPROVED';
+    } else if (status === 'PENDING') {
+      sekolahStatus = 'PENDING';
+    } else if (status === 'DRAFT') {
+      sekolahStatus = 'DRAFT';
+    } else if (status === 'REJECTED') {
+      sekolahStatus = 'REJECTED';
     }
     // 'all' status = undefined (no filter)
 
@@ -40,7 +42,7 @@ export async function getAllSekolahWithCount(options?: {
       sortDirection: sortOrder,
       search: search.trim(),
       kecamatan: kecamatan.trim() || undefined,
-      userBanned,
+      sekolahStatus,
       includeDetails: false,
     });
 

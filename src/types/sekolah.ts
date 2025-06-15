@@ -124,6 +124,7 @@ export interface SekolahWhereInput {
   nama_sekolah?: { contains: string; mode: 'insensitive' };
   npsn?: string | { contains: string; mode: 'insensitive' };
   kecamatan?: { contains: string; mode: 'insensitive' };
+  status?: ReviewStatus | string;
   user?: {
     banned?: boolean;
     OR?: Array<{
@@ -159,7 +160,7 @@ export interface SekolahPaginationParams {
   nama_sekolah?: string;
   npsn?: string;
   includeDetails?: boolean;
-  userBanned?: boolean; // Filter untuk status approval (banned = pending, !banned = approved)
+  sekolahStatus?: string; // Filter untuk status sekolah (APPROVED, PENDING, DRAFT, REJECTED)
 }
 
 export interface SekolahPaginationResult {

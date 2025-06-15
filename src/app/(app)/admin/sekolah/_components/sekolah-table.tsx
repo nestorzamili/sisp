@@ -81,7 +81,7 @@ export function SekolahTable() {
         limit: pageSize,
         search: search,
         kecamatan: kecamatanFilter !== 'all' ? kecamatanFilter : undefined,
-        status: 'approved', // Always filter for approved schools only
+        status: 'APPROVED', // Always filter for approved schools only
         sortBy: sortBy.id,
         sortOrder: sortBy.desc ? 'desc' : 'asc',
       });

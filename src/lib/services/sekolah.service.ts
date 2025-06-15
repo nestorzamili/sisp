@@ -1,8 +1,8 @@
 import prisma from '@/lib/prisma';
+import { Prisma, ReviewStatus } from '@prisma/client';
 import {
   SekolahWithDetails,
   SekolahServiceResponse,
-  SekolahWhereInput,
   SekolahPaginationParams,
   SekolahPaginationResult,
   CreateSekolahData,
@@ -22,10 +22,10 @@ export class SekolahService {
     nama_sekolah,
     npsn,
     includeDetails = false,
-    userBanned,
+    sekolahStatus,
   }: SekolahPaginationParams): Promise<SekolahPaginationResult> {
     // Build where clause based on filters
-    const where: SekolahWhereInput = {};
+    const where: Prisma.SekolahWhereInput = {};
 
     // Add search filter (search across multiple fields)
     if (search) {
@@ -57,13 +57,9 @@ export class SekolahService {
     }
     if (npsn) {
       where.npsn = { contains: npsn, mode: 'insensitive' };
-    }
-
-    // Add user banned status filter
-    if (userBanned !== undefined) {
-      where.user = {
-        banned: userBanned,
-      };
+    } // Add sekolah status filter
+    if (sekolahStatus !== undefined) {
+      where.status = sekolahStatus as ReviewStatus;
     }
 
     // Calculate pagination
@@ -265,7 +261,7 @@ export class SekolahService {
     excludeId?: string,
   ): Promise<boolean> {
     try {
-      const where: SekolahWhereInput = { npsn };
+      const where: Prisma.SekolahWhereInput = { npsn };
 
       if (excludeId) {
         where.id = { not: excludeId };
@@ -340,7 +336,7 @@ export class SekolahService {
       const { search = '', kecamatan, tahunAjaran } = filters;
 
       // Build where clause for sekolah
-      const where: SekolahWhereInput = {};
+      const where: Prisma.SekolahWhereInput = {};
 
       if (search) {
         where.OR = [
