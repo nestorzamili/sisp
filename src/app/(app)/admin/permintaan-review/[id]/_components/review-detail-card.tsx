@@ -82,7 +82,7 @@ export function ReviewDetailCard({
       {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{data.nama_sekolah}</h1>
+          <h1 className="text-2xl font-bold">{data.nama_sekolah}</h1>{' '}
           <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
             <span className="flex items-center gap-1">
               <School className="h-4 w-4" />
@@ -98,6 +98,11 @@ export function ReviewDetailCard({
             >
               {data.status === 'PENDING' ? 'Menunggu Review' : 'Ditolak'}
             </Badge>
+            {data.status === 'REJECTED' && data.reviewedBy && (
+              <span className="text-xs text-red-600">
+                oleh {data.reviewedBy.name}
+              </span>
+            )}
           </div>
         </div>{' '}
         <div className="flex gap-2">
@@ -117,9 +122,28 @@ export function ReviewDetailCard({
             className="bg-green-600 hover:bg-green-700"
           >
             Setujui
-          </Button>
+          </Button>{' '}
         </div>
       </div>
+      {/* Review Notes for Rejected Status */}
+      {data.status === 'REJECTED' && data.reviewNotes && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <FileText className="h-5 w-5 text-red-600 mt-0.5" />
+            </div>
+            <div className="flex-1">
+              {' '}
+              <h3 className="font-medium text-red-900 mb-2">
+                Catatan Penolakan
+              </h3>
+              <p className="text-red-800 text-sm leading-relaxed">
+                {data.reviewNotes}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Tab Navigation */}
       <div className="border-b">
         <nav className="flex space-x-8">
