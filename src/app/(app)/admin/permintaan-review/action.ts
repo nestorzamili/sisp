@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { ReviewData } from '@/types/review';
 import { ReviewService } from '@/lib/services/review.service';
+import { SekolahService } from '@/lib/services/sekolah.service';
 
 /**
  * Get all pending reviews with pagination and filtering
@@ -156,6 +157,48 @@ export async function requestRevision(sekolahId: string, reason: string) {
     return {
       success: false,
       error: 'Gagal mengirim permintaan revisi',
+    };
+  }
+}
+
+/**
+ * Get review detail by sekolah ID
+ */
+export async function getReviewDetail(sekolahId: string) {
+  try {
+    if (!sekolahId || sekolahId.trim() === '') {
+      return {
+        success: false,
+        error: 'ID sekolah tidak valid',
+      };
+    }
+
+    const result = await SekolahService.getSekolahById(sekolahId.trim(), true);
+
+    if (result.success && result.data) {
+      // Check if the sekolah is in pending status for review
+      if (result.data.status !== 'PENDING') {
+        return {
+          success: false,
+          error: 'Data sekolah tidak dalam status pending review',
+        };
+      }
+
+      return {
+        success: true,
+        data: result.data,
+      };
+    }
+
+    return {
+      success: false,
+      error: result.error || 'Gagal mengambil detail data sekolah',
+    };
+  } catch (error) {
+    console.error('Error fetching review detail:', error);
+    return {
+      success: false,
+      error: 'Gagal mengambil detail data sekolah',
     };
   }
 }

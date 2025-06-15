@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { DataTable } from '@/components/data-table';
 import { ReviewData } from '@/types/review';
@@ -24,6 +25,8 @@ interface SortState {
 const DEFAULT_PAGE_SIZE = 10;
 
 export function ReviewTable() {
+  const router = useRouter();
+
   // State management
   const [data, setData] = useState<ReviewData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -140,13 +143,21 @@ export function ReviewTable() {
       setApprovalDialog(true);
     }
   }, []);
-
   const handleRequestRevision = useCallback((review: ReviewData) => {
     if (!review.id.startsWith('skeleton-')) {
       setSelectedReview(review);
       setRevisionDialog(true);
     }
   }, []);
+
+  const handleDetail = useCallback(
+    (review: ReviewData) => {
+      if (!review.id.startsWith('skeleton-')) {
+        router.push(`/admin/permintaan-review/${review.id}`);
+      }
+    },
+    [router],
+  );
 
   // Action handlers with error handling
   const handleConfirmApproval = useCallback(
@@ -188,7 +199,6 @@ export function ReviewTable() {
     },
     [fetchData],
   );
-
   // Memoized columns using factory function
   const columns = useMemo(
     () =>
@@ -196,8 +206,9 @@ export function ReviewTable() {
         isLoading,
         onApprove: handleApprove,
         onRequestRevision: handleRequestRevision,
+        onDetail: handleDetail,
       }),
-    [isLoading, handleApprove, handleRequestRevision],
+    [isLoading, handleApprove, handleRequestRevision, handleDetail],
   );
 
   return (

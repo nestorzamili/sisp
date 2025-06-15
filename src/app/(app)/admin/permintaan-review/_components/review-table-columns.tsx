@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal, Check, Edit, School, Hash } from 'lucide-react';
+import { MoreHorizontal, Check, Edit, School, Hash, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -212,11 +212,13 @@ export const ActionsCell = ({
   review,
   onApprove,
   onRequestRevision,
+  onDetail,
 }: {
   isLoading: boolean;
   review: ReviewData;
   onApprove: (review: ReviewData) => void;
   onRequestRevision: (review: ReviewData) => void;
+  onDetail: (review: ReviewData) => void;
 }) => (
   <div className="text-right min-w-[60px]">
     {isLoading ? (
@@ -230,6 +232,13 @@ export const ActionsCell = ({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() => onDetail(review)}
+            className="cursor-pointer text-blue-600"
+          >
+            <Eye className="mr-2 h-4 w-4" />
+            Lihat Detail
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => onApprove(review)}
             className="cursor-pointer text-green-600"
@@ -255,10 +264,12 @@ export const createReviewColumns = ({
   isLoading,
   onApprove,
   onRequestRevision,
+  onDetail,
 }: {
   isLoading: boolean;
   onApprove: (review: ReviewData) => void;
   onRequestRevision: (review: ReviewData) => void;
+  onDetail: (review: ReviewData) => void;
 }): ColumnDef<ReviewData>[] => [
   {
     id: 'select',
@@ -302,10 +313,10 @@ export const createReviewColumns = ({
     size: 300,
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'updatedAt',
     header: 'Tanggal Submit',
     cell: ({ row }) => (
-      <DateCell isLoading={isLoading} date={row.getValue('createdAt')} />
+      <DateCell isLoading={isLoading} date={row.getValue('updatedAt')} />
     ),
     enableSorting: true,
     size: 160,
@@ -328,6 +339,7 @@ export const createReviewColumns = ({
           review={review}
           onApprove={onApprove}
           onRequestRevision={onRequestRevision}
+          onDetail={onDetail}
         />
       );
     },

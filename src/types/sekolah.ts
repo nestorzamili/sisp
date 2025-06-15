@@ -70,6 +70,7 @@ export interface SekolahWithDetails {
     id: string;
     nama_dokumen: string;
     url: string;
+    keterangan: string;
   }[];
   guru?: {
     id: string;
