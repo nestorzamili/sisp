@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal, Check, Edit, School, Hash, Eye } from 'lucide-react';
+import { MoreHorizontal, Check, Edit, School, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -53,10 +53,7 @@ export const NpsnCell = ({
     {isLoading ? (
       <SkeletonCell width="w-20" />
     ) : (
-      <div className="flex items-center gap-2">
-        <Hash className="h-4 w-4 text-muted-foreground" />
-        <span className="font-mono text-sm">{value}</span>
-      </div>
+      <span className="font-mono text-sm">{value}</span>
     )}
   </div>
 );
@@ -324,8 +321,54 @@ export const createReviewColumns = ({
     cell: ({ row }) => (
       <SekolahCell isLoading={isLoading} value={row.getValue('nama_sekolah')} />
     ),
-    enableSorting: true,
+    enableSorting: false,
     size: 300,
+  },
+  {
+    accessorKey: 'nama_kepala_sekolah',
+    header: 'Kepala Sekolah',
+    cell: ({ row }) => (
+      <KepalaSekolahCell
+        isLoading={isLoading}
+        value={row.getValue('nama_kepala_sekolah')}
+      />
+    ),
+    enableSorting: false,
+    size: 200,
+  },
+  {
+    accessorKey: 'kecamatan',
+    header: 'Kecamatan',
+    cell: ({ row }) => (
+      <div className="min-w-[150px]">
+        {isLoading ? (
+          <SkeletonCell width="w-24" />
+        ) : row.getValue('kecamatan') ? (
+          <span className="text-sm">{row.getValue('kecamatan')}</span>
+        ) : (
+          <span className="text-muted-foreground text-sm">-</span>
+        )}
+      </div>
+    ),
+    enableSorting: true,
+    size: 170,
+  },
+  {
+    id: 'email',
+    header: 'Email',
+    cell: ({ row }) => (
+      <div className="min-w-[200px]">
+        {isLoading ? (
+          <SkeletonCell width="w-32" />
+        ) : (
+          <span className="text-sm text-muted-foreground">
+            {row.original.user.email}
+          </span>
+        )}
+      </div>
+    ),
+    enableSorting: false,
+    size: 220,
   },
   {
     accessorKey: 'updatedAt',

@@ -210,7 +210,7 @@ export const createSekolahColumns = ({
         value={row.getValue('nama_sekolah')}
       />
     ),
-    enableSorting: true,
+    enableSorting: false,
     size: 300,
   },
   {
@@ -222,7 +222,7 @@ export const createSekolahColumns = ({
         value={row.getValue('nama_kepala_sekolah')}
       />
     ),
-    enableSorting: true,
+    enableSorting: false,
     size: 200,
   },
   {
