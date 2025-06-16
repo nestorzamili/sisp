@@ -15,7 +15,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { step6Schema, Step6Data } from '../_schema/priority-needs.schema';
-import { getPriorityNeedsDataAction } from '../_actions/priority-needs-data.action';
+import {
+  getPriorityNeedsDataAction,
+  savePriorityNeedsDataAction,
+} from '../_actions/priority-needs-data.action';
 
 interface PriorityNeedsFormProps {
   onSubmit: (data: Step6Data) => void;
@@ -71,11 +74,21 @@ export function PriorityNeedsForm({
     }
 
     loadPriorityNeedsData();
-  }, [form]); // Handle form submission
+  }, [form]);
+
+  // Handle form submission
   async function handleSubmit(values: Step6Data) {
     try {
       setIsSubmitting(true);
-      await onSubmit(values);
+
+      const result = await savePriorityNeedsDataAction(values);
+
+      if (result.success) {
+        toast.success('Data kebutuhan prioritas berhasil disimpan');
+        onSubmit(values);
+      } else {
+        toast.error(result.error || 'Gagal menyimpan data kebutuhan prioritas');
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
       toast.error('Terjadi kesalahan saat menyimpan data');

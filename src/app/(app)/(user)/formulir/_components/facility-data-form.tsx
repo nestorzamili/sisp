@@ -12,13 +12,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Building2,
@@ -31,17 +24,18 @@ import {
   Building,
   CheckCircle,
   Loader2,
+  AlertCircle,
 } from 'lucide-react';
+import { toast } from 'sonner';
+import { step4Schema, Step4Data } from '../_schema/facility-data.schema';
 import {
-  step4Schema,
-  Step4Data,
-  kondisiOptions,
-} from '../_schema/facility-data.schema';
+  getFacilityDataAction,
+  saveFacilityDataAction,
+} from '../_actions/facility-data.action';
 
 interface FacilityDataFormProps {
   onSubmit: (data: Step4Data) => void;
   onBack: () => void;
-  initialData?: Partial<Step4Data>;
   disabled?: boolean;
   hideCompletionStatus?: boolean;
 }
@@ -49,80 +43,98 @@ interface FacilityDataFormProps {
 export function FacilityDataForm({
   onSubmit,
   onBack,
-  initialData,
   disabled = false,
   hideCompletionStatus = false,
 }: FacilityDataFormProps) {
-  const [isFormLoading, setIsFormLoading] = useState(true);
-  const [hasExistingData, setHasExistingData] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [hasExistingData, setHasExistingData] = useState(false);
   const form = useForm<Step4Data>({
     resolver: zodResolver(step4Schema),
     defaultValues: {
-      ruangKelasTotal: initialData?.ruangKelasTotal || '0',
-      ruangKelasBaik: initialData?.ruangKelasBaik || '0',
-      ruangKelasRusak: initialData?.ruangKelasRusak || '0',
-      perpustakaanTotal: initialData?.perpustakaanTotal || '0',
-      perpustakaanBaik: initialData?.perpustakaanBaik || '0',
-      perpustakaanRusak: initialData?.perpustakaanRusak || '0',
-      ruangKepalaSekolahKondisi: initialData?.ruangKepalaSekolahKondisi || '',
-      ruangKepalaSekolahKeterangan:
-        initialData?.ruangKepalaSekolahKeterangan || '',
-      ruangGuruKondisi: initialData?.ruangGuruKondisi || '',
-      ruangGuruKeterangan: initialData?.ruangGuruKeterangan || '',
-      aulaPertemuanKondisi: initialData?.aulaPertemuanKondisi || '',
-      aulaPertemuanKeterangan: initialData?.aulaPertemuanKeterangan || '',
-      laboratoriumIpaKondisi: initialData?.laboratoriumIpaKondisi || '',
-      laboratoriumIpaKeterangan: initialData?.laboratoriumIpaKeterangan || '',
-      laboratoriumBahasaKondisi: initialData?.laboratoriumBahasaKondisi || '',
-      laboratoriumBahasaKeterangan:
-        initialData?.laboratoriumBahasaKeterangan || '',
-      laboratoriumTikKondisi: initialData?.laboratoriumTikKondisi || '',
-      laboratoriumTikKeterangan: initialData?.laboratoriumTikKeterangan || '',
+      ruangKelasTotal: 0,
+      ruangKelasBaik: 0,
+      ruangKelasRusak: 0,
+      ruangKelasKeterangan: '',
+      perpustakaanTotal: 0,
+      perpustakaanBaik: 0,
+      perpustakaanRusak: 0,
+      perpustakaanKeterangan: '',
+      ruangKepalaSekolahTotal: 0,
+      ruangKepalaSekolahBaik: 0,
+      ruangKepalaSekolahRusak: 0,
+      ruangKepalaSekolahKeterangan: '',
+      ruangGuruTotal: 0,
+      ruangGuruBaik: 0,
+      ruangGuruRusak: 0,
+      ruangGuruKeterangan: '',
+      aulaPertemuanTotal: 0,
+      aulaPertemuanBaik: 0,
+      aulaPertemuanRusak: 0,
+      aulaPertemuanKeterangan: '',
+      laboratoriumIpaTotal: 0,
+      laboratoriumIpaBaik: 0,
+      laboratoriumIpaRusak: 0,
+      laboratoriumIpaKeterangan: '',
+      laboratoriumBahasaTotal: 0,
+      laboratoriumBahasaBaik: 0,
+      laboratoriumBahasaRusak: 0,
+      laboratoriumBahasaKeterangan: '',
+      laboratoriumTikTotal: 0,
+      laboratoriumTikBaik: 0,
+      laboratoriumTikRusak: 0,
+      laboratoriumTikKeterangan: '',
     },
-  });
-  // Reset form when initialData changes
+  }); // Load existing facility data on component mount
   useEffect(() => {
-    if (initialData) {
-      form.reset({
-        ruangKelasTotal: initialData.ruangKelasTotal || '0',
-        ruangKelasBaik: initialData.ruangKelasBaik || '0',
-        ruangKelasRusak: initialData.ruangKelasRusak || '0',
-        perpustakaanTotal: initialData.perpustakaanTotal || '0',
-        perpustakaanBaik: initialData.perpustakaanBaik || '0',
-        perpustakaanRusak: initialData.perpustakaanRusak || '0',
-        ruangKepalaSekolahKondisi: initialData.ruangKepalaSekolahKondisi || '',
-        ruangKepalaSekolahKeterangan:
-          initialData.ruangKepalaSekolahKeterangan || '',
-        ruangGuruKondisi: initialData.ruangGuruKondisi || '',
-        ruangGuruKeterangan: initialData.ruangGuruKeterangan || '',
-        aulaPertemuanKondisi: initialData.aulaPertemuanKondisi || '',
-        aulaPertemuanKeterangan: initialData.aulaPertemuanKeterangan || '',
-        laboratoriumIpaKondisi: initialData.laboratoriumIpaKondisi || '',
-        laboratoriumIpaKeterangan: initialData.laboratoriumIpaKeterangan || '',
-        laboratoriumBahasaKondisi: initialData.laboratoriumBahasaKondisi || '',
-        laboratoriumBahasaKeterangan:
-          initialData.laboratoriumBahasaKeterangan || '',
-        laboratoriumTikKondisi: initialData.laboratoriumTikKondisi || '',
-        laboratoriumTikKeterangan: initialData.laboratoriumTikKeterangan || '',
-      });
+    async function loadFacilityData() {
+      try {
+        setIsLoading(true);
+        setLoadError(null);
 
-      // Check if there's existing data
-      const hasData = Object.values(initialData).some(
-        (value) => value && value !== '0' && value.trim() !== '',
-      );
-      setHasExistingData(hasData);
+        const result = await getFacilityDataAction();
+
+        if (result.success && result.data) {
+          form.reset(result.data);
+
+          // Check if there's existing data (non-zero values)
+          const hasData = Object.entries(result.data).some(([, value]) => {
+            if (typeof value === 'string') {
+              return value.trim() !== '';
+            }
+            return typeof value === 'number' && value > 0;
+          });
+          setHasExistingData(hasData);
+        } else {
+          setLoadError(result.error || 'Gagal memuat data sarana');
+        }
+      } catch (error) {
+        console.error('Error loading facility data:', error);
+        setLoadError('Terjadi kesalahan saat memuat data');
+      } finally {
+        setIsLoading(false);
+      }
     }
-    setIsFormLoading(false);
-  }, [initialData, form]);
 
+    loadFacilityData();
+  }, [form]);
   // Handle form submission
   const handleSubmit = async (values: Step4Data) => {
     try {
       setIsSubmitting(true);
-      await onSubmit(values);
+
+      const result = await saveFacilityDataAction(values);
+
+      if (result.success) {
+        toast.success('Data sarana berhasil disimpan');
+        onSubmit(values);
+      } else {
+        toast.error(result.error || 'Gagal menyimpan data sarana');
+      }
     } catch (error) {
       console.error('Error submitting facility data:', error);
+      toast.error('Terjadi kesalahan saat menyimpan data');
     } finally {
       setIsSubmitting(false);
     }
@@ -148,127 +160,82 @@ export function FacilityDataForm({
     </div>
   );
 
-  const QuantityInputs = ({ baseName }: { baseName: string }) => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <FormField
-        control={form.control}
-        name={`${baseName}Total` as 'ruangKelasTotal' | 'perpustakaanTotal'}
-        render={({ field }) => (
-          <FormItem className="space-y-2">
-            <FormLabel className="text-sm font-medium">Jumlah Total</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                min="0"
-                placeholder="0"
-                {...field}
-                disabled={isSubmitting || disabled}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name={`${baseName}Baik` as 'ruangKelasBaik' | 'perpustakaanBaik'}
-        render={({ field }) => (
-          <FormItem className="space-y-2">
-            <FormLabel className="text-sm font-medium">Kondisi Baik</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                min="0"
-                placeholder="0"
-                {...field}
-                disabled={isSubmitting || disabled}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name={`${baseName}Rusak` as 'ruangKelasRusak' | 'perpustakaanRusak'}
-        render={({ field }) => (
-          <FormItem className="space-y-2">
-            <FormLabel className="text-sm font-medium">
-              Kondisi Rusak/Tidak Layak
-            </FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                min="0"
-                placeholder="0"
-                {...field}
-                disabled={isSubmitting || disabled}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-    </div>
-  );
-
-  const ConditionInputs = ({
-    baseName,
-    title,
-  }: {
-    baseName: string;
-    title: string;
-  }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <FormField
-        control={form.control}
-        name={
-          `${baseName}Kondisi` as
-            | 'ruangKepalaSekolahKondisi'
-            | 'ruangGuruKondisi'
-            | 'aulaPertemuanKondisi'
-            | 'laboratoriumIpaKondisi'
-            | 'laboratoriumBahasaKondisi'
-            | 'laboratoriumTikKondisi'
-        }
-        render={({ field }) => (
-          <FormItem className="space-y-2">
-            <FormLabel className="text-sm font-medium">
-              Kondisi {title}
-            </FormLabel>
-            <Select
-              onValueChange={field.onChange}
-              defaultValue={field.value}
-              disabled={isSubmitting || disabled}
-            >
+  const QuantityInputsWithNotes = ({ baseName }: { baseName: string }) => (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <FormField
+          control={form.control}
+          name={`${baseName}Total` as keyof Step4Data}
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <FormLabel className="text-sm font-medium">
+                Jumlah Total
+              </FormLabel>
               <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Pilih kondisi" />
-                </SelectTrigger>
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                  value={field.value || 0}
+                  disabled={isSubmitting || disabled}
+                />
               </FormControl>
-              <SelectContent>
-                {kondisiOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name={`${baseName}Baik` as keyof Step4Data}
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <FormLabel className="text-sm font-medium">
+                Kondisi Baik
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                  value={field.value || 0}
+                  disabled={isSubmitting || disabled}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name={`${baseName}Rusak` as keyof Step4Data}
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <FormLabel className="text-sm font-medium">
+                Kondisi Rusak/Tidak Layak
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                  value={field.value || 0}
+                  disabled={isSubmitting || disabled}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       <FormField
         control={form.control}
-        name={
-          `${baseName}Keterangan` as
-            | 'ruangKepalaSekolahKeterangan'
-            | 'ruangGuruKeterangan'
-            | 'aulaPertemuanKeterangan'
-            | 'laboratoriumIpaKeterangan'
-            | 'laboratoriumBahasaKeterangan'
-            | 'laboratoriumTikKeterangan'
-        }
+        name={`${baseName}Keterangan` as keyof Step4Data}
         render={({ field }) => (
           <FormItem className="space-y-2">
             <FormLabel className="text-sm font-medium">
@@ -277,7 +244,7 @@ export function FacilityDataForm({
             <FormControl>
               <Textarea
                 placeholder="Keterangan tambahan..."
-                className="min-h-10"
+                className="min-h-20"
                 {...field}
                 disabled={isSubmitting || disabled}
               />
@@ -288,14 +255,31 @@ export function FacilityDataForm({
       />
     </div>
   );
-
   // Show loading state
-  if (isFormLoading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="flex flex-col items-center space-y-4">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
           <p className="text-sm text-muted-foreground">Memuat data sarana...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (loadError) {
+    return (
+      <div className="space-y-4">
+        <Alert variant="destructive">
+          <AlertCircle className="w-4 h-4" />
+          <AlertDescription>{loadError}</AlertDescription>
+        </Alert>
+        <div className="flex justify-between">
+          <Button variant="outline" onClick={onBack}>
+            Kembali
+          </Button>
+          <Button onClick={() => window.location.reload()}>Coba Lagi</Button>
         </div>
       </div>
     );
@@ -328,59 +312,38 @@ export function FacilityDataForm({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           <div className="space-y-8">
+            {' '}
             {/* Ruang Kelas */}
             <FacilitySection icon={Building2} title="Ruang Kelas">
-              <QuantityInputs baseName="ruangKelas" />
+              <QuantityInputsWithNotes baseName="ruangKelas" />
             </FacilitySection>
-
             {/* Perpustakaan */}
             <FacilitySection icon={BookOpen} title="Perpustakaan">
-              <QuantityInputs baseName="perpustakaan" />
+              <QuantityInputsWithNotes baseName="perpustakaan" />
             </FacilitySection>
-
             {/* Ruang Kepala Sekolah */}
             <FacilitySection icon={User} title="Ruang Kepala Sekolah">
-              <ConditionInputs
-                baseName="ruangKepalaSekolah"
-                title="Ruang Kepala Sekolah"
-              />
+              <QuantityInputsWithNotes baseName="ruangKepalaSekolah" />
             </FacilitySection>
-
             {/* Ruang Guru */}
             <FacilitySection icon={Users} title="Ruang Guru">
-              <ConditionInputs baseName="ruangGuru" title="Ruang Guru" />
+              <QuantityInputsWithNotes baseName="ruangGuru" />
             </FacilitySection>
-
             {/* Aula Pertemuan */}
             <FacilitySection icon={Building} title="Aula Pertemuan Sekolah">
-              <ConditionInputs
-                baseName="aulaPertemuan"
-                title="Aula Pertemuan"
-              />
+              <QuantityInputsWithNotes baseName="aulaPertemuan" />
             </FacilitySection>
-
             {/* Laboratorium IPA */}
             <FacilitySection icon={FlaskConical} title="Laboratorium IPA">
-              <ConditionInputs
-                baseName="laboratoriumIpa"
-                title="Laboratorium IPA"
-              />
+              <QuantityInputsWithNotes baseName="laboratoriumIpa" />
             </FacilitySection>
-
             {/* Laboratorium Bahasa */}
             <FacilitySection icon={Languages} title="Laboratorium Bahasa">
-              <ConditionInputs
-                baseName="laboratoriumBahasa"
-                title="Laboratorium Bahasa"
-              />
+              <QuantityInputsWithNotes baseName="laboratoriumBahasa" />
             </FacilitySection>
-
             {/* Laboratorium TIK */}
             <FacilitySection icon={Laptop} title="Laboratorium TIK">
-              <ConditionInputs
-                baseName="laboratoriumTik"
-                title="Laboratorium TIK"
-              />
+              <QuantityInputsWithNotes baseName="laboratoriumTik" />
             </FacilitySection>
           </div>{' '}
           <div className="flex justify-between pt-6">

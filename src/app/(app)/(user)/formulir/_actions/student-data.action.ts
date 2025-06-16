@@ -1,45 +1,30 @@
 'use server';
 
-import { auth } from '@/lib/auth';
-import { SekolahService } from '@/lib/services/sekolah.service';
+import { revalidatePath } from 'next/cache';
 import { RombonganBelajarService } from '@/lib/services/rombongan-belajar.service';
 import { Step3Data } from '../_schema/student-data.schema';
 import { RombonganBelajarFormData } from '@/types/rombongan-belajar';
-import { revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
+import {
+  validateAuthAndSchool,
+  getCurrentYear,
+} from '../_utils/auth-school.util';
 
 const rombonganBelajarService = new RombonganBelajarService();
 
 // Get existing student data for the current user's school
 export async function getStudentDataAction(tahunAjaran?: string) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { success, error, schoolData } = await validateAuthAndSchool();
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
-    }
-
-    // Get school data first
-    const schoolResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
-    );
-    if (!schoolResult.success || !schoolResult.data) {
-      return {
-        success: false,
-        error: 'Data sekolah tidak ditemukan',
-      };
+    if (!success) {
+      return { success: false, error };
     }
 
     // Get student data
-    const currentYear = tahunAjaran || new Date().getFullYear().toString();
+    const currentYear = tahunAjaran || getCurrentYear();
     const studentResult =
       await rombonganBelajarService.getRombonganBelajarBySekolah(
-        schoolResult.data.id,
+        schoolData!.id,
         currentYear,
       );
 
@@ -48,38 +33,36 @@ export async function getStudentDataAction(tahunAjaran?: string) {
         success: false,
         error: studentResult.error || 'Gagal mengambil data siswa',
       };
-    }
-
-    // Transform data to form format
+    } // Transform data to form format
     const studentData = studentResult.data || [];
     const formData: Step3Data = {
-      siswaKelas7Laki: '0',
-      siswaKelas7Perempuan: '0',
-      siswaKelas8Laki: '0',
-      siswaKelas8Perempuan: '0',
-      siswaKelas9Laki: '0',
-      siswaKelas9Perempuan: '0',
+      siswaKelas7Laki: 0,
+      siswaKelas7Perempuan: 0,
+      siswaKelas8Laki: 0,
+      siswaKelas8Perempuan: 0,
+      siswaKelas9Laki: 0,
+      siswaKelas9Perempuan: 0,
     };
 
     // Fill form data from database
     studentData.forEach((rombel) => {
       if (rombel.tingkatan_kelas === '7') {
         if (rombel.jenis_kelamin === 'L') {
-          formData.siswaKelas7Laki = rombel.jumlah_siswa.toString();
+          formData.siswaKelas7Laki = rombel.jumlah_siswa;
         } else {
-          formData.siswaKelas7Perempuan = rombel.jumlah_siswa.toString();
+          formData.siswaKelas7Perempuan = rombel.jumlah_siswa;
         }
       } else if (rombel.tingkatan_kelas === '8') {
         if (rombel.jenis_kelamin === 'L') {
-          formData.siswaKelas8Laki = rombel.jumlah_siswa.toString();
+          formData.siswaKelas8Laki = rombel.jumlah_siswa;
         } else {
-          formData.siswaKelas8Perempuan = rombel.jumlah_siswa.toString();
+          formData.siswaKelas8Perempuan = rombel.jumlah_siswa;
         }
       } else if (rombel.tingkatan_kelas === '9') {
         if (rombel.jenis_kelamin === 'L') {
-          formData.siswaKelas9Laki = rombel.jumlah_siswa.toString();
+          formData.siswaKelas9Laki = rombel.jumlah_siswa;
         } else {
-          formData.siswaKelas9Perempuan = rombel.jumlah_siswa.toString();
+          formData.siswaKelas9Perempuan = rombel.jumlah_siswa;
         }
       }
     });
@@ -103,43 +86,25 @@ export async function saveStudentDataAction(
   tahunAjaran?: string,
 ) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { success, error, schoolData } = await validateAuthAndSchool();
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
-    }
-
-    // Get school data first
-    const schoolResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
-    );
-    if (!schoolResult.success || !schoolResult.data) {
-      return {
-        success: false,
-        error: 'Data sekolah tidak ditemukan',
-      };
-    }
-
-    // Transform form data to service format
-    const currentYear = tahunAjaran || new Date().getFullYear().toString();
+    if (!success) {
+      return { success: false, error };
+    } // Transform form data to service format
+    const currentYear = tahunAjaran || getCurrentYear();
     const rombonganBelajarFormData: RombonganBelajarFormData = {
-      siswaKelas7Laki: Number(data.siswaKelas7Laki),
-      siswaKelas7Perempuan: Number(data.siswaKelas7Perempuan),
-      siswaKelas8Laki: Number(data.siswaKelas8Laki),
-      siswaKelas8Perempuan: Number(data.siswaKelas8Perempuan),
-      siswaKelas9Laki: Number(data.siswaKelas9Laki),
-      siswaKelas9Perempuan: Number(data.siswaKelas9Perempuan),
+      siswaKelas7Laki: data.siswaKelas7Laki,
+      siswaKelas7Perempuan: data.siswaKelas7Perempuan,
+      siswaKelas8Laki: data.siswaKelas8Laki,
+      siswaKelas8Perempuan: data.siswaKelas8Perempuan,
+      siswaKelas9Laki: data.siswaKelas9Laki,
+      siswaKelas9Perempuan: data.siswaKelas9Perempuan,
       tahun_ajaran: currentYear,
     };
 
     // Save student data
     const result = await rombonganBelajarService.saveRombonganBelajarFromForm(
-      schoolResult.data.id,
+      schoolData!.id,
       rombonganBelajarFormData,
     );
 
@@ -161,47 +126,6 @@ export async function saveStudentDataAction(
     return {
       success: false,
       error: 'Gagal menyimpan data siswa',
-    };
-  }
-}
-
-// Get student statistics
-export async function getStudentStatisticsAction(tahunAjaran?: string) {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
-    }
-
-    // Get school data first
-    const schoolResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
-    );
-    if (!schoolResult.success || !schoolResult.data) {
-      return {
-        success: false,
-        error: 'Data sekolah tidak ditemukan',
-      };
-    }
-
-    const currentYear = tahunAjaran || new Date().getFullYear().toString();
-    const result = await rombonganBelajarService.getRombonganBelajarStatistics(
-      schoolResult.data.id,
-      currentYear,
-    );
-
-    return result;
-  } catch (error) {
-    console.error('Error fetching student statistics:', error);
-    return {
-      success: false,
-      error: 'Gagal mengambil statistik siswa',
     };
   }
 }

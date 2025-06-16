@@ -43,16 +43,15 @@ export function StudentDataForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [hasExistingData, setHasExistingData] = useState(false);
-
   const form = useForm<Step3Data>({
     resolver: zodResolver(step3Schema),
     defaultValues: {
-      siswaKelas7Laki: '0',
-      siswaKelas7Perempuan: '0',
-      siswaKelas8Laki: '0',
-      siswaKelas8Perempuan: '0',
-      siswaKelas9Laki: '0',
-      siswaKelas9Perempuan: '0',
+      siswaKelas7Laki: 0,
+      siswaKelas7Perempuan: 0,
+      siswaKelas8Laki: 0,
+      siswaKelas8Perempuan: 0,
+      siswaKelas9Laki: 0,
+      siswaKelas9Perempuan: 0,
     },
   });
 
@@ -66,12 +65,8 @@ export function StudentDataForm({
         const result = await getStudentDataAction();
 
         if (result.success && result.data) {
-          form.reset(result.data);
-
-          // Check if there's existing data (non-zero values)
-          const hasData = Object.values(result.data).some(
-            (value) => Number(value) > 0,
-          );
+          form.reset(result.data); // Check if there's existing data (non-zero values)
+          const hasData = Object.values(result.data).some((value) => value > 0);
           setHasExistingData(hasData);
         } else {
           setLoadError(result.error || 'Gagal memuat data siswa');
@@ -119,7 +114,7 @@ export function StudentDataForm({
       'siswaKelas9Perempuan',
     ] as const;
     const completed = fields.filter((field) =>
-      Boolean(form.getValues(field) && Number(form.getValues(field)) > 0),
+      Boolean(form.getValues(field) && form.getValues(field) > 0),
     ).length;
     return { completed, total: fields.length };
   };
@@ -144,6 +139,7 @@ export function StudentDataForm({
         <h4 className="text-lg font-semibold text-foreground">{title}</h4>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {' '}
         <FormField
           control={form.control}
           name={lakiFieldName}
@@ -157,7 +153,8 @@ export function StudentDataForm({
                   type="number"
                   min="0"
                   placeholder="0"
-                  {...field}
+                  value={field.value}
+                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                   disabled={isSubmitting || disabled}
                   className="text-center"
                 />
@@ -179,7 +176,8 @@ export function StudentDataForm({
                   type="number"
                   min="0"
                   placeholder="0"
-                  {...field}
+                  value={field.value}
+                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                   disabled={isSubmitting || disabled}
                   className="text-center"
                 />

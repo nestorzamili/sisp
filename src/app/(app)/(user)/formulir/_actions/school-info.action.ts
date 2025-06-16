@@ -1,47 +1,32 @@
 'use server';
 
-import { auth } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 import { SekolahService } from '@/lib/services/sekolah.service';
 import { Step1Data } from '../_schema/school-info.schema';
-import { revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
+import { validateAuthAndSchool } from '../_utils/auth-school.util';
 
 // Get existing school info for the current user
 export async function getSchoolInfoAction() {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { success, error, schoolData } = await validateAuthAndSchool();
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
-    }
-
-    const result = await SekolahService.getSekolahByUserId(session.user.id);
-
-    if (!result.success || !result.data) {
-      return {
-        success: false,
-        error: result.error || 'Data sekolah tidak ditemukan',
-      };
+    if (!success) {
+      return { success: false, error };
     }
 
     // Transform database data to form format
-    const schoolData = {
-      namaSekolah: result.data.nama_sekolah || '',
-      npsn: result.data.npsn || '',
-      namaKepalaSekolah: result.data.nama_kepala_sekolah || '',
-      nipKepalaSekolah: result.data.nip_kepala_sekolah || '',
-      alamatSekolah: result.data.alamat_sekolah || '',
-      kecamatan: result.data.kecamatan || '',
+    const formData = {
+      namaSekolah: schoolData!.nama_sekolah || '',
+      npsn: schoolData!.npsn || '',
+      namaKepalaSekolah: schoolData!.nama_kepala_sekolah || '',
+      nipKepalaSekolah: schoolData!.nip_kepala_sekolah || '',
+      alamatSekolah: schoolData!.alamat_sekolah || '',
+      kecamatan: schoolData!.kecamatan || '',
     };
 
     return {
       success: true,
-      data: schoolData,
+      data: formData,
     };
   } catch (error) {
     console.error('Error fetching school info:', error);
@@ -55,25 +40,10 @@ export async function getSchoolInfoAction() {
 // Update school info
 export async function updateSchoolInfoAction(data: Step1Data) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { success, error, schoolData } = await validateAuthAndSchool();
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
-    } // Get existing school data
-    const existingResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
-    );
-
-    if (!existingResult.success || !existingResult.data) {
-      return {
-        success: false,
-        error: 'Data sekolah tidak ditemukan',
-      };
+    if (!success) {
+      return { success: false, error };
     }
 
     // Update school data
@@ -87,7 +57,7 @@ export async function updateSchoolInfoAction(data: Step1Data) {
     };
 
     const result = await SekolahService.updateSekolah(
-      existingResult.data.id,
+      schoolData!.id,
       updateData,
     );
 

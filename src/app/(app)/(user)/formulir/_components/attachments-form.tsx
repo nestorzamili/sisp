@@ -34,7 +34,10 @@ import {
 import { toast } from 'sonner';
 import { step7Schema, Step7Data } from '../_schema/attachments.schema';
 import { UploadResponse } from '@/types/lampiran';
-import { getLampiranDataAction } from '../_actions/lampiran-data.action';
+import {
+  getLampiranDataAction,
+  saveLampiranDataAction,
+} from '../_actions/lampiran-data.action';
 import Image from 'next/image';
 
 interface AttachmentsFormProps {
@@ -52,6 +55,7 @@ export function AttachmentsForm({
 }: AttachmentsFormProps) {
   const [uploading, setUploading] = useState<{ [key: number]: boolean }>({});
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<Step7Data>({
     resolver: zodResolver(step7Schema),
@@ -84,9 +88,29 @@ export function AttachmentsForm({
         setLoading(false);
       }
     }
-
     loadLampiranData();
   }, [form]);
+
+  // Handle form submission
+  async function handleSubmit(values: Step7Data) {
+    try {
+      setIsSubmitting(true);
+
+      const result = await saveLampiranDataAction(values);
+
+      if (result.success) {
+        toast.success('Data lampiran berhasil disimpan');
+        onSubmit(values);
+      } else {
+        toast.error(result.error || 'Gagal menyimpan data lampiran');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('Terjadi kesalahan saat menyimpan data');
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   const handleFileUpload = async (index: number, file: File) => {
     if (!file) return;
@@ -216,7 +240,7 @@ export function AttachmentsForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
         {' '}
         <div className="space-y-8">
           {!hideFormInfo && (
@@ -502,14 +526,26 @@ export function AttachmentsForm({
               </div>
             </div>
           )}
-        </div>
+        </div>{' '}
         {/* Navigation Buttons */}
         <div className="flex justify-between pt-6">
-          <Button type="button" variant="outline" onClick={onBack}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onBack}
+            disabled={isSubmitting || disabled}
+          >
             Kembali
           </Button>
-          <Button type="submit" disabled={disabled}>
-            Selesai & Kirim Data
+          <Button type="submit" disabled={isSubmitting || disabled}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Menyimpan...
+              </>
+            ) : (
+              'Selesai & Kirim Data'
+            )}
           </Button>
         </div>
       </form>

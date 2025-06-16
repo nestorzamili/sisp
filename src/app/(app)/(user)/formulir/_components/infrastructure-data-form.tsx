@@ -11,13 +11,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Armchair,
@@ -36,13 +29,6 @@ import {
   getInfrastructureDataAction,
   saveInfrastructureDataAction,
 } from '../_actions/infrastructure-data.action';
-
-const kondisiOptions = [
-  { value: 'baik', label: 'Baik' },
-  { value: 'rusak-ringan', label: 'Rusak Ringan' },
-  { value: 'rusak-sedang', label: 'Rusak Sedang' },
-  { value: 'rusak-berat', label: 'Rusak Berat' },
-];
 
 interface InfrastructureDataFormProps {
   onSubmit: (data: Step5Data) => void;
@@ -64,18 +50,18 @@ export function InfrastructureDataForm({
   const form = useForm<Step5Data>({
     resolver: zodResolver(step5Schema),
     defaultValues: {
-      mejaKursiSiswaTotal: '0',
-      mejaKursiSiswaBaik: '0',
-      mejaKursiSiswaRusak: '0',
-      komputerTotal: '0',
-      komputerBaik: '0',
-      komputerRusak: '0',
-      toiletSiswaTotal: '0',
-      toiletSiswaBaik: '0',
-      toiletSiswaRusak: '0',
-      toiletGuruTotal: '0',
-      toiletGuruBaik: '0',
-      toiletGuruRusak: '0',
+      mejaKursiSiswaTotal: 0,
+      mejaKursiSiswaBaik: 0,
+      mejaKursiSiswaRusak: 0,
+      komputerTotal: 0,
+      komputerBaik: 0,
+      komputerRusak: 0,
+      toiletSiswaTotal: 0,
+      toiletSiswaBaik: 0,
+      toiletSiswaRusak: 0,
+      toiletGuruTotal: 0,
+      toiletGuruBaik: 0,
+      toiletGuruRusak: 0,
       prasaranaLainnya: [],
     },
   });
@@ -172,14 +158,17 @@ export function InfrastructureDataForm({
         }
         render={({ field }) => (
           <FormItem className="space-y-2">
+            {' '}
             <FormLabel className="text-sm font-medium">Jumlah Total</FormLabel>
             <FormControl>
               <Input
                 type="number"
                 min="0"
                 placeholder="0"
-                disabled={isSubmitting || disabled}
                 {...field}
+                onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                value={field.value || 0}
+                disabled={isSubmitting || disabled}
               />
             </FormControl>
             <FormMessage />
@@ -197,14 +186,17 @@ export function InfrastructureDataForm({
         }
         render={({ field }) => (
           <FormItem className="space-y-2">
+            {' '}
             <FormLabel className="text-sm font-medium">Kondisi Baik</FormLabel>
             <FormControl>
               <Input
                 type="number"
                 min="0"
                 placeholder="0"
-                disabled={isSubmitting || disabled}
                 {...field}
+                onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                value={field.value || 0}
+                disabled={isSubmitting || disabled}
               />
             </FormControl>
             <FormMessage />
@@ -222,6 +214,7 @@ export function InfrastructureDataForm({
         }
         render={({ field }) => (
           <FormItem className="space-y-2">
+            {' '}
             <FormLabel className="text-sm font-medium">
               Kondisi Rusak/Tidak Layak
             </FormLabel>{' '}
@@ -230,8 +223,10 @@ export function InfrastructureDataForm({
                 type="number"
                 min="0"
                 placeholder="0"
-                disabled={isSubmitting || disabled}
                 {...field}
+                onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                value={field.value || 0}
+                disabled={isSubmitting || disabled}
               />
             </FormControl>
             <FormMessage />
@@ -241,7 +236,7 @@ export function InfrastructureDataForm({
     </div>
   );
   const addPrasaranaLainnya = () => {
-    append({ nama: '', jumlah: '', kondisi: '' });
+    append({ nama: '', jumlahTotal: 0, jumlahBaik: 0, jumlahRusak: 0 });
   };
 
   // Show loading state
@@ -354,22 +349,28 @@ export function InfrastructureDataForm({
                                 <FormMessage />
                               </FormItem>
                             )}
-                          />
+                          />{' '}
                           <FormField
                             control={form.control}
-                            name={`prasaranaLainnya.${index}.jumlah`}
+                            name={`prasaranaLainnya.${index}.jumlahTotal`}
                             render={({ field }) => (
                               <FormItem className="space-y-2">
                                 <FormLabel className="text-sm font-medium">
-                                  Jumlah
-                                </FormLabel>{' '}
+                                  Jumlah Total
+                                </FormLabel>
                                 <FormControl>
                                   <Input
                                     type="number"
-                                    min="1"
+                                    min="0"
                                     placeholder="0"
-                                    disabled={isSubmitting || disabled}
                                     {...field}
+                                    onChange={(e) =>
+                                      field.onChange(
+                                        Number(e.target.value) || 0,
+                                      )
+                                    }
+                                    value={field.value || 0}
+                                    disabled={isSubmitting || disabled}
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -378,33 +379,54 @@ export function InfrastructureDataForm({
                           />
                           <FormField
                             control={form.control}
-                            name={`prasaranaLainnya.${index}.kondisi`}
+                            name={`prasaranaLainnya.${index}.jumlahBaik`}
                             render={({ field }) => (
                               <FormItem className="space-y-2">
                                 <FormLabel className="text-sm font-medium">
-                                  Kondisi
-                                </FormLabel>{' '}
-                                <Select
-                                  onValueChange={field.onChange}
-                                  value={field.value}
-                                  disabled={isSubmitting || disabled}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Pilih kondisi" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    {kondisiOptions.map((option) => (
-                                      <SelectItem
-                                        key={option.value}
-                                        value={option.value}
-                                      >
-                                        {option.label}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                                  Kondisi Baik
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min="0"
+                                    placeholder="0"
+                                    {...field}
+                                    onChange={(e) =>
+                                      field.onChange(
+                                        Number(e.target.value) || 0,
+                                      )
+                                    }
+                                    value={field.value || 0}
+                                    disabled={isSubmitting || disabled}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`prasaranaLainnya.${index}.jumlahRusak`}
+                            render={({ field }) => (
+                              <FormItem className="space-y-2">
+                                <FormLabel className="text-sm font-medium">
+                                  Kondisi Rusak
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="number"
+                                    min="0"
+                                    placeholder="0"
+                                    {...field}
+                                    onChange={(e) =>
+                                      field.onChange(
+                                        Number(e.target.value) || 0,
+                                      )
+                                    }
+                                    value={field.value || 0}
+                                    disabled={isSubmitting || disabled}
+                                  />
+                                </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}

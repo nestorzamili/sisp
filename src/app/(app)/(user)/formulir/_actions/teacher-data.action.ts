@@ -1,45 +1,30 @@
 'use server';
 
-import { auth } from '@/lib/auth';
-import { SekolahService } from '@/lib/services/sekolah.service';
+import { revalidatePath } from 'next/cache';
 import { GuruService } from '@/lib/services/guru.service';
 import { Step2Data } from '../_schema/teacher-data.schema';
 import { GuruFormData } from '@/types/guru';
-import { revalidatePath } from 'next/cache';
-import { headers } from 'next/headers';
+import {
+  validateAuthAndSchool,
+  getCurrentAcademicYear,
+} from '../_utils/auth-school.util';
 
 const guruService = new GuruService();
 
 // Get existing teacher data for the current user's school
-export async function getTeacherDataAction(tahunAjaran?: string) {
+export async function getTeacherDataAction() {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { success, error, schoolData } = await validateAuthAndSchool();
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
-    }
-
-    // Get school data first
-    const schoolResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
-    );
-    if (!schoolResult.success || !schoolResult.data) {
-      return {
-        success: false,
-        error: 'Data sekolah tidak ditemukan',
-      };
+    if (!success) {
+      return { success: false, error };
     }
 
     // Get teacher data
-    const currentYear = tahunAjaran || new Date().getFullYear().toString();
+    const tahunAjaran = getCurrentAcademicYear();
     const teacherResult = await guruService.getGuruBySekolah(
-      schoolResult.data.id,
-      currentYear,
+      schoolData!.id,
+      tahunAjaran,
     );
 
     if (!teacherResult.success) {
@@ -49,36 +34,34 @@ export async function getTeacherDataAction(tahunAjaran?: string) {
       };
     }
 
-    // Transform data to form format
+    // Transform data to form format - using numbers directly
     const teacherData = teacherResult.data || [];
     const formData: Step2Data = {
-      guruPnsLaki: '0',
-      guruPnsPerempuan: '0',
-      guruPpppLaki: '0',
-      guruPpppPerempuan: '0',
-      guruGttLaki: '0',
-      guruGttPerempuan: '0',
-    };
-
-    // Fill form data from database
+      guruPnsLaki: 0,
+      guruPnsPerempuan: 0,
+      guruPpppLaki: 0,
+      guruPpppPerempuan: 0,
+      guruGttLaki: 0,
+      guruGttPerempuan: 0,
+    }; // Fill form data from database
     teacherData.forEach((guru) => {
       if (guru.status_guru === 'PNS') {
         if (guru.jenis_kelamin === 'L') {
-          formData.guruPnsLaki = guru.jumlah.toString();
+          formData.guruPnsLaki = guru.jumlah;
         } else {
-          formData.guruPnsPerempuan = guru.jumlah.toString();
+          formData.guruPnsPerempuan = guru.jumlah;
         }
       } else if (guru.status_guru === 'PPPK') {
         if (guru.jenis_kelamin === 'L') {
-          formData.guruPpppLaki = guru.jumlah.toString();
+          formData.guruPpppLaki = guru.jumlah;
         } else {
-          formData.guruPpppPerempuan = guru.jumlah.toString();
+          formData.guruPpppPerempuan = guru.jumlah;
         }
       } else if (guru.status_guru === 'Honorer') {
         if (guru.jenis_kelamin === 'L') {
-          formData.guruGttLaki = guru.jumlah.toString();
+          formData.guruGttLaki = guru.jumlah;
         } else {
-          formData.guruGttPerempuan = guru.jumlah.toString();
+          formData.guruGttPerempuan = guru.jumlah;
         }
       }
     });
@@ -102,43 +85,25 @@ export async function saveTeacherDataAction(
   tahunAjaran?: string,
 ) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { success, error, schoolData } = await validateAuthAndSchool();
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
-    }
-
-    // Get school data first
-    const schoolResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
-    );
-    if (!schoolResult.success || !schoolResult.data) {
-      return {
-        success: false,
-        error: 'Data sekolah tidak ditemukan',
-      };
-    }
-
-    // Transform form data to service format
-    const currentYear = tahunAjaran || new Date().getFullYear().toString();
+    if (!success) {
+      return { success: false, error };
+    } // Transform form data to service format
+    const currentYear = tahunAjaran || getCurrentAcademicYear();
     const guruFormData: GuruFormData = {
-      guruPnsLaki: Number(data.guruPnsLaki),
-      guruPnsPerempuan: Number(data.guruPnsPerempuan),
-      guruPpppLaki: Number(data.guruPpppLaki),
-      guruPpppPerempuan: Number(data.guruPpppPerempuan),
-      guruGttLaki: Number(data.guruGttLaki),
-      guruGttPerempuan: Number(data.guruGttPerempuan),
+      guruPnsLaki: data.guruPnsLaki,
+      guruPnsPerempuan: data.guruPnsPerempuan,
+      guruPpppLaki: data.guruPpppLaki,
+      guruPpppPerempuan: data.guruPpppPerempuan,
+      guruGttLaki: data.guruGttLaki,
+      guruGttPerempuan: data.guruGttPerempuan,
       tahun_ajaran: currentYear,
     };
 
     // Save teacher data
     const result = await guruService.saveGuruFromForm(
-      schoolResult.data.id,
+      schoolData!.id,
       guruFormData,
     );
 
@@ -160,47 +125,6 @@ export async function saveTeacherDataAction(
     return {
       success: false,
       error: 'Gagal menyimpan data guru',
-    };
-  }
-}
-
-// Get teacher statistics
-export async function getTeacherStatisticsAction(tahunAjaran?: string) {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
-    }
-
-    // Get school data first
-    const schoolResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
-    );
-    if (!schoolResult.success || !schoolResult.data) {
-      return {
-        success: false,
-        error: 'Data sekolah tidak ditemukan',
-      };
-    }
-
-    const currentYear = tahunAjaran || new Date().getFullYear().toString();
-    const result = await guruService.getGuruStatistics(
-      schoolResult.data.id,
-      currentYear,
-    );
-
-    return result;
-  } catch (error) {
-    console.error('Error fetching teacher statistics:', error);
-    return {
-      success: false,
-      error: 'Gagal mengambil statistik guru',
     };
   }
 }

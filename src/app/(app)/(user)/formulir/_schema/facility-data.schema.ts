@@ -1,77 +1,52 @@
 import { z } from 'zod';
 
-export const kondisiOptions = [
-  { value: 'baik', label: 'Baik' },
-  { value: 'rusak-ringan', label: 'Rusak Ringan' },
-  { value: 'rusak-sedang', label: 'Rusak Sedang' },
-  { value: 'rusak-berat', label: 'Rusak Berat' },
-  { value: 'tidak-ada', label: 'Tidak Ada' },
-];
-
 export const step4Schema = z.object({
   // Ruang Kelas - dengan jumlah
-  ruangKelasTotal: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  ruangKelasBaik: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  ruangKelasRusak: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
+  ruangKelasTotal: z.number().min(0, 'Harus berupa angka positif'),
+  ruangKelasBaik: z.number().min(0, 'Harus berupa angka positif'),
+  ruangKelasRusak: z.number().min(0, 'Harus berupa angka positif'),
+  ruangKelasKeterangan: z.string().optional(),
 
   // Perpustakaan - dengan jumlah
-  perpustakaanTotal: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  perpustakaanBaik: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  perpustakaanRusak: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
+  perpustakaanTotal: z.number().min(0, 'Harus berupa angka positif'),
+  perpustakaanBaik: z.number().min(0, 'Harus berupa angka positif'),
+  perpustakaanRusak: z.number().min(0, 'Harus berupa angka positif'),
+  perpustakaanKeterangan: z.string().optional(),
 
-  // Ruang-ruang lain - kondisi dan keterangan
-  ruangKepalaSekolahKondisi: z.string().min(1, 'Kondisi harus dipilih'),
+  // Ruang Kepala Sekolah - dengan jumlah
+  ruangKepalaSekolahTotal: z.number().min(0, 'Harus berupa angka positif'),
+  ruangKepalaSekolahBaik: z.number().min(0, 'Harus berupa angka positif'),
+  ruangKepalaSekolahRusak: z.number().min(0, 'Harus berupa angka positif'),
   ruangKepalaSekolahKeterangan: z.string().optional(),
 
-  ruangGuruKondisi: z.string().min(1, 'Kondisi harus dipilih'),
+  // Ruang Guru - dengan jumlah
+  ruangGuruTotal: z.number().min(0, 'Harus berupa angka positif'),
+  ruangGuruBaik: z.number().min(0, 'Harus berupa angka positif'),
+  ruangGuruRusak: z.number().min(0, 'Harus berupa angka positif'),
   ruangGuruKeterangan: z.string().optional(),
 
-  aulaPertemuanKondisi: z.string().min(1, 'Kondisi harus dipilih'),
+  // Aula Pertemuan - dengan jumlah
+  aulaPertemuanTotal: z.number().min(0, 'Harus berupa angka positif'),
+  aulaPertemuanBaik: z.number().min(0, 'Harus berupa angka positif'),
+  aulaPertemuanRusak: z.number().min(0, 'Harus berupa angka positif'),
   aulaPertemuanKeterangan: z.string().optional(),
 
-  laboratoriumIpaKondisi: z.string().min(1, 'Kondisi harus dipilih'),
+  // Laboratorium IPA - dengan jumlah
+  laboratoriumIpaTotal: z.number().min(0, 'Harus berupa angka positif'),
+  laboratoriumIpaBaik: z.number().min(0, 'Harus berupa angka positif'),
+  laboratoriumIpaRusak: z.number().min(0, 'Harus berupa angka positif'),
   laboratoriumIpaKeterangan: z.string().optional(),
 
-  laboratoriumBahasaKondisi: z.string().min(1, 'Kondisi harus dipilih'),
+  // Laboratorium Bahasa - dengan jumlah
+  laboratoriumBahasaTotal: z.number().min(0, 'Harus berupa angka positif'),
+  laboratoriumBahasaBaik: z.number().min(0, 'Harus berupa angka positif'),
+  laboratoriumBahasaRusak: z.number().min(0, 'Harus berupa angka positif'),
   laboratoriumBahasaKeterangan: z.string().optional(),
 
-  laboratoriumTikKondisi: z.string().min(1, 'Kondisi harus dipilih'),
+  // Laboratorium TIK - dengan jumlah
+  laboratoriumTikTotal: z.number().min(0, 'Harus berupa angka positif'),
+  laboratoriumTikBaik: z.number().min(0, 'Harus berupa angka positif'),
+  laboratoriumTikRusak: z.number().min(0, 'Harus berupa angka positif'),
   laboratoriumTikKeterangan: z.string().optional(),
 });
 

@@ -38,16 +38,15 @@ export function TeacherDataForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [hasExistingData, setHasExistingData] = useState(false);
-
   const form = useForm<Step2Data>({
     resolver: zodResolver(step2Schema),
     defaultValues: {
-      guruPnsLaki: '0',
-      guruPnsPerempuan: '0',
-      guruPpppLaki: '0',
-      guruPpppPerempuan: '0',
-      guruGttLaki: '0',
-      guruGttPerempuan: '0',
+      guruPnsLaki: 0,
+      guruPnsPerempuan: 0,
+      guruPpppLaki: 0,
+      guruPpppPerempuan: 0,
+      guruGttLaki: 0,
+      guruGttPerempuan: 0,
     },
   });
 
@@ -61,9 +60,7 @@ export function TeacherDataForm({
         const result = await getTeacherDataAction();
 
         if (result.success && result.data) {
-          form.reset(result.data);
-
-          // Check if there's existing data (non-zero values)
+          form.reset(result.data); // Check if there's existing data (non-zero values)
           const hasData = Object.values(result.data).some(
             (value) => Number(value) > 0,
           );

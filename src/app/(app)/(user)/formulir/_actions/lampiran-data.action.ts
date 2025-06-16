@@ -1,42 +1,25 @@
 'use server';
 
-import { auth } from '@/lib/auth';
-import { SekolahService } from '@/lib/services/sekolah.service';
 import { LampiranService } from '@/lib/services/lampiran.service';
+import { SekolahService } from '@/lib/services/sekolah.service';
 import { Step7Data } from '../_schema/attachments.schema';
-import { headers } from 'next/headers';
+import { validateAuthAndSchool } from '../_utils/auth-school.util';
 
 export async function saveLampiranDataAction(data: Step7Data) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { success, error, schoolData } = await validateAuthAndSchool();
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
+    if (!success) {
+      return { success: false, error };
     }
-
-    // Get school data first
-    const schoolResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
-    );
-    if (!schoolResult.success || !schoolResult.data) {
-      return {
-        success: false,
-        error: 'Data sekolah tidak ditemukan',
-      };
-    }
-
-    const sekolah = schoolResult.data;
 
     // Delete existing lampiran for this school first
-    await LampiranService.deleteAllLampiranBySekolahId(sekolah.id); // Save new lampiran data if provided
+    await LampiranService.deleteAllLampiranBySekolahId(schoolData!.id);
+
+    // Save new lampiran data if provided
     if (data.lampiran && data.lampiran.length > 0) {
       for (const lampiran of data.lampiran) {
-        await LampiranService.createLampiran(sekolah.id, {
+        await LampiranService.createLampiran(schoolData!.id, {
           nama_dokumen: lampiran.nama_dokumen,
           url: lampiran.url,
           keterangan: lampiran.keterangan,
@@ -45,7 +28,7 @@ export async function saveLampiranDataAction(data: Step7Data) {
     }
 
     // Update school status to PENDING when final step is submitted
-    await SekolahService.updateSekolah(sekolah.id, {
+    await SekolahService.updateSekolah(schoolData!.id, {
       status: 'PENDING',
     });
 
@@ -65,30 +48,15 @@ export async function saveLampiranDataAction(data: Step7Data) {
 
 export async function getLampiranDataAction() {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { success, error, schoolData } = await validateAuthAndSchool();
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
+    if (!success) {
+      return { success: false, error };
     }
 
-    // Get school data first
-    const schoolResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
+    const lampiran = await LampiranService.getLampiranBySekolahId(
+      schoolData!.id,
     );
-    if (!schoolResult.success || !schoolResult.data) {
-      return {
-        success: false,
-        error: 'Data sekolah tidak ditemukan',
-      };
-    }
-
-    const sekolah = schoolResult.data;
-    const lampiran = await LampiranService.getLampiranBySekolahId(sekolah.id);
 
     return {
       success: true,

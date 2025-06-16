@@ -1,48 +1,33 @@
 'use server';
 
-import { headers } from 'next/headers';
-import { auth } from '@/lib/auth';
-import { SekolahService } from '@/lib/services/sekolah.service';
-import { KebutuhanPrioritasService } from '@/lib/services/kebutuhan-prioritas.service';
 import { revalidatePath } from 'next/cache';
-import type { Step6Data } from '../_schema/priority-needs.schema';
-import type { KebutuhanPrioritasFormData } from '@/types/kebutuhan-prioritas';
+import { KebutuhanPrioritasService } from '@/lib/services/kebutuhan-prioritas.service';
+import { Step6Data } from '../_schema/priority-needs.schema';
+import { KebutuhanPrioritasFormData } from '@/types/kebutuhan-prioritas';
+import {
+  validateAuthAndSchool,
+  getCurrentYear,
+} from '../_utils/auth-school.util';
 
 // Get existing priority needs data for the current user's school
-export async function getPriorityNeedsDataAction() {
+export async function getPriorityNeedsDataAction(tahunAjaran?: string) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { success, error, schoolData } = await validateAuthAndSchool();
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
+    if (!success) {
+      return { success: false, error };
     }
 
-    const sekolahResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
-    );
-    if (!sekolahResult.success || !sekolahResult.data) {
-      return {
-        success: false,
-        error: sekolahResult.error || 'Data sekolah tidak ditemukan',
-      };
-    }
-
-    const currentYear = new Date().getFullYear();
-    const tahunAjaran = `${currentYear}/${currentYear + 1}`;
+    const currentYear = tahunAjaran || getCurrentYear();
 
     const kebutuhanPrioritasData =
       await KebutuhanPrioritasService.getKebutuhanPrioritasBySekolahIdAndTahunAjaran(
-        sekolahResult.data.id,
-        tahunAjaran,
+        schoolData!.id,
+        currentYear,
       );
 
     // Convert database data to form format
-    const formData: Partial<Step6Data> = {
+    const formData: Step6Data = {
       kebutuhanPrioritas: '',
     };
 
@@ -65,41 +50,28 @@ export async function getPriorityNeedsDataAction() {
 }
 
 // Save priority needs data for the current user's school
-export async function savePriorityNeedsDataAction(data: Step6Data) {
+export async function savePriorityNeedsDataAction(
+  data: Step6Data,
+  tahunAjaran?: string,
+) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const { success, error, schoolData } = await validateAuthAndSchool();
 
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
+    if (!success) {
+      return { success: false, error };
     }
 
-    const sekolahResult = await SekolahService.getSekolahByUserId(
-      session.user.id,
-    );
-    if (!sekolahResult.success || !sekolahResult.data) {
-      return {
-        success: false,
-        error: sekolahResult.error || 'Data sekolah tidak ditemukan',
-      };
-    }
-
-    const currentYear = new Date().getFullYear();
-    const tahunAjaran = `${currentYear}/${currentYear + 1}`;
+    const currentYear = tahunAjaran || getCurrentYear();
 
     // Convert form data to service format
     const kebutuhanPrioritasFormData: KebutuhanPrioritasFormData = {
       kebutuhanPrioritas: data.kebutuhanPrioritas,
-      tahun_ajaran: tahunAjaran,
+      tahun_ajaran: currentYear,
     };
 
     const result =
       await KebutuhanPrioritasService.saveKebutuhanPrioritasFromForm(
-        sekolahResult.data.id,
+        schoolData!.id,
         kebutuhanPrioritasFormData,
       );
 

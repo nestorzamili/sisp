@@ -2,110 +2,33 @@ import { z } from 'zod';
 
 export const step5Schema = z.object({
   // Meja dan Kursi Siswa
-  mejaKursiSiswaTotal: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  mejaKursiSiswaBaik: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  mejaKursiSiswaRusak: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
+  mejaKursiSiswaTotal: z.number().min(0, 'Harus berupa angka positif'),
+  mejaKursiSiswaBaik: z.number().min(0, 'Harus berupa angka positif'),
+  mejaKursiSiswaRusak: z.number().min(0, 'Harus berupa angka positif'),
 
   // Komputer
-  komputerTotal: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  komputerBaik: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  komputerRusak: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
+  komputerTotal: z.number().min(0, 'Harus berupa angka positif'),
+  komputerBaik: z.number().min(0, 'Harus berupa angka positif'),
+  komputerRusak: z.number().min(0, 'Harus berupa angka positif'),
 
   // Toilet Siswa
-  toiletSiswaTotal: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  toiletSiswaBaik: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  toiletSiswaRusak: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
+  toiletSiswaTotal: z.number().min(0, 'Harus berupa angka positif'),
+  toiletSiswaBaik: z.number().min(0, 'Harus berupa angka positif'),
+  toiletSiswaRusak: z.number().min(0, 'Harus berupa angka positif'),
 
   // Toilet Guru
-  toiletGuruTotal: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  toiletGuruBaik: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
-  toiletGuruRusak: z
-    .string()
-    .min(1, 'Harus diisi')
-    .refine(
-      (val) => !isNaN(Number(val)) && Number(val) >= 0,
-      'Harus berupa angka',
-    ),
+  toiletGuruTotal: z.number().min(0, 'Harus berupa angka positif'),
+  toiletGuruBaik: z.number().min(0, 'Harus berupa angka positif'),
+  toiletGuruRusak: z.number().min(0, 'Harus berupa angka positif'),
 
-  // Prasarana Lainnya
+  // Prasarana Lainnya - updated to use counts instead of condition strings
   prasaranaLainnya: z
     .array(
       z.object({
         nama: z.string().min(1, 'Nama prasarana harus diisi'),
-        jumlah: z
-          .string()
-          .min(1, 'Jumlah harus diisi')
-          .refine(
-            (val) => !isNaN(Number(val)) && Number(val) > 0,
-            'Harus berupa angka positif',
-          ),
-        kondisi: z.string().min(1, 'Kondisi harus dipilih'),
+        jumlahTotal: z.number().min(1, 'Jumlah total harus lebih dari 0'),
+        jumlahBaik: z.number().min(0, 'Harus berupa angka positif'),
+        jumlahRusak: z.number().min(0, 'Harus berupa angka positif'),
       }),
     )
     .optional(),
