@@ -60,18 +60,21 @@ export function AppHeader() {
                 Bidang Sarana dan Prasarana SMP
               </span>
             </div>
-          </div>
-
+          </div>{' '}
           {/* Center Navigation Items - Desktop */}
           <div className="hidden md:flex items-center space-x-1">
             {navigationItems.map((item) => {
               const IconComponent = item.icon;
               return (
-                <Link key={item.href} href={item.href}>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="cursor-pointer"
+                >
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer ${
                       item.isActive
                         ? 'text-primary-foreground bg-primary shadow-lg'
                         : 'text-foreground hover:text-primary hover:bg-background/50'
@@ -88,52 +91,16 @@ export function AppHeader() {
             <Button
               variant="ghost"
               size="sm"
-              className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-foreground hover:text-primary hover:bg-background/50 flex items-center gap-2"
+              className="px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 text-foreground hover:text-primary hover:bg-background/50 flex items-center gap-2 cursor-pointer"
             >
               <HelpCircle className="w-4 h-4" />
               Bantuan
             </Button>
-          </div>
-
+          </div>{' '}
           {/* Right Navigation Items */}
           <div className="flex items-center space-x-4">
-            {/* Mobile Navigation */}
-            <div className="md:hidden flex items-center space-x-2">
-              {navigationItems.map((item) => {
-                const IconComponent = item.icon;
-                return (
-                  <Link key={item.href} href={item.href}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className={`text-sm font-medium transition-all duration-200 flex items-center gap-1 ${
-                        item.isActive
-                          ? 'text-primary-foreground bg-primary'
-                          : 'text-foreground hover:text-primary'
-                      }`}
-                    >
-                      <IconComponent className="w-4 h-4" />
-                      <span className="hidden sm:inline">{item.label}</span>
-                    </Button>
-                  </Link>
-                );
-              })}
-
-              {/* Mobile Bantuan */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="flex items-center gap-1 text-sm font-medium transition-all duration-200 text-foreground hover:text-primary"
-              >
-                <HelpCircle className="w-4 h-4" />
-                <span className="hidden sm:inline">Bantuan</span>
-              </Button>
-            </div>
-
             <NotificationDropdown />
-
             <ModeToggle />
-
             <ProfileDropdown />
           </div>
         </div>

@@ -20,7 +20,9 @@ const Statistics: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-6">
                 <div className="border border-border rounded-lg p-6 text-center bg-card">
-                  <div className="text-4xl font-bold text-primary mb-2">43</div>
+                  <div className="text-4xl font-bold text-primary mb-2">
+                    138
+                  </div>
                   <div className="text-muted-foreground">Total SMP</div>
                 </div>
                 <div className="border border-border rounded-lg p-6 text-center bg-card">

@@ -135,51 +135,48 @@ const Header: React.FC = () => {
                   Bidang Sarana dan Prasarana SMP
                 </span>
               </div>
-            </div>
-
+            </div>{' '}
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-1">
               {navItems.map((item) => (
-                <button
+                <Button
                   key={item.id}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                    activeTab === item.id
-                      ? 'text-primary-foreground bg-primary shadow-lg'
-                      : 'text-foreground hover:text-primary hover:bg-background/50'
+                  variant={activeTab === item.id ? 'default' : 'ghost'}
+                  size="sm"
+                  className={`px-4 py-2 text-sm font-medium transition-all duration-200 cursor-pointer ${
+                    activeTab === item.id ? 'shadow-lg' : 'hover:text-primary'
                   }`}
                   onClick={() => handleNavClick(item.id)}
                 >
                   {item.label}
-                </button>
+                </Button>
               ))}
-            </nav>
-
+            </nav>{' '}
             {/* Desktop Auth Buttons */}
             <div className="hidden lg:flex items-center space-x-3">
               <ModeToggle />
-              <Link href="/sign-up">
+              <Link href="/sign-up" className="cursor-pointer">
                 <Button
                   variant="ghost"
                   size={isScrolled ? 'sm' : 'default'}
-                  className="btn-ghost"
+                  className="btn-ghost cursor-pointer"
                 >
                   Daftar
                 </Button>
               </Link>
-              <Link href="/sign-in">
+              <Link href="/sign-in" className="cursor-pointer">
                 <Button
                   size={isScrolled ? 'sm' : 'default'}
-                  className="btn-primary"
+                  className="btn-primary cursor-pointer"
                 >
                   <LogIn className="mr-2" size={16} />
                   Masuk
                 </Button>
               </Link>
-            </div>
-
+            </div>{' '}
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden p-2 rounded-xl hover:bg-background/50 transition-colors"
+              className="lg:hidden p-2 rounded-xl hover:bg-background/50 transition-colors cursor-pointer"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
@@ -197,34 +194,34 @@ const Header: React.FC = () => {
             }`}
           >
             <div className="pb-4 pt-2 bg-background/90 backdrop-blur-xl rounded-xl mt-2 border border-border">
+              {' '}
               <nav className="flex flex-col space-y-1 mt-2 px-4">
                 {navItems.map((item) => (
-                  <button
+                  <Button
                     key={item.id}
-                    className={`px-4 py-3 rounded-lg text-sm font-medium text-left transition-all duration-200 ${
-                      activeTab === item.id
-                        ? 'text-primary-foreground bg-primary'
-                        : 'text-foreground hover:bg-background/50 hover:text-primary'
+                    variant={activeTab === item.id ? 'default' : 'ghost'}
+                    size="sm"
+                    className={`justify-start px-4 py-3 text-sm font-medium transition-all duration-200 cursor-pointer ${
+                      activeTab === item.id ? '' : 'hover:text-primary'
                     }`}
                     onClick={() => handleNavClick(item.id)}
                   >
                     {item.label}
-                  </button>
+                  </Button>
                 ))}
-              </nav>
-
+              </nav>{' '}
               {/* Mobile Auth Buttons */}
               <div className="flex flex-col space-y-3 mt-4 pt-4 px-4 border-t border-border">
-                <Link href="/sign-up">
+                <Link href="/sign-up" className="cursor-pointer">
                   <Button
                     variant="ghost"
-                    className="w-full justify-start btn-ghost"
+                    className="w-full justify-start btn-ghost cursor-pointer"
                   >
                     Daftar
                   </Button>
                 </Link>
-                <Link href="/sign-in">
-                  <Button className="w-full justify-start btn-primary">
+                <Link href="/sign-in" className="cursor-pointer">
+                  <Button className="w-full justify-start btn-primary cursor-pointer">
                     <LogIn className="mr-2" size={16} />
                     Login Sekolah
                   </Button>

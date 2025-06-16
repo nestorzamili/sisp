@@ -50,6 +50,9 @@ const categoriesData: CategoryData[] = [
     icon: Wrench,
     items: [
       { name: 'Meja dan Kursi Siswa', icon: GraduationCap },
+      { name: 'Meja Kayu', icon: GraduationCap },
+      { name: 'Kursi Kayu', icon: GraduationCap },
+      { name: 'Black Board', icon: BookOpen },
       { name: 'Komputer', icon: Laptop },
       { name: 'Toilet Siswa', icon: DoorOpen },
       { name: 'Toilet Guru', icon: UserCheck },
@@ -81,9 +84,9 @@ const Facilities: React.FC = () => {
                   Kategori Sarana
                 </div>
               </div>
-              <div className="w-px h-12 bg-border"></div>
+              <div className="w-px h-12 bg-border"></div>{' '}
               <div className="text-center">
-                <div className="text-3xl font-bold text-primary">5+</div>
+                <div className="text-3xl font-bold text-primary">10+</div>
                 <div className="text-sm text-muted-foreground">
                   Kategori Prasarana
                 </div>
