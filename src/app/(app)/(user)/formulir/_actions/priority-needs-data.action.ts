@@ -6,19 +6,18 @@ import { Step6Data } from '../_schema/priority-needs.schema';
 import { KebutuhanPrioritasFormData } from '@/types/kebutuhan-prioritas';
 import {
   validateAuthAndSchool,
-  getCurrentYear,
+  getCurrentAcademicYear,
 } from '../_utils/auth-school.util';
 
 // Get existing priority needs data for the current user's school
 export async function getPriorityNeedsDataAction(tahunAjaran?: string) {
   try {
     const { success, error, schoolData } = await validateAuthAndSchool();
-
     if (!success) {
       return { success: false, error };
     }
 
-    const currentYear = tahunAjaran || getCurrentYear();
+    const currentYear = tahunAjaran || getCurrentAcademicYear();
 
     const kebutuhanPrioritasData =
       await KebutuhanPrioritasService.getKebutuhanPrioritasBySekolahIdAndTahunAjaran(
@@ -29,9 +28,7 @@ export async function getPriorityNeedsDataAction(tahunAjaran?: string) {
     // Convert database data to form format
     const formData: Step6Data = {
       kebutuhanPrioritas: '',
-    };
-
-    // If we have priority needs data, get the first one's explanation
+    }; // If we have priority needs data, get the first one's explanation
     if (kebutuhanPrioritasData.length > 0) {
       formData.kebutuhanPrioritas = kebutuhanPrioritasData[0].penjelasan;
     }
@@ -56,12 +53,11 @@ export async function savePriorityNeedsDataAction(
 ) {
   try {
     const { success, error, schoolData } = await validateAuthAndSchool();
-
     if (!success) {
       return { success: false, error };
     }
 
-    const currentYear = tahunAjaran || getCurrentYear();
+    const currentYear = tahunAjaran || getCurrentAcademicYear();
 
     // Convert form data to service format
     const kebutuhanPrioritasFormData: KebutuhanPrioritasFormData = {
