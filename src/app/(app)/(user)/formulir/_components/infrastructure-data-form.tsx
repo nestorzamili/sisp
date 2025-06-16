@@ -48,12 +48,14 @@ interface InfrastructureDataFormProps {
   onSubmit: (data: Step5Data) => void;
   onBack: () => void;
   disabled?: boolean;
+  hideCompletionStatus?: boolean;
 }
 
 export function InfrastructureDataForm({
   onSubmit,
   onBack,
   disabled = false,
+  hideCompletionStatus = false,
 }: InfrastructureDataFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -277,9 +279,9 @@ export function InfrastructureDataForm({
           Lengkapi data kondisi prasarana sekolah untuk analisis prioritas
           kebutuhan
         </p>
-      </div>
+      </div>{' '}
       {/* Existing Data Alert */}
-      {hasExistingData && (
+      {hasExistingData && !hideCompletionStatus && (
         <Alert className="border-green-200 bg-green-50">
           <CheckCircle className="w-4 h-4 text-green-600" />
           <AlertDescription className="text-green-800">

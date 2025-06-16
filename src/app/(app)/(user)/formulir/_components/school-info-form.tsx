@@ -36,11 +36,13 @@ import { KECAMATAN_LIST } from '@/constants/kecamatan';
 interface SchoolInfoFormProps {
   onSubmit: (data: Step1Data) => void;
   disabled?: boolean;
+  hideCompletionStatus?: boolean;
 }
 
 export function SchoolInfoForm({
   onSubmit,
   disabled = false,
+  hideCompletionStatus = false,
 }: SchoolInfoFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -165,11 +167,10 @@ export function SchoolInfoForm({
       </Alert>
     );
   }
-
   return (
     <div className="space-y-6">
       {/* Completion Status */}
-      {existingData && (
+      {existingData && !hideCompletionStatus && (
         <div
           className={`rounded-lg border p-4 ${
             completionPercentage === 100

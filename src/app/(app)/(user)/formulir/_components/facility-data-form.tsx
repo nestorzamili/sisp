@@ -43,6 +43,7 @@ interface FacilityDataFormProps {
   onBack: () => void;
   initialData?: Partial<Step4Data>;
   disabled?: boolean;
+  hideCompletionStatus?: boolean;
 }
 
 export function FacilityDataForm({
@@ -50,6 +51,7 @@ export function FacilityDataForm({
   onBack,
   initialData,
   disabled = false,
+  hideCompletionStatus = false,
 }: FacilityDataFormProps) {
   const [isFormLoading, setIsFormLoading] = useState(true);
   const [hasExistingData, setHasExistingData] = useState(false);
@@ -311,9 +313,9 @@ export function FacilityDataForm({
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
             Lengkapi informasi mengenai kondisi sarana fisik di sekolah Anda
           </p>
-        </div>
+        </div>{' '}
         {/* Existing Data Alert */}
-        {hasExistingData && (
+        {hasExistingData && !hideCompletionStatus && (
           <Alert className="border-green-200 bg-green-50">
             <CheckCircle className="w-4 h-4 text-green-600" />
             <AlertDescription className="text-green-800">

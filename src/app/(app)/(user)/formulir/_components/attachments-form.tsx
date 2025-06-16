@@ -41,12 +41,14 @@ interface AttachmentsFormProps {
   onSubmit: (data: Step7Data) => void;
   onBack: () => void;
   disabled?: boolean;
+  hideFormInfo?: boolean;
 }
 
 export function AttachmentsForm({
   onSubmit,
   onBack,
   disabled = false,
+  hideFormInfo = false,
 }: AttachmentsFormProps) {
   const [uploading, setUploading] = useState<{ [key: number]: boolean }>({});
   const [loading, setLoading] = useState(true);
@@ -215,44 +217,51 @@ export function AttachmentsForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        {' '}
         <div className="space-y-8">
-          <div className="text-center mb-8">
-            <h3 className="text-xl font-bold text-foreground mb-2">
-              Lampiran Dokumen Pendukung (Opsional)
-            </h3>
-            <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-              Upload dokumen pendukung seperti foto kondisi sarana prasarana,
-              data siswa, rencana pengembangan, atau dokumen lainnya yang
-              relevan (tidak wajib)
-            </p>
-          </div>
-
-          {/* Upload Guidelines */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <h4 className="font-medium text-blue-900 mb-2">
-                  Panduan Upload Dokumen
-                </h4>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>
-                    • Format file yang didukung: PDF, JPG, JPEG, PNG, WebP
-                    (Maksimal 5MB per file)
-                  </li>
-                  <li>
-                    • Pastikan foto kondisi sarana prasarana jelas dan dapat
-                    menunjukkan kondisi sebenarnya
-                  </li>
-                  <li>
-                    • Berikan keterangan yang jelas untuk setiap dokumen yang
-                    diupload
-                  </li>
-                  <li>• Dokumen akan diverifikasi oleh tim Dinas Pendidikan</li>
-                </ul>
+          {!hideFormInfo && (
+            <>
+              <div className="text-center mb-8">
+                <h3 className="text-xl font-bold text-foreground mb-2">
+                  Lampiran Dokumen Pendukung (Opsional)
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
+                  Upload dokumen pendukung seperti foto kondisi sarana
+                  prasarana, data siswa, rencana pengembangan, atau dokumen
+                  lainnya yang relevan (tidak wajib)
+                </p>
               </div>
-            </div>
-          </div>
+
+              {/* Upload Guidelines */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h4 className="font-medium text-blue-900 mb-2">
+                      Panduan Upload Dokumen
+                    </h4>
+                    <ul className="text-sm text-blue-800 space-y-1">
+                      <li>
+                        • Format file yang didukung: PDF, JPG, JPEG, PNG, WebP
+                        (Maksimal 5MB per file)
+                      </li>
+                      <li>
+                        • Pastikan foto kondisi sarana prasarana jelas dan dapat
+                        menunjukkan kondisi sebenarnya
+                      </li>
+                      <li>
+                        • Berikan keterangan yang jelas untuk setiap dokumen
+                        yang diupload
+                      </li>
+                      <li>
+                        • Dokumen akan diverifikasi oleh tim Dinas Pendidikan
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Add Initial Button if no attachments */}
           {fields.length === 0 && (
@@ -494,7 +503,6 @@ export function AttachmentsForm({
             </div>
           )}
         </div>
-
         {/* Navigation Buttons */}
         <div className="flex justify-between pt-6">
           <Button type="button" variant="outline" onClick={onBack}>

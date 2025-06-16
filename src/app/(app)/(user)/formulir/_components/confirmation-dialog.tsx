@@ -31,7 +31,7 @@ export function ConfirmationDialog({
             <Send className="w-5 h-5 text-blue-600" />
             Konfirmasi Pengiriman Data
           </DialogTitle>
-        </DialogHeader>
+        </DialogHeader>{' '}
         <div className="space-y-4">
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <div className="flex items-start gap-3">
@@ -40,21 +40,6 @@ export function ConfirmationDialog({
                 <p className="font-medium text-blue-900">
                   Data akan dikirim untuk direview oleh admin
                 </p>
-                <ul className="text-sm text-blue-800 space-y-1">
-                  <li>
-                    • Data Anda akan diperiksa dan diverifikasi oleh tim Dinas
-                    Pendidikan
-                  </li>
-                  <li>• Proses review biasanya memakan waktu 1-3 hari kerja</li>
-                  <li>
-                    • Selama menunggu persetujuan, data masih dapat diubah jika
-                    diperlukan
-                  </li>
-                  <li>
-                    • Anda akan mendapat notifikasi melalui email setelah data
-                    disetujui
-                  </li>
-                </ul>
               </div>
             </div>
           </div>

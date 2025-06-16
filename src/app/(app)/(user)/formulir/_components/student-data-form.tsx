@@ -30,12 +30,14 @@ interface StudentDataFormProps {
   onSubmit: (data: Step3Data) => void;
   onBack: () => void;
   disabled?: boolean;
+  hideCompletionStatus?: boolean;
 }
 
 export function StudentDataForm({
   onSubmit,
   onBack,
   disabled = false,
+  hideCompletionStatus = false,
 }: StudentDataFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -222,9 +224,9 @@ export function StudentDataForm({
           Masukkan jumlah siswa berdasarkan tingkat kelas dan jenis kelamin di
           sekolah Anda
         </p>
-      </div>
+      </div>{' '}
       {/* Progress indicator */}
-      {hasExistingData && (
+      {hasExistingData && !hideCompletionStatus && (
         <Alert className="border-green-200 bg-green-50">
           <CheckCircle2 className="h-4 w-4 text-green-600" />
           <AlertDescription className="text-green-800">

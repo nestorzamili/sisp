@@ -25,12 +25,14 @@ interface TeacherDataFormProps {
   onSubmit: (data: Step2Data) => void;
   onBack: () => void;
   disabled?: boolean;
+  hideCompletionStatus?: boolean;
 }
 
 export function TeacherDataForm({
   onSubmit,
   onBack,
   disabled = false,
+  hideCompletionStatus = false,
 }: TeacherDataFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -220,10 +222,9 @@ export function TeacherDataForm({
           Masukkan jumlah guru berdasarkan status kepegawaian dan jenis kelamin
           di sekolah Anda
         </p>
-      </div>
-
+      </div>{' '}
       {/* Progress indicator */}
-      {hasExistingData && (
+      {hasExistingData && !hideCompletionStatus && (
         <Alert className="border-green-200 bg-green-50">
           <CheckCircle2 className="h-4 w-4 text-green-600" />
           <AlertDescription className="text-green-800">
@@ -233,7 +234,6 @@ export function TeacherDataForm({
           </AlertDescription>
         </Alert>
       )}
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
           {' '}

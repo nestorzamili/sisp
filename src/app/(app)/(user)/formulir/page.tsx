@@ -326,17 +326,20 @@ export default function FormulirPage() {
             );
           })()}
         <Card className="p-4 md:p-6 shadow-sm border border-border/60 bg-background">
+          {' '}
           {currentStep === 1 && (
             <SchoolInfoForm
               onSubmit={onStep1Submit}
               disabled={isFormDisabled}
+              hideCompletionStatus={isFormDisabled}
             />
-          )}
+          )}{' '}
           {currentStep === 2 && (
             <TeacherDataForm
               onSubmit={onStep2Submit}
               onBack={() => setCurrentStep(1)}
               disabled={isFormDisabled}
+              hideCompletionStatus={isFormDisabled}
             />
           )}
           {currentStep === 3 && (
@@ -344,6 +347,7 @@ export default function FormulirPage() {
               onSubmit={onStep3Submit}
               onBack={() => setCurrentStep(2)}
               disabled={isFormDisabled}
+              hideCompletionStatus={isFormDisabled}
             />
           )}{' '}
           {currentStep === 4 && (
@@ -352,6 +356,7 @@ export default function FormulirPage() {
               onBack={() => setCurrentStep(3)}
               initialData={step4InitialData || undefined}
               disabled={isFormDisabled}
+              hideCompletionStatus={isFormDisabled}
             />
           )}
           {currentStep === 5 && (
@@ -359,6 +364,7 @@ export default function FormulirPage() {
               onSubmit={onStep5Submit}
               onBack={() => setCurrentStep(4)}
               disabled={isFormDisabled}
+              hideCompletionStatus={isFormDisabled}
             />
           )}
           {currentStep === 6 && (
@@ -366,6 +372,7 @@ export default function FormulirPage() {
               onSubmit={onStep6Submit}
               onBack={() => setCurrentStep(5)}
               disabled={isFormDisabled}
+              hideCompletionStatus={isFormDisabled}
             />
           )}{' '}
           {currentStep === 7 && (
@@ -373,6 +380,7 @@ export default function FormulirPage() {
               onSubmit={onStep7Submit}
               onBack={() => setCurrentStep(6)}
               disabled={isFormDisabled}
+              hideFormInfo={isFormDisabled}
             />
           )}
         </Card>

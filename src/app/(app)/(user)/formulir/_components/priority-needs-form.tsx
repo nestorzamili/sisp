@@ -21,12 +21,14 @@ interface PriorityNeedsFormProps {
   onSubmit: (data: Step6Data) => void;
   onBack: () => void;
   disabled?: boolean;
+  hideCompletionStatus?: boolean;
 }
 
 export function PriorityNeedsForm({
   onSubmit,
   onBack,
   disabled = false,
+  hideCompletionStatus = false,
 }: PriorityNeedsFormProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -116,10 +118,9 @@ export function PriorityNeedsForm({
           Jelaskan kebutuhan prioritas sarana dan prasarana sekolah Anda untuk
           membantu analisis dan perencanaan pembangunan yang lebih tepat sasaran
         </p>
-      </div>
-
+      </div>{' '}
       {/* Existing Data Alert */}
-      {hasExistingData && (
+      {hasExistingData && !hideCompletionStatus && (
         <Alert className="border-green-200 bg-green-50">
           <CheckCircle className="w-4 h-4 text-green-600" />
           <AlertDescription className="text-green-800">
@@ -128,7 +129,6 @@ export function PriorityNeedsForm({
           </AlertDescription>
         </Alert>
       )}
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
           <div className="space-y-6">
