@@ -168,7 +168,9 @@ export function InfrastructureDataForm({
                 {...field}
                 onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                 value={field.value || 0}
-                disabled={isSubmitting || disabled}
+                readOnly={disabled}
+                disabled={isSubmitting}
+                className={disabled ? 'cursor-default' : ''}
               />
             </FormControl>
             <FormMessage />
@@ -196,7 +198,9 @@ export function InfrastructureDataForm({
                 {...field}
                 onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                 value={field.value || 0}
-                disabled={isSubmitting || disabled}
+                readOnly={disabled}
+                disabled={isSubmitting}
+                className={disabled ? 'cursor-default' : ''}
               />
             </FormControl>
             <FormMessage />
@@ -226,7 +230,9 @@ export function InfrastructureDataForm({
                 {...field}
                 onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                 value={field.value || 0}
-                disabled={isSubmitting || disabled}
+                readOnly={disabled}
+                disabled={isSubmitting}
+                className={disabled ? 'cursor-default' : ''}
               />
             </FormControl>
             <FormMessage />
@@ -342,7 +348,9 @@ export function InfrastructureDataForm({
                                 <FormControl>
                                   <Input
                                     placeholder="Contoh: Papan Tulis"
-                                    disabled={isSubmitting || disabled}
+                                    readOnly={disabled}
+                                    disabled={isSubmitting}
+                                    className={disabled ? 'cursor-default' : ''}
                                     {...field}
                                   />
                                 </FormControl>
@@ -370,7 +378,9 @@ export function InfrastructureDataForm({
                                       )
                                     }
                                     value={field.value || 0}
-                                    disabled={isSubmitting || disabled}
+                                    readOnly={disabled}
+                                    disabled={isSubmitting}
+                                    className={disabled ? 'cursor-default' : ''}
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -397,7 +407,9 @@ export function InfrastructureDataForm({
                                       )
                                     }
                                     value={field.value || 0}
-                                    disabled={isSubmitting || disabled}
+                                    readOnly={disabled}
+                                    disabled={isSubmitting}
+                                    className={disabled ? 'cursor-default' : ''}
                                   />
                                 </FormControl>
                                 <FormMessage />
@@ -424,7 +436,9 @@ export function InfrastructureDataForm({
                                       )
                                     }
                                     value={field.value || 0}
-                                    disabled={isSubmitting || disabled}
+                                    readOnly={disabled}
+                                    disabled={isSubmitting}
+                                    className={disabled ? 'cursor-default' : ''}
                                   />
                                 </FormControl>
                                 <FormMessage />

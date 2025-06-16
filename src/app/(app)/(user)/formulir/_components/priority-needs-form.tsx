@@ -152,12 +152,13 @@ export function PriorityNeedsForm({
                 <FormItem className="space-y-2">
                   <FormLabel className="text-sm font-medium">
                     Deskripsi Kebutuhan Prioritas
-                  </FormLabel>
+                  </FormLabel>{' '}
                   <FormControl>
                     <Textarea
                       placeholder="Contoh: Pembangunan 2 ruang kelas baru karena kekurangan ruang untuk menampung 180 siswa, renovasi laboratorium IPA yang atapnya bocor, pengadaan 50 set meja kursi siswa untuk mengganti yang rusak, perbaikan toilet siswa yang tidak berfungsi, dll..."
-                      className="min-h-32 resize-y"
-                      disabled={isSubmitting || disabled}
+                      className={`min-h-32 resize-y ${disabled ? 'cursor-default' : ''}`}
+                      readOnly={disabled}
+                      disabled={isSubmitting}
                       {...field}
                     />
                   </FormControl>

@@ -147,16 +147,17 @@ export function StudentDataForm({
             <FormItem className="space-y-2">
               <FormLabel className="text-sm font-medium text-foreground">
                 Laki-laki
-              </FormLabel>
+              </FormLabel>{' '}
               <FormControl>
                 <Input
                   type="number"
                   min="0"
                   placeholder="0"
-                  value={field.value}
+                  value={field.value || 0}
                   onChange={(e) => field.onChange(Number(e.target.value) || 0)}
-                  disabled={isSubmitting || disabled}
-                  className="text-center"
+                  readOnly={disabled}
+                  disabled={isSubmitting}
+                  className={disabled ? 'cursor-default' : ''}
                 />
               </FormControl>
               <FormMessage />
@@ -176,10 +177,11 @@ export function StudentDataForm({
                   type="number"
                   min="0"
                   placeholder="0"
-                  value={field.value}
+                  value={field.value || 0}
                   onChange={(e) => field.onChange(Number(e.target.value) || 0)}
-                  disabled={isSubmitting || disabled}
-                  className="text-center"
+                  readOnly={disabled}
+                  disabled={isSubmitting}
+                  className={disabled ? 'cursor-default' : ''}
                 />
               </FormControl>
               <FormMessage />

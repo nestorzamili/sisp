@@ -14,20 +14,15 @@ import { AttachmentsForm } from './_components/attachments-form';
 import { ConfirmationDialog } from './_components/confirmation-dialog';
 import { SuccessDialog } from './_components/success-dialog';
 import { toast } from 'sonner';
-import {
-  Step1Data,
-  Step2Data,
-  Step3Data,
-  Step4Data,
-  Step5Data,
-  Step6Data,
-} from '@/types/user-home.types';
+import { Step1Data } from '@/types/user-home.types';
+import { Step2Data } from './_schema/teacher-data.schema';
+import { Step3Data } from './_schema/student-data.schema';
+import { Step4Data } from './_schema/facility-data.schema';
+import { Step5Data } from './_schema/infrastructure-data.schema';
+import { Step6Data } from './_schema/priority-needs.schema';
 import { Step7Data } from './_schema/attachments.schema';
 import { getDataCompletionStatusAction } from './_actions/data-completion.action';
-import {
-  saveFacilityDataAction,
-  getFacilityDataAction,
-} from './_actions/facility-data.action';
+import { saveFacilityDataAction } from './_actions/facility-data.action';
 import { saveInfrastructureDataAction } from './_actions/infrastructure-data.action';
 import { savePriorityNeedsDataAction } from './_actions/priority-needs-data.action';
 import { saveLampiranDataAction } from './_actions/lampiran-data.action';
@@ -38,8 +33,6 @@ import { saveStudentDataAction } from './_actions/student-data.action';
 export default function FormulirPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [step4InitialData, setStep4InitialData] =
-    useState<Partial<Step4Data> | null>(null);
   const [dataCompletionStatus, setDataCompletionStatus] = useState({
     sekolahStatus: '',
     step1: false,
@@ -77,8 +70,7 @@ export default function FormulirPage() {
           bgColor: 'bg-green-50 border-green-200',
           textColor: 'text-green-800',
           title: 'Data Disetujui',
-          message:
-            'Data Anda telah diverifikasi dan disetujui oleh Dinas Pendidikan.',
+          message: 'Data Anda telah diverifikasi dan disetujui.',
         };
       default:
         return {
@@ -122,24 +114,6 @@ export default function FormulirPage() {
     }
     loadCompletionStatus();
   }, []);
-
-  // Load facility data when step 4 is accessed
-  useEffect(() => {
-    async function loadFacilityData() {
-      if (currentStep === 4 && !step4InitialData) {
-        try {
-          const result = await getFacilityDataAction();
-          if (result.success && result.data) {
-            setStep4InitialData(result.data);
-          }
-        } catch (error) {
-          console.error('Error loading facility data:', error);
-        }
-      }
-    }
-
-    loadFacilityData();
-  }, [currentStep, step4InitialData]);
   // Refresh completion status after form submissions
   const refreshCompletionStatus = async () => {
     const result = await getDataCompletionStatusAction();
@@ -354,7 +328,6 @@ export default function FormulirPage() {
             <FacilityDataForm
               onSubmit={onStep4Submit}
               onBack={() => setCurrentStep(3)}
-              initialData={step4InitialData || undefined}
               disabled={isFormDisabled}
               hideCompletionStatus={isFormDisabled}
             />

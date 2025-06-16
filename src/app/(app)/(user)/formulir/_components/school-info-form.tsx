@@ -212,15 +212,16 @@ export function SchoolInfoForm({
                     {hasExistingData('namaSekolah') && (
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
                     )}
-                  </FormLabel>
+                  </FormLabel>{' '}
                   <FormControl>
                     <Input
                       placeholder="Masukkan nama sekolah"
                       {...field}
-                      disabled={isSubmitting || disabled}
-                      className={
+                      readOnly={disabled}
+                      disabled={isSubmitting}
+                      className={`${
                         hasExistingData('namaSekolah') ? 'border-green-200' : ''
-                      }
+                      } ${disabled ? 'cursor-default' : ''}`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -238,16 +239,17 @@ export function SchoolInfoForm({
                     {hasExistingData('npsn') && (
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
                     )}
-                  </FormLabel>
+                  </FormLabel>{' '}
                   <FormControl>
                     <Input
                       placeholder="8 digit NPSN"
                       maxLength={8}
                       {...field}
-                      disabled={isSubmitting || disabled}
-                      className={
+                      readOnly={disabled}
+                      disabled={isSubmitting}
+                      className={`${
                         hasExistingData('npsn') ? 'border-green-200' : ''
-                      }
+                      } ${disabled ? 'cursor-default' : ''}`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -265,17 +267,18 @@ export function SchoolInfoForm({
                     {hasExistingData('namaKepalaSekolah') && (
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
                     )}
-                  </FormLabel>
+                  </FormLabel>{' '}
                   <FormControl>
                     <Input
                       placeholder="Masukkan nama kepala sekolah"
                       {...field}
-                      disabled={isSubmitting || disabled}
-                      className={
+                      readOnly={disabled}
+                      disabled={isSubmitting}
+                      className={`${
                         hasExistingData('namaKepalaSekolah')
                           ? 'border-green-200'
                           : ''
-                      }
+                      } ${disabled ? 'cursor-default' : ''}`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -293,18 +296,19 @@ export function SchoolInfoForm({
                     {hasExistingData('nipKepalaSekolah') && (
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
                     )}
-                  </FormLabel>
+                  </FormLabel>{' '}
                   <FormControl>
                     <Input
                       placeholder="18 digit NIP"
                       maxLength={18}
                       {...field}
-                      disabled={isSubmitting || disabled}
-                      className={
+                      readOnly={disabled}
+                      disabled={isSubmitting}
+                      className={`${
                         hasExistingData('nipKepalaSekolah')
                           ? 'border-green-200'
                           : ''
-                      }
+                      } ${disabled ? 'cursor-default' : ''}`}
                     />
                   </FormControl>
                   <FormMessage />
@@ -322,17 +326,16 @@ export function SchoolInfoForm({
                     {hasExistingData('kecamatan') && (
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
                     )}
-                  </FormLabel>
-                  <Select
+                  </FormLabel>{' '}                  <Select
                     onValueChange={field.onChange}
                     value={field.value}
                     disabled={isSubmitting || disabled}
                   >
                     <FormControl>
                       <SelectTrigger
-                        className={
+                        className={`${
                           hasExistingData('kecamatan') ? 'border-green-200' : ''
-                        }
+                        } ${disabled ? 'cursor-default' : ''}`}
                       >
                         <SelectValue placeholder="Pilih kecamatan" />
                       </SelectTrigger>
@@ -361,15 +364,16 @@ export function SchoolInfoForm({
                   {hasExistingData('alamatSekolah') && (
                     <CheckCircle2 className="w-4 h-4 text-green-500" />
                   )}
-                </FormLabel>
+                </FormLabel>{' '}
                 <FormControl>
                   <Textarea
                     placeholder="Masukkan alamat lengkap sekolah"
                     {...field}
-                    disabled={isSubmitting || disabled}
+                    readOnly={disabled}
+                    disabled={isSubmitting}
                     className={`min-h-[100px] ${
                       hasExistingData('alamatSekolah') ? 'border-green-200' : ''
-                    }`}
+                    } ${disabled ? 'cursor-default' : ''}`}
                   />
                 </FormControl>
                 <FormMessage />

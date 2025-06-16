@@ -6,7 +6,7 @@ import { Step2Data } from '../_schema/teacher-data.schema';
 import { GuruFormData } from '@/types/guru';
 import {
   validateAuthAndSchool,
-  getCurrentAcademicYear,
+  getCurrentYear,
 } from '../_utils/auth-school.util';
 
 const guruService = new GuruService();
@@ -18,10 +18,8 @@ export async function getTeacherDataAction() {
 
     if (!success) {
       return { success: false, error };
-    }
-
-    // Get teacher data
-    const tahunAjaran = getCurrentAcademicYear();
+    } // Get teacher data
+    const tahunAjaran = getCurrentYear();
     const teacherResult = await guruService.getGuruBySekolah(
       schoolData!.id,
       tahunAjaran,
@@ -90,7 +88,7 @@ export async function saveTeacherDataAction(
     if (!success) {
       return { success: false, error };
     } // Transform form data to service format
-    const currentYear = tahunAjaran || getCurrentAcademicYear();
+    const currentYear = tahunAjaran || getCurrentYear();
     const guruFormData: GuruFormData = {
       guruPnsLaki: data.guruPnsLaki,
       guruPnsPerempuan: data.guruPnsPerempuan,

@@ -179,7 +179,9 @@ export function FacilityDataForm({
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                   value={field.value || 0}
-                  disabled={isSubmitting || disabled}
+                  readOnly={disabled}
+                  disabled={isSubmitting}
+                  className={disabled ? 'cursor-default' : ''}
                 />
               </FormControl>
               <FormMessage />
@@ -202,13 +204,15 @@ export function FacilityDataForm({
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                   value={field.value || 0}
-                  disabled={isSubmitting || disabled}
+                  readOnly={disabled}
+                  disabled={isSubmitting}
+                  className={disabled ? 'cursor-default' : ''}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
-        />
+        />{' '}
         <FormField
           control={form.control}
           name={`${baseName}Rusak` as keyof Step4Data}
@@ -225,14 +229,16 @@ export function FacilityDataForm({
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                   value={field.value || 0}
-                  disabled={isSubmitting || disabled}
+                  readOnly={disabled}
+                  disabled={isSubmitting}
+                  className={disabled ? 'cursor-default' : ''}
                 />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-      </div>
+      </div>{' '}
       <FormField
         control={form.control}
         name={`${baseName}Keterangan` as keyof Step4Data}
@@ -244,9 +250,10 @@ export function FacilityDataForm({
             <FormControl>
               <Textarea
                 placeholder="Keterangan tambahan..."
-                className="min-h-20"
+                className={`min-h-20 ${disabled ? 'cursor-default' : ''}`}
                 {...field}
-                disabled={isSubmitting || disabled}
+                readOnly={disabled}
+                disabled={isSubmitting}
               />
             </FormControl>
             <FormMessage />

@@ -138,6 +138,7 @@ export function TeacherDataForm({
         <h4 className="text-lg font-semibold text-foreground">{title}</h4>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {' '}
         <FormField
           control={form.control}
           name={lakiFieldName}
@@ -145,15 +146,18 @@ export function TeacherDataForm({
             <FormItem className="space-y-2">
               <FormLabel className="text-sm font-medium text-foreground">
                 Laki-laki
-              </FormLabel>
+              </FormLabel>{' '}
               <FormControl>
                 <Input
                   type="number"
                   min="0"
                   placeholder="0"
                   {...field}
-                  disabled={isSubmitting || disabled}
-                  className="text-center"
+                  value={field.value || 0}
+                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                  readOnly={disabled}
+                  disabled={isSubmitting}
+                  className={disabled ? 'cursor-default' : ''}
                 />
               </FormControl>
               <FormMessage />
@@ -174,8 +178,11 @@ export function TeacherDataForm({
                   min="0"
                   placeholder="0"
                   {...field}
-                  disabled={isSubmitting || disabled}
-                  className="text-center"
+                  value={field.value || 0}
+                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                  readOnly={disabled}
+                  disabled={isSubmitting}
+                  className={disabled ? 'cursor-default' : ''}
                 />
               </FormControl>
               <FormMessage />
@@ -258,7 +265,7 @@ export function TeacherDataForm({
               perempuanFieldName="guruGttPerempuan"
               icon={User}
             />
-          </div>
+          </div>{' '}
           <div className="flex justify-between pt-6">
             <Button
               type="button"

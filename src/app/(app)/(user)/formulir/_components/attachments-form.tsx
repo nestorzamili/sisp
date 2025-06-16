@@ -380,7 +380,7 @@ export function AttachmentsForm({
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    {/* Document Name Field */}
+                    {/* Document Name Field */}{' '}
                     <FormField
                       control={form.control}
                       name={`lampiran.${index}.nama_dokumen`}
@@ -393,15 +393,15 @@ export function AttachmentsForm({
                             <Input
                               placeholder="Masukkan nama dokumen..."
                               {...field}
-                              readOnly={uploading[index]}
-                              disabled={disabled}
+                              readOnly={uploading[index] || disabled}
+                              disabled={isSubmitting}
+                              className={disabled ? 'cursor-default' : ''}
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-
                     {/* File Upload Section */}
                     <div className="space-y-2">
                       <FormLabel className="text-sm font-medium">
@@ -494,14 +494,15 @@ export function AttachmentsForm({
                       <FormItem className="space-y-2">
                         <FormLabel className="text-sm font-medium">
                           Keterangan
-                        </FormLabel>
+                        </FormLabel>{' '}
                         <FormControl>
                           <Textarea
                             placeholder="Berikan keterangan mengenai dokumen ini..."
-                            className="resize-none"
+                            className={`resize-none ${disabled ? 'cursor-default' : ''}`}
                             rows={3}
                             {...field}
-                            disabled={disabled}
+                            readOnly={disabled}
+                            disabled={isSubmitting}
                           />
                         </FormControl>
                         <FormMessage />
