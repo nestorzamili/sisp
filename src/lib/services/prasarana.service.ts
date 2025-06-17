@@ -123,9 +123,7 @@ export class PrasaranaService {
         },
       });
 
-      const prasaranaToCreate: CreatePrasaranaData[] = [];
-
-      // Meja Kursi Siswa
+      const prasaranaToCreate: CreatePrasaranaData[] = []; // Meja Kursi Siswa
       if (formData.mejaKursiSiswaTotal > 0) {
         prasaranaToCreate.push({
           sekolahId,
@@ -134,6 +132,7 @@ export class PrasaranaService {
           jumlah_total: formData.mejaKursiSiswaTotal,
           jumlah_kondisi_baik: formData.mejaKursiSiswaBaik,
           jumlah_kondisi_rusak: formData.mejaKursiSiswaRusak,
+          keterangan: formData.mejaKursiSiswaKeterangan,
           tahun_ajaran,
         });
       }
@@ -147,6 +146,7 @@ export class PrasaranaService {
           jumlah_total: formData.komputerTotal,
           jumlah_kondisi_baik: formData.komputerBaik,
           jumlah_kondisi_rusak: formData.komputerRusak,
+          keterangan: formData.komputerKeterangan,
           tahun_ajaran,
         });
       }
@@ -160,6 +160,7 @@ export class PrasaranaService {
           jumlah_total: formData.toiletSiswaTotal,
           jumlah_kondisi_baik: formData.toiletSiswaBaik,
           jumlah_kondisi_rusak: formData.toiletSiswaRusak,
+          keterangan: formData.toiletSiswaKeterangan,
           tahun_ajaran,
         });
       }
@@ -173,11 +174,10 @@ export class PrasaranaService {
           jumlah_total: formData.toiletGuruTotal,
           jumlah_kondisi_baik: formData.toiletGuruBaik,
           jumlah_kondisi_rusak: formData.toiletGuruRusak,
+          keterangan: formData.toiletGuruKeterangan,
           tahun_ajaran,
         });
-      }
-
-      // Prasarana Lainnya
+      } // Prasarana Lainnya
       if (formData.prasaranaLainnya && formData.prasaranaLainnya.length > 0) {
         for (const item of formData.prasaranaLainnya) {
           const { baik, rusak } = this.getCountsFromKondisi(
@@ -191,6 +191,7 @@ export class PrasaranaService {
             jumlah_total: item.jumlah,
             jumlah_kondisi_baik: baik,
             jumlah_kondisi_rusak: rusak,
+            keterangan: item.keterangan,
             tahun_ajaran,
           });
         }

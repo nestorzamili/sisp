@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Armchair,
@@ -53,15 +54,19 @@ export function InfrastructureDataForm({
       mejaKursiSiswaTotal: 0,
       mejaKursiSiswaBaik: 0,
       mejaKursiSiswaRusak: 0,
+      mejaKursiSiswaKeterangan: '',
       komputerTotal: 0,
       komputerBaik: 0,
       komputerRusak: 0,
+      komputerKeterangan: '',
       toiletSiswaTotal: 0,
       toiletSiswaBaik: 0,
       toiletSiswaRusak: 0,
+      toiletSiswaKeterangan: '',
       toiletGuruTotal: 0,
       toiletGuruBaik: 0,
       toiletGuruRusak: 0,
+      toiletGuruKeterangan: '',
       prasaranaLainnya: [],
     },
   });
@@ -144,95 +149,125 @@ export function InfrastructureDataForm({
       {children}
     </div>
   );
-
   const QuantityInputs = ({ baseName }: { baseName: string }) => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <FormField
+          control={form.control}
+          name={
+            `${baseName}Total` as
+              | 'mejaKursiSiswaTotal'
+              | 'komputerTotal'
+              | 'toiletSiswaTotal'
+              | 'toiletGuruTotal'
+          }
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              {' '}
+              <FormLabel className="text-sm font-medium">
+                Jumlah Total
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                  value={field.value || 0}
+                  readOnly={disabled}
+                  disabled={isSubmitting}
+                  className={disabled ? 'cursor-default' : ''}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name={
+            `${baseName}Baik` as
+              | 'mejaKursiSiswaBaik'
+              | 'komputerBaik'
+              | 'toiletSiswaBaik'
+              | 'toiletGuruBaik'
+          }
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              {' '}
+              <FormLabel className="text-sm font-medium">
+                Kondisi Baik
+              </FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                  value={field.value || 0}
+                  readOnly={disabled}
+                  disabled={isSubmitting}
+                  className={disabled ? 'cursor-default' : ''}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name={
+            `${baseName}Rusak` as
+              | 'mejaKursiSiswaRusak'
+              | 'komputerRusak'
+              | 'toiletSiswaRusak'
+              | 'toiletGuruRusak'
+          }
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              {' '}
+              <FormLabel className="text-sm font-medium">
+                Kondisi Rusak/Tidak Layak
+              </FormLabel>{' '}
+              <FormControl>
+                <Input
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value) || 0)}
+                  value={field.value || 0}
+                  readOnly={disabled}
+                  disabled={isSubmitting}
+                  className={disabled ? 'cursor-default' : ''}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       <FormField
         control={form.control}
-        name={
-          `${baseName}Total` as
-            | 'mejaKursiSiswaTotal'
-            | 'komputerTotal'
-            | 'toiletSiswaTotal'
-            | 'toiletGuruTotal'
-        }
+        name={`${baseName}Keterangan` as keyof Step5Data}
         render={({ field }) => (
           <FormItem className="space-y-2">
-            {' '}
-            <FormLabel className="text-sm font-medium">Jumlah Total</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                min="0"
-                placeholder="0"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value) || 0)}
-                value={field.value || 0}
-                readOnly={disabled}
-                disabled={isSubmitting}
-                className={disabled ? 'cursor-default' : ''}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name={
-          `${baseName}Baik` as
-            | 'mejaKursiSiswaBaik'
-            | 'komputerBaik'
-            | 'toiletSiswaBaik'
-            | 'toiletGuruBaik'
-        }
-        render={({ field }) => (
-          <FormItem className="space-y-2">
-            {' '}
-            <FormLabel className="text-sm font-medium">Kondisi Baik</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                min="0"
-                placeholder="0"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value) || 0)}
-                value={field.value || 0}
-                readOnly={disabled}
-                disabled={isSubmitting}
-                className={disabled ? 'cursor-default' : ''}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name={
-          `${baseName}Rusak` as
-            | 'mejaKursiSiswaRusak'
-            | 'komputerRusak'
-            | 'toiletSiswaRusak'
-            | 'toiletGuruRusak'
-        }
-        render={({ field }) => (
-          <FormItem className="space-y-2">
-            {' '}
             <FormLabel className="text-sm font-medium">
-              Kondisi Rusak/Tidak Layak
+              Keterangan (Opsional)
             </FormLabel>{' '}
             <FormControl>
-              <Input
-                type="number"
-                min="0"
-                placeholder="0"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value) || 0)}
-                value={field.value || 0}
+              <Textarea
+                placeholder="Keterangan tambahan..."
+                className={`min-h-20 ${disabled ? 'cursor-default' : ''}`}
+                value={(field.value as string) || ''}
+                onChange={field.onChange}
+                name={field.name}
+                onBlur={field.onBlur}
+                ref={field.ref}
                 readOnly={disabled}
                 disabled={isSubmitting}
-                className={disabled ? 'cursor-default' : ''}
               />
             </FormControl>
             <FormMessage />
@@ -242,7 +277,13 @@ export function InfrastructureDataForm({
     </div>
   );
   const addPrasaranaLainnya = () => {
-    append({ nama: '', jumlahTotal: 0, jumlahBaik: 0, jumlahRusak: 0 });
+    append({
+      nama: '',
+      jumlahTotal: 0,
+      jumlahBaik: 0,
+      jumlahRusak: 0,
+      keterangan: '',
+    });
   };
 
   // Show loading state
@@ -271,6 +312,7 @@ export function InfrastructureDataForm({
 
   return (
     <div className="space-y-6">
+      {' '}
       {/* Form Header */}
       <div className="text-center">
         <h3 className="text-xl font-bold text-foreground mb-2">
@@ -278,7 +320,8 @@ export function InfrastructureDataForm({
         </h3>
         <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
           Lengkapi data kondisi prasarana sekolah untuk analisis prioritas
-          kebutuhan
+          kebutuhan. Pastikan total jumlah kondisi baik dan rusak sesuai dengan
+          jumlah total.
         </p>
       </div>{' '}
       {/* Existing Data Alert */}
@@ -298,174 +341,211 @@ export function InfrastructureDataForm({
             <InfrastructureSection icon={Armchair} title="Meja dan Kursi Siswa">
               <QuantityInputs baseName="mejaKursiSiswa" />
             </InfrastructureSection>
-
             {/* Komputer */}
             <InfrastructureSection icon={Laptop} title="Komputer">
               <QuantityInputs baseName="komputer" />
             </InfrastructureSection>
-
             {/* Toilet Siswa */}
             <InfrastructureSection icon={DoorOpen} title="Toilet Siswa">
               <QuantityInputs baseName="toiletSiswa" />
             </InfrastructureSection>
-
             {/* Toilet Guru */}
             <InfrastructureSection icon={UserCheck} title="Toilet Guru">
               <QuantityInputs baseName="toiletGuru" />
-            </InfrastructureSection>
-
+            </InfrastructureSection>{' '}
             {/* Prasarana Lainnya */}
-            <div className="space-y-4">
-              <div className="flex justify-end">
-                {' '}
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={addPrasaranaLainnya}
-                  className="flex items-center gap-2"
-                  disabled={isSubmitting || disabled}
-                >
-                  <Plus className="w-4 h-4" />
-                  Tambah Prasarana
-                </Button>
-              </div>
-
-              {fields.length > 0 && (
-                <div className="space-y-4">
-                  {fields.map((field, index) => (
-                    <div key={field.id} className="space-y-4">
-                      <div className="flex gap-4 items-start">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-1">
+            <InfrastructureSection icon={Plus} title="Prasarana Lainnya">
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <p className="text-sm text-muted-foreground">
+                    Tambahkan prasarana lain yang belum tercantum di atas
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addPrasaranaLainnya}
+                    className="flex items-center gap-2"
+                    disabled={isSubmitting || disabled}
+                  >
+                    <Plus className="w-4 h-4" />
+                    Tambah Prasarana
+                  </Button>
+                </div>
+                {fields.length > 0 && (
+                  <div className="space-y-6">
+                    {fields.map((field, index) => (
+                      <div
+                        key={field.id}
+                        className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50"
+                      >
+                        <div className="space-y-4">
+                          {/* Nama Prasarana - Full width dengan tombol hapus */}
                           <FormField
                             control={form.control}
                             name={`prasaranaLainnya.${index}.nama`}
                             render={({ field }) => (
                               <FormItem className="space-y-2">
-                                <FormLabel className="text-sm font-medium">
-                                  Nama Prasarana
-                                </FormLabel>{' '}
+                                <div className="flex items-center justify-between">
+                                  <FormLabel className="text-sm font-medium">
+                                    Nama Prasarana
+                                  </FormLabel>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => remove(index)}
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 h-8 w-8 p-0"
+                                    title="Hapus prasarana"
+                                    disabled={isSubmitting || disabled}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
                                 <FormControl>
                                   <Input
-                                    placeholder="Contoh: Papan Tulis"
+                                    placeholder="Contoh: Papan Tulis, Meja Komputer, dll"
                                     readOnly={disabled}
                                     disabled={isSubmitting}
                                     className={disabled ? 'cursor-default' : ''}
                                     {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />{' '}
-                          <FormField
-                            control={form.control}
-                            name={`prasaranaLainnya.${index}.jumlahTotal`}
-                            render={({ field }) => (
-                              <FormItem className="space-y-2">
-                                <FormLabel className="text-sm font-medium">
-                                  Jumlah Total
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    min="0"
-                                    placeholder="0"
-                                    {...field}
-                                    onChange={(e) =>
-                                      field.onChange(
-                                        Number(e.target.value) || 0,
-                                      )
-                                    }
-                                    value={field.value || 0}
-                                    readOnly={disabled}
-                                    disabled={isSubmitting}
-                                    className={disabled ? 'cursor-default' : ''}
                                   />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
+
+                          {/* Jumlah dalam grid 3 kolom */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <FormField
+                              control={form.control}
+                              name={`prasaranaLainnya.${index}.jumlahTotal`}
+                              render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-sm font-medium">
+                                    Jumlah Total
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min="0"
+                                      placeholder="0"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          Number(e.target.value) || 0,
+                                        )
+                                      }
+                                      value={field.value || 0}
+                                      readOnly={disabled}
+                                      disabled={isSubmitting}
+                                      className={
+                                        disabled ? 'cursor-default' : ''
+                                      }
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`prasaranaLainnya.${index}.jumlahBaik`}
+                              render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-sm font-medium">
+                                    Kondisi Baik
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min="0"
+                                      placeholder="0"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          Number(e.target.value) || 0,
+                                        )
+                                      }
+                                      value={field.value || 0}
+                                      readOnly={disabled}
+                                      disabled={isSubmitting}
+                                      className={
+                                        disabled ? 'cursor-default' : ''
+                                      }
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`prasaranaLainnya.${index}.jumlahRusak`}
+                              render={({ field }) => (
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-sm font-medium">
+                                    Kondisi Rusak
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      min="0"
+                                      placeholder="0"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(
+                                          Number(e.target.value) || 0,
+                                        )
+                                      }
+                                      value={field.value || 0}
+                                      readOnly={disabled}
+                                      disabled={isSubmitting}
+                                      className={
+                                        disabled ? 'cursor-default' : ''
+                                      }
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          {/* Keterangan - Full width */}
                           <FormField
                             control={form.control}
-                            name={`prasaranaLainnya.${index}.jumlahBaik`}
+                            name={`prasaranaLainnya.${index}.keterangan`}
                             render={({ field }) => (
                               <FormItem className="space-y-2">
                                 <FormLabel className="text-sm font-medium">
-                                  Kondisi Baik
+                                  Keterangan (Opsional)
                                 </FormLabel>
                                 <FormControl>
-                                  <Input
-                                    type="number"
-                                    min="0"
-                                    placeholder="0"
-                                    {...field}
-                                    onChange={(e) =>
-                                      field.onChange(
-                                        Number(e.target.value) || 0,
-                                      )
-                                    }
-                                    value={field.value || 0}
+                                  <Textarea
+                                    placeholder="Keterangan tambahan tentang kondisi atau spesifikasi prasarana..."
+                                    className={`min-h-20 ${disabled ? 'cursor-default' : ''}`}
+                                    value={(field.value as string) || ''}
+                                    onChange={field.onChange}
+                                    name={field.name}
+                                    onBlur={field.onBlur}
+                                    ref={field.ref}
                                     readOnly={disabled}
                                     disabled={isSubmitting}
-                                    className={disabled ? 'cursor-default' : ''}
                                   />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
-                          <FormField
-                            control={form.control}
-                            name={`prasaranaLainnya.${index}.jumlahRusak`}
-                            render={({ field }) => (
-                              <FormItem className="space-y-2">
-                                <FormLabel className="text-sm font-medium">
-                                  Kondisi Rusak
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    min="0"
-                                    placeholder="0"
-                                    {...field}
-                                    onChange={(e) =>
-                                      field.onChange(
-                                        Number(e.target.value) || 0,
-                                      )
-                                    }
-                                    value={field.value || 0}
-                                    readOnly={disabled}
-                                    disabled={isSubmitting}
-                                    className={disabled ? 'cursor-default' : ''}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        <div className="pt-[30px]">
-                          {' '}
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => remove(index)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50 h-10 w-10 p-0"
-                            title="Hapus prasarana"
-                            disabled={isSubmitting || disabled}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </InfrastructureSection>
           </div>{' '}
           <div className="flex justify-between pt-6">
             <Button

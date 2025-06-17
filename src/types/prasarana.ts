@@ -18,19 +18,24 @@ export interface PrasaranaFormData {
   mejaKursiSiswaTotal: number;
   mejaKursiSiswaBaik: number;
   mejaKursiSiswaRusak: number;
+  mejaKursiSiswaKeterangan?: string;
   komputerTotal: number;
   komputerBaik: number;
   komputerRusak: number;
+  komputerKeterangan?: string;
   toiletSiswaTotal: number;
   toiletSiswaBaik: number;
   toiletSiswaRusak: number;
+  toiletSiswaKeterangan?: string;
   toiletGuruTotal: number;
   toiletGuruBaik: number;
   toiletGuruRusak: number;
+  toiletGuruKeterangan?: string;
   prasaranaLainnya?: {
     nama: string;
     jumlah: number;
     kondisi: string;
+    keterangan?: string;
   }[];
   tahun_ajaran: string;
 }
