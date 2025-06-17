@@ -41,10 +41,18 @@ export default function HomePage() {
     return (
       <div className="min-h-[calc(100vh-180px)] flex items-center justify-center bg-gradient-to-br from-secondary via-background to-accent">
         <div className="text-center p-8">
-          <div className="relative">
-            <div className="w-16 h-16 mx-auto mb-6">
-              <div className="absolute inset-0 rounded-full border-4 border-primary/20"></div>
-              <div className="absolute inset-0 rounded-full border-4 border-primary border-t-transparent animate-spin"></div>
+          <div className="relative mb-8">
+            <div className="w-20 h-20 mx-auto relative">
+              <div className="absolute inset-0 rounded-full border-2 border-primary/10"></div>
+              <div
+                className="absolute inset-2 rounded-full border-2 border-primary/20 animate-spin"
+                style={{ animationDuration: '3s' }}
+              ></div>
+              <div
+                className="absolute inset-4 rounded-full border-2 border-primary border-t-transparent animate-spin"
+                style={{ animationDuration: '1s' }}
+              ></div>
+              <div className="absolute inset-6 rounded-full bg-primary animate-pulse"></div>
             </div>
           </div>
           <h3 className="text-xl font-semibold text-foreground mb-2">
@@ -105,8 +113,8 @@ export default function HomePage() {
   }
   return (
     <div className="min-h-[calc(100vh-180px)] bg-gradient-to-br from-secondary via-background to-accent">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-primary to-primary/90 text-primary-foreground">
+      {/* Welcome Section */}
+      <div className="bg-card border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <WelcomeCard
             userName={data.user.name}

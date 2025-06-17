@@ -301,7 +301,7 @@ export default function FormulirPage() {
               </div>
             );
           })()}
-        <Card className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-6 md:p-8">
+        <Card className="bg-card rounded-xl shadow-sm border overflow-hidden p-6 md:p-8">
           {' '}
           {currentStep === 1 && (
             <SchoolInfoForm

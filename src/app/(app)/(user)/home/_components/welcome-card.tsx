@@ -18,9 +18,8 @@ export function WelcomeCard({ userName, sekolahStatus }: WelcomeCardProps) {
     month: 'long',
     day: 'numeric',
   });
-
   return (
-    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+    <Card className="bg-card border">
       <CardHeader>
         <div className="flex items-center gap-3">
           <div className="p-3 bg-primary/10 rounded-lg">
