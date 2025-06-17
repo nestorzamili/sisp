@@ -13,7 +13,6 @@ export function GuruTab({ data }: GuruTabProps) {
   const formatGender = (gender: string) => {
     return gender === 'L' ? 'Laki-laki' : gender === 'P' ? 'Perempuan' : gender;
   };
-
   // Helper function to group guru by status
   const groupGuruByStatus = (guruData: typeof data.guru) => {
     if (!guruData) return {};
@@ -34,12 +33,19 @@ export function GuruTab({ data }: GuruTabProps) {
     return grouped;
   };
 
+  // Helper function to calculate total guru
+  const getTotalGuru = (guruData: typeof data.guru) => {
+    if (!guruData) return 0;
+    return guruData.reduce((total, guru) => total + guru.jumlah, 0);
+  };
+
   return (
     <Card>
+      {' '}
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Users className="h-5 w-5" />
-          Data Guru ({data.guru?.length || 0})
+          Data Guru ({getTotalGuru(data.guru)})
         </CardTitle>
       </CardHeader>
       <CardContent>

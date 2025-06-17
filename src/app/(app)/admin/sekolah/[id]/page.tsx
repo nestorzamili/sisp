@@ -3,20 +3,37 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { toast } from 'sonner';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SekolahDetailCard } from './_components/sekolah-detail-card';
 import { SekolahWithDetails } from '@/types/sekolah';
 import { getSekolahDetail } from '../action';
+import { downloadSekolahPDF } from '@/lib/pdf-utils';
 
 export default function SekolahDetailPage() {
   const router = useRouter();
   const params = useParams();
   const sekolahId = params.id as string;
-
   // State management
   const [data, setData] = useState<SekolahWithDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  // Download handler
+  const handleDownloadData = async () => {
+    if (!data) return;
+
+    setIsDownloading(true);
+    try {
+      await downloadSekolahPDF(data);
+      toast.success('PDF berhasil diunduh');
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      toast.error('Gagal mengunduh PDF');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   // Fetch sekolah detail
   useEffect(() => {
@@ -80,11 +97,10 @@ export default function SekolahDetailPage() {
       </div>
     );
   }
-
   return (
     <div className="w-full space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between">
         <Button
           variant="ghost"
           size="sm"
@@ -92,6 +108,15 @@ export default function SekolahDetailPage() {
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Kembali
+        </Button>{' '}
+        <Button
+          variant="default"
+          size="sm"
+          onClick={handleDownloadData}
+          disabled={isDownloading}
+        >
+          <Download className="h-4 w-4 mr-2" />
+          {isDownloading ? 'Mengunduh...' : 'Unduh Data'}
         </Button>
       </div>
 

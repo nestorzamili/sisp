@@ -42,9 +42,9 @@ export function LampiranTab({ data }: LampiranTabProps) {
                   >
                     <ExternalLink className="h-4 w-4 mr-1" />
                     Lihat
-                  </Button>
+                  </Button>{' '}
                   <Button
-                    variant="outline"
+                    variant="default"
                     size="sm"
                     onClick={() => {
                       const link = document.createElement('a');

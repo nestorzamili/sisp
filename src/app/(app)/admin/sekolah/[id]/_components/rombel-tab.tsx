@@ -50,16 +50,22 @@ export function RombelTab({ data }: RombelTabProps) {
       },
       {} as Record<string, Record<string, number>>,
     );
-
     return grouped;
+  };
+
+  // Helper function to calculate total siswa
+  const getTotalSiswa = (rombelData: typeof data.rombonganBelajar) => {
+    if (!rombelData) return 0;
+    return rombelData.reduce((total, rombel) => total + rombel.jumlah_siswa, 0);
   };
 
   return (
     <Card>
+      {' '}
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BookOpen className="h-5 w-5" />
-          Rombongan Belajar ({data.rombonganBelajar?.length || 0})
+          Rombongan Belajar ({getTotalSiswa(data.rombonganBelajar)} siswa)
         </CardTitle>
       </CardHeader>
       <CardContent>
