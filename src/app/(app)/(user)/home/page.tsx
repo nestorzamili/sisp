@@ -39,7 +39,7 @@ export default function HomePage() {
   }, []);
   if (loading) {
     return (
-      <div className="min-h-[calc(100vh-180px)] flex items-center justify-center bg-gradient-to-br from-secondary via-background to-accent">
+      <div className="min-h-[calc(100vh-180px)] flex items-center justify-center bg-background">
         <div className="text-center p-8">
           <div className="relative mb-8">
             <div className="w-20 h-20 mx-auto relative">
@@ -67,7 +67,7 @@ export default function HomePage() {
   }
   if (error) {
     return (
-      <div className="min-h-[calc(100vh-180px)] flex items-center justify-center bg-gradient-to-br from-destructive/5 via-background to-destructive/10 px-4">
+      <div className="min-h-[calc(100vh-180px)] flex items-center justify-center bg-background px-4">
         <div className="max-w-md w-full text-center">
           <div className="bg-card rounded-2xl shadow-xl border border-destructive/20 p-8">
             <div className="w-16 h-16 mx-auto mb-6 bg-destructive/10 rounded-full flex items-center justify-center">
@@ -91,7 +91,7 @@ export default function HomePage() {
   }
   if (!data) {
     return (
-      <div className="min-h-[calc(100vh-180px)] flex items-center justify-center bg-gradient-to-br from-muted via-background to-accent px-4">
+      <div className="min-h-[calc(100vh-180px)] flex items-center justify-center bg-background px-4">
         <div className="max-w-md w-full text-center">
           <div className="bg-card rounded-2xl shadow-xl border p-8">
             <div className="w-16 h-16 mx-auto mb-6 bg-muted rounded-full flex items-center justify-center">
@@ -112,10 +112,11 @@ export default function HomePage() {
     );
   }
   return (
-    <div className="min-h-[calc(100vh-180px)] bg-gradient-to-br from-secondary via-background to-accent">
+    <div className="min-h-[calc(100vh-180px)] bg-background">
+      {' '}
       {/* Welcome Section */}
-      <div className="bg-card border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="bg-card">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <WelcomeCard
             userName={data.user.name}
             sekolahStatus={data.sekolah?.status}
