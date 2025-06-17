@@ -18,7 +18,7 @@ export const downloadSekolahPDF = async (data: SekolahWithDetails) => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `Data-Sekolah-${data.nama_sekolah}-${data.npsn}.pdf`;
+    link.download = `${data.nama_sekolah} - ${data.npsn}.pdf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

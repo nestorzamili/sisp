@@ -5,658 +5,650 @@ import {
   View,
   StyleSheet,
   Image,
-  Font,
 } from '@react-pdf/renderer';
 import { SekolahWithDetails } from '@/types/sekolah';
 
-// Register font for better text rendering
-Font.register({
-  family: 'Roboto',
-  fonts: [
-    {
-      src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf',
-      fontWeight: 300,
-    },
-    {
-      src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-regular-webfont.ttf',
-      fontWeight: 400,
-    },
-    {
-      src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-medium-webfont.ttf',
-      fontWeight: 500,
-    },
-    {
-      src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-bold-webfont.ttf',
-      fontWeight: 700,
-    },
-  ],
-});
+// Constants
+const PRIMARY_COLOR = '#1a365d';
+const ACCENT_COLOR = '#3182ce';
+const LIGHT_GRAY = '#f7fafc';
+const MEDIUM_GRAY = '#e2e8f0';
+const DARK_GRAY = '#4a5568';
+const WHITE = '#ffffff';
 
+// Use built-in fonts to avoid font loading issues
+// Font.register can cause DataView errors with external fonts
+
+// Styles
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
-    backgroundColor: '#FFFFFF',
-    padding: 30,
-    fontFamily: 'Roboto',
+    backgroundColor: WHITE,
+    paddingHorizontal: 40,
+    paddingVertical: 30,
+    fontFamily: 'Helvetica',
     fontSize: 10,
+    lineHeight: 1.5,
   },
   header: {
     flexDirection: 'row',
     marginBottom: 20,
     alignItems: 'center',
     borderBottomWidth: 2,
-    borderBottomStyle: 'solid',
-    borderBottomColor: '#000000',
+    borderBottomColor: PRIMARY_COLOR,
     paddingBottom: 10,
+    position: 'relative',
   },
   logo: {
-    width: 60,
+    width: 65,
     height: 60,
-    marginRight: 15,
+    position: 'absolute',
+    left: 0,
   },
   headerText: {
     flex: 1,
+    paddingLeft: 80,
+    paddingRight: 80,
   },
   headerTitle: {
     fontSize: 14,
-    fontWeight: 700,
+    fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 2,
+    color: PRIMARY_COLOR,
   },
   headerSubtitle: {
-    fontSize: 12,
-    fontWeight: 700,
+    fontSize: 14,
+    fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 2,
+    color: PRIMARY_COLOR,
   },
   headerAddress: {
     fontSize: 9,
     textAlign: 'center',
-    lineHeight: 1.3,
+    lineHeight: 1.4,
+    color: DARK_GRAY,
   },
   title: {
-    fontSize: 16,
-    fontWeight: 700,
+    fontSize: 12,
+    fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
-    marginTop: 10,
+    marginBottom: 15,
+    marginTop: 5,
+    color: PRIMARY_COLOR,
+    textDecoration: 'underline',
   },
   section: {
     marginBottom: 15,
+    pageBreakInside: 'avoid',
   },
   sectionTitle: {
-    fontSize: 12,
-    fontWeight: 700,
-    backgroundColor: '#f0f0f0',
-    padding: 5,
+    fontSize: 11,
+    fontWeight: 'bold',
     marginBottom: 8,
+    color: PRIMARY_COLOR,
   },
-  row: {
+  infoGrid: {
+    flexDirection: 'column',
+    marginBottom: 5,
+  },
+  infoItem: {
     flexDirection: 'row',
-    marginBottom: 3,
+    marginBottom: 6,
+    alignItems: 'flex-start',
   },
-  label: {
-    width: '35%',
-    fontSize: 9,
-    fontWeight: 500,
+  infoLabel: {
+    width: '25%',
+    fontWeight: 'normal',
+    color: DARK_GRAY,
+    textAlign: 'left',
+    paddingRight: 8,
+    paddingLeft: 12,
   },
-  value: {
-    width: '65%',
-    fontSize: 9,
+  infoColon: {
+    width: 10,
+    fontWeight: 'normal',
+    color: DARK_GRAY,
+  },
+  infoValue: {
+    flex: 1,
+    fontWeight: 'normal',
+    color: '#1a202c',
+    paddingLeft: 2,
   },
   table: {
-    width: 'auto',
+    width: '100%',
     borderStyle: 'solid',
     borderWidth: 1,
-    borderRightWidth: 0,
-    borderBottomWidth: 0,
-    marginBottom: 10,
+    borderColor: MEDIUM_GRAY,
+    marginBottom: 12,
+    borderRadius: 4,
+    overflow: 'hidden',
   },
   tableRow: {
-    margin: 'auto',
     flexDirection: 'row',
+    minHeight: 24,
   },
   tableHeader: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: ACCENT_COLOR,
+  },
+  tableRowEven: {
+    backgroundColor: LIGHT_GRAY,
+  },
+  tableRowOdd: {
+    backgroundColor: WHITE,
   },
   tableCol: {
-    width: '25%',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderLeftWidth: 0,
-    borderTopWidth: 0,
+    borderRightWidth: 0.5,
+    borderRightColor: MEDIUM_GRAY,
+    paddingVertical: 5,
+    paddingHorizontal: 6,
+    justifyContent: 'center',
+  },
+  tableHeaderCell: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: WHITE,
   },
   tableCell: {
-    margin: 'auto',
-    marginTop: 3,
-    marginBottom: 3,
-    fontSize: 8,
+    fontSize: 9,
     textAlign: 'center',
+    color: DARK_GRAY,
   },
   tableCellLeft: {
-    margin: 5,
-    fontSize: 8,
+    fontSize: 9,
     textAlign: 'left',
+    color: DARK_GRAY,
   },
   emptyState: {
     textAlign: 'center',
-    fontWeight: 300,
-    color: '#666666',
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  lampiranImage: {
-    width: '45%',
-    maxHeight: 300,
-    marginBottom: 10,
-    marginRight: '5%',
+    fontStyle: 'italic',
+    color: '#a0aec0',
+    marginVertical: 10,
+    fontSize: 10,
   },
   lampiranContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    marginTop: 10,
   },
   lampiranItem: {
-    width: '45%',
-    marginBottom: 15,
+    width: '48%',
+    marginBottom: 20,
     borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: '#cccccc',
-    padding: 5,
+    borderColor: MEDIUM_GRAY,
+    borderRadius: 6,
+    padding: 10,
+    backgroundColor: LIGHT_GRAY,
   },
   lampiranTitle: {
-    fontSize: 9,
-    fontWeight: 700,
-    marginBottom: 5,
+    fontSize: 10,
+    fontWeight: 'bold',
+    marginBottom: 6,
     textAlign: 'center',
+    color: DARK_GRAY,
+  },
+  lampiranDescription: {
+    fontSize: 8,
+    textAlign: 'center',
+    marginBottom: 8,
+    color: '#718096',
+  },
+  lampiranImage: {
+    width: '100%',
+    maxHeight: 180,
+    objectFit: 'contain',
+    borderRadius: 4,
+  },
+  bulletList: {
+    marginLeft: 10,
+  },
+  bulletItem: {
+    fontSize: 10,
+    marginBottom: 5,
+    color: DARK_GRAY,
   },
 });
+
+// Helper functions
+const formatGender = (gender: string) => {
+  return gender === 'L' ? 'Laki-laki' : gender === 'P' ? 'Perempuan' : gender;
+};
+
+const convertToRoman = (num: string) => {
+  const arabicToRoman: Record<string, string> = {
+    '1': 'I',
+    '2': 'II',
+    '3': 'III',
+    '4': 'IV',
+    '5': 'V',
+    '6': 'VI',
+    '7': 'VII',
+    '8': 'VIII',
+    '9': 'IX',
+    '10': 'X',
+    '11': 'XI',
+    '12': 'XII',
+  };
+  return arabicToRoman[num] || num;
+};
+
+const isImageFile = (url: string) => {
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
+  return imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
+};
+
+const chunkArray = <T,>(array: T[], size: number): T[][] => {
+  return Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
+    array.slice(i * size, i * size + size),
+  );
+};
+
+// Types for grouped data
+type GroupedFacilityData = Record<
+  string,
+  {
+    total: number;
+    baik: number;
+    rusak: number;
+    keterangan: string | null;
+  }
+>;
 
 interface SekolahPDFProps {
   data: SekolahWithDetails;
 }
 
 export const SekolahPDF = ({ data }: SekolahPDFProps) => {
-  // Helper functions
-  const formatGender = (gender: string) => {
-    return gender === 'L' ? 'Laki-laki' : gender === 'P' ? 'Perempuan' : gender;
-  };
-
-  const convertToRoman = (num: string) => {
-    const arabicToRoman: { [key: string]: string } = {
-      '1': 'I',
-      '2': 'II',
-      '3': 'III',
-      '4': 'IV',
-      '5': 'V',
-      '6': 'VI',
-      '7': 'VII',
-      '8': 'VIII',
-      '9': 'IX',
-      '10': 'X',
-      '11': 'XI',
-      '12': 'XII',
-    };
-    return arabicToRoman[num] || num;
-  };
-
-  // Group functions
-  const groupGuruByStatus = (guruData: typeof data.guru) => {
-    if (!guruData) return {};
-    return guruData.reduce(
-      (acc, guru) => {
-        const status = guru.status_guru;
-        if (!acc[status]) acc[status] = {};
-        const gender = formatGender(guru.jenis_kelamin);
-        acc[status][gender] = (acc[status][gender] || 0) + guru.jumlah;
-        return acc;
-      },
-      {} as Record<string, Record<string, number>>,
-    );
-  };
-
-  const groupRombelByTingkatan = (rombelData: typeof data.rombonganBelajar) => {
-    if (!rombelData) return {};
-    return rombelData.reduce(
-      (acc, rombel) => {
-        const tingkatan = rombel.tingkatan_kelas;
-        if (!acc[tingkatan]) acc[tingkatan] = {};
-        const gender = formatGender(rombel.jenis_kelamin);
-        acc[tingkatan][gender] =
-          (acc[tingkatan][gender] || 0) + rombel.jumlah_siswa;
-        return acc;
-      },
-      {} as Record<string, Record<string, number>>,
-    );
-  };
-
-  const groupSaranaByName = (saranaData: typeof data.sarana) => {
-    if (!saranaData) return {};
-    return saranaData.reduce(
-      (acc, sarana) => {
-        const name = sarana.nama_sarana;
-        if (!acc[name]) {
-          acc[name] = {
-            total: 0,
-            baik: 0,
-            rusak: 0,
-            keterangan: sarana.keterangan,
-          };
-        }
-        acc[name].total += sarana.jumlah_total;
-        acc[name].baik += sarana.jumlah_kondisi_baik;
-        acc[name].rusak += sarana.jumlah_kondisi_rusak;
-        if (!acc[name].keterangan && sarana.keterangan) {
-          acc[name].keterangan = sarana.keterangan;
-        }
-        return acc;
-      },
-      {} as Record<
-        string,
-        {
-          total: number;
-          baik: number;
-          rusak: number;
-          keterangan: string | null;
-        }
-      >,
-    );
-  };
-
-  const groupPrasaranaByName = (prasaranaData: typeof data.prasarana) => {
-    if (!prasaranaData) return {};
-    return prasaranaData.reduce(
-      (acc, prasarana) => {
-        const name = prasarana.nama_prasarana;
-        if (!acc[name]) {
-          acc[name] = {
-            total: 0,
-            baik: 0,
-            rusak: 0,
-            keterangan: prasarana.keterangan,
-          };
-        }
-        acc[name].total += prasarana.jumlah_total;
-        acc[name].baik += prasarana.jumlah_kondisi_baik;
-        acc[name].rusak += prasarana.jumlah_kondisi_rusak;
-        if (!acc[name].keterangan && prasarana.keterangan) {
-          acc[name].keterangan = prasarana.keterangan;
-        }
-        return acc;
-      },
-      {} as Record<
-        string,
-        {
-          total: number;
-          baik: number;
-          rusak: number;
-          keterangan: string | null;
-        }
-      >,
-    );
-  }; // Check if file is image
-  const isImageFile = (url: string) => {
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
-    return imageExtensions.some((ext) =>
-      url.toLowerCase().includes(ext.toLowerCase()),
-    );
-  };
-
-  // Filter only images from lampiran
-  const getImageLampiran = (lampiran: typeof data.lampiran) => {
-    if (!lampiran) return [];
-    return lampiran.filter((item) => isImageFile(item.url));
-  };
-  // Chunk lampiran for pagination (2 per page)
-  const chunkLampiran = (
-    array: Array<{
-      id: string;
-      nama_dokumen: string;
-      url: string;
-      keterangan: string;
-    }>,
-    size: number,
+  // Header component
+  const PDFHeader = () => (
+    <View style={styles.header} fixed>
+      {/* eslint-disable-next-line jsx-a11y/alt-text */}
+      <Image style={styles.logo} src="/logo-nias-selatan.png" />
+      <View style={styles.headerText}>
+        <Text style={styles.headerTitle}>
+          PEMERINTAH KABUPATEN NIAS SELATAN
+        </Text>
+        <Text style={styles.headerSubtitle}>DINAS PENDIDIKAN</Text>
+        <Text style={styles.headerAddress}>
+          Jalan Arah Lagundri Km. 7 Fanayama Nias Selatan Sumatera Utara
+          {'\n'}
+          Email: disdiknisel90@gmail.com | Kode Pos: 22865
+        </Text>
+      </View>
+    </View>
+  );
+  // Data processing functions
+  const groupGuruDataByKey = <
+    T extends { jenis_kelamin: string; jumlah: number },
+  >(
+    data: T[],
+    key: keyof T,
   ) => {
-    const chunks = [];
-    for (let i = 0; i < array.length; i += size) {
-      chunks.push(array.slice(i, i + size));
-    }
-    return chunks;
+    if (!data) return {};
+    return data.reduce<Record<string, Record<string, number>>>((acc, item) => {
+      const groupKey = String(item[key]);
+      const gender = formatGender(item.jenis_kelamin);
+      if (!acc[groupKey]) acc[groupKey] = {};
+      acc[groupKey][gender] = (acc[groupKey][gender] || 0) + item.jumlah;
+      return acc;
+    }, {});
   };
-  const imageLampiran = getImageLampiran(data.lampiran);
-  const imageLampiranChunks =
-    imageLampiran.length > 0 ? chunkLampiran(imageLampiran, 2) : [];
 
+  const groupRombelDataByKey = <
+    T extends { jenis_kelamin: string; jumlah_siswa: number },
+  >(
+    data: T[],
+    key: keyof T,
+  ) => {
+    if (!data) return {};
+    return data.reduce<Record<string, Record<string, number>>>((acc, item) => {
+      const groupKey = String(item[key]);
+      const gender = formatGender(item.jenis_kelamin);
+      if (!acc[groupKey]) acc[groupKey] = {};
+      acc[groupKey][gender] = (acc[groupKey][gender] || 0) + item.jumlah_siswa;
+      return acc;
+    }, {});
+  };
+  const groupSaranaData = <
+    T extends {
+      nama_sarana: string;
+      jumlah_total: number;
+      jumlah_kondisi_baik: number;
+      jumlah_kondisi_rusak: number;
+      keterangan: string | null;
+    },
+  >(
+    data: T[],
+  ) => {
+    if (!data) return {};
+    return data.reduce<
+      Record<
+        string,
+        {
+          total: number;
+          baik: number;
+          rusak: number;
+          keterangan: string | null;
+        }
+      >
+    >((acc, item) => {
+      const name = item.nama_sarana;
+      if (!acc[name]) {
+        acc[name] = {
+          total: 0,
+          baik: 0,
+          rusak: 0,
+          keterangan: item.keterangan,
+        };
+      }
+      acc[name].total += item.jumlah_total;
+      acc[name].baik += item.jumlah_kondisi_baik;
+      acc[name].rusak += item.jumlah_kondisi_rusak;
+      if (!acc[name].keterangan && item.keterangan) {
+        acc[name].keterangan = item.keterangan;
+      }
+      return acc;
+    }, {});
+  };
+
+  const groupPrasaranaData = <
+    T extends {
+      nama_prasarana: string;
+      jumlah_total: number;
+      jumlah_kondisi_baik: number;
+      jumlah_kondisi_rusak: number;
+      keterangan: string | null;
+    },
+  >(
+    data: T[],
+  ) => {
+    if (!data) return {};
+    return data.reduce<
+      Record<
+        string,
+        {
+          total: number;
+          baik: number;
+          rusak: number;
+          keterangan: string | null;
+        }
+      >
+    >((acc, item) => {
+      const name = item.nama_prasarana;
+      if (!acc[name]) {
+        acc[name] = {
+          total: 0,
+          baik: 0,
+          rusak: 0,
+          keterangan: item.keterangan,
+        };
+      }
+      acc[name].total += item.jumlah_total;
+      acc[name].baik += item.jumlah_kondisi_baik;
+      acc[name].rusak += item.jumlah_kondisi_rusak;
+      if (!acc[name].keterangan && item.keterangan) {
+        acc[name].keterangan = item.keterangan;
+      }
+      return acc;
+    }, {});
+  };
+  // Process data
+  const groupedGuru = groupGuruDataByKey(data.guru || [], 'status_guru');
+  const groupedRombel = groupRombelDataByKey(
+    data.rombonganBelajar || [],
+    'tingkatan_kelas',
+  );
+  const groupedSarana = groupSaranaData(data.sarana || []);
+  const groupedPrasarana = groupPrasaranaData(data.prasarana || []);
+
+  const imageLampiran = (data.lampiran || []).filter((item) =>
+    isImageFile(item.url),
+  );
+  const imageLampiranChunks =
+    imageLampiran.length > 0 ? chunkArray(imageLampiran, 4) : [];
+
+  // Reusable table component
+  const renderTable = (
+    headers: string[],
+    data: Array<Record<string, string | number>>,
+    colWidths: string[] = ['8%', '47%', '22.5%', '22.5%'],
+  ) => {
+    const headersWithNo = ['No', ...headers];
+    const adjustedColWidths =
+      colWidths.length === headers.length + 1
+        ? colWidths
+        : ['8%', '47%', '22.5%', '22.5%'];
+
+    return (
+      <View style={styles.table}>
+        <View style={[styles.tableRow, styles.tableHeader]}>
+          {headersWithNo.map((header, i) => (
+            <View
+              key={i}
+              style={[styles.tableCol, { width: adjustedColWidths[i] }]}
+            >
+              <Text style={styles.tableHeaderCell}>{header}</Text>
+            </View>
+          ))}
+        </View>
+
+        {data.length > 0 ? (
+          data.map((row, i) => (
+            <View
+              key={i}
+              style={[
+                styles.tableRow,
+                i % 2 === 0 ? styles.tableRowEven : styles.tableRowOdd,
+              ]}
+              wrap={false}
+            >
+              <View style={[styles.tableCol, { width: adjustedColWidths[0] }]}>
+                <Text style={styles.tableCell}>{i + 1}</Text>
+              </View>
+              {Object.values(row).map((value, j) => (
+                <View
+                  key={j}
+                  style={[styles.tableCol, { width: adjustedColWidths[j + 1] }]}
+                >
+                  <Text
+                    style={j === 0 ? styles.tableCellLeft : styles.tableCell}
+                  >
+                    {String(value)}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ))
+        ) : (
+          <View style={[styles.tableRow, styles.tableRowEven]}>
+            <View style={[styles.tableCol, { width: '100%' }]}>
+              <Text style={styles.emptyState}>Tidak ada data</Text>
+            </View>
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  // Main document
   return (
     <Document>
-      {' '}
-      {/* Main Page */}{' '}
+      {/* Main Page */}
       <Page size="A4" style={styles.page}>
-        {/* Header */}
-        <View style={styles.header}>
-          {/* eslint-disable-next-line jsx-a11y/alt-text */}
-          <Image
-            style={styles.logo}
-            src={`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/logo-nias-selatan.svg`}
-          />
-          <View style={styles.headerText}>
-            <Text style={styles.headerTitle}>
-              PEMERINTAH KABUPATEN NIAS SELATAN
-            </Text>
-            <Text style={styles.headerSubtitle}>DINAS PENDIDIKAN</Text>
-            <Text style={styles.headerAddress}>
-              Jalan Arah Lagundri Km. 7 Fanayama Nias Selatan Sumatera Utara
-              {'\n'}
-              Email : disdiknisel90@gmail.com Kode Pos 22865
-            </Text>
-          </View>
-        </View>
+        <PDFHeader />
         <Text style={styles.title}>DATA SEKOLAH</Text>
-        {/* Informasi Sekolah */}
+        {/* School Information */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Informasi Sekolah</Text>
-          <View style={styles.row}>
-            <Text style={styles.label}>Nama Sekolah:</Text>
-            <Text style={styles.value}>{data.nama_sekolah}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>NPSN:</Text>
-            <Text style={styles.value}>{data.npsn}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Kepala Sekolah:</Text>
-            <Text style={styles.value}>
-              {data.nama_kepala_sekolah || 'Belum diisi'}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>NIP Kepala Sekolah:</Text>
-            <Text style={styles.value}>
-              {data.nip_kepala_sekolah || 'Belum diisi'}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Alamat:</Text>
-            <Text style={styles.value}>
-              {data.alamat_sekolah || 'Belum diisi'}
-            </Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Kecamatan:</Text>
-            <Text style={styles.value}>{data.kecamatan || 'Belum diisi'}</Text>
-          </View>
-          <View style={styles.row}>
-            <Text style={styles.label}>Telepon:</Text>
-            <Text style={styles.value}>{data.phone || 'Belum diisi'}</Text>
-          </View>{' '}
-          <View style={styles.row}>
-            <Text style={styles.label}>Email User:</Text>
-            <Text style={styles.value}>
-              {data.user?.email || 'Belum diisi'}
-            </Text>
+          <Text style={styles.sectionTitle}>1. Informasi Sekolah</Text>{' '}
+          <View style={styles.infoGrid}>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>Nama Sekolah</Text>
+              <Text style={styles.infoColon}>:</Text>
+              <Text style={styles.infoValue}>{data.nama_sekolah}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>NPSN</Text>
+              <Text style={styles.infoColon}>:</Text>
+              <Text style={styles.infoValue}>{data.npsn}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>Kepala Sekolah</Text>
+              <Text style={styles.infoColon}>:</Text>
+              <Text style={styles.infoValue}>{data.nama_kepala_sekolah}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>NIP Kepala Sekolah</Text>
+              <Text style={styles.infoColon}>:</Text>
+              <Text style={styles.infoValue}>
+                {data.nip_kepala_sekolah || '-'}
+              </Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>Alamat</Text>
+              <Text style={styles.infoColon}>:</Text>
+              <Text style={styles.infoValue}>{data.alamat_sekolah}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>Kecamatan</Text>
+              <Text style={styles.infoColon}>:</Text>
+              <Text style={styles.infoValue}>{data.kecamatan || '-'}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>Telepon</Text>
+              <Text style={styles.infoColon}>:</Text>
+              <Text style={styles.infoValue}>{data.phone || '-'}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.infoLabel}>Email</Text>
+              <Text style={styles.infoColon}>:</Text>
+              <Text style={styles.infoValue}>{data.user?.email || '-'}</Text>
+            </View>
           </View>
         </View>
-        {/* Data Guru */}
+        {/* Teacher Data */}
         <View style={styles.section}>
-          {' '}
-          <Text style={styles.sectionTitle}>Data Guru</Text>
-          {data.guru && data.guru.length > 0 ? (
-            Object.entries(groupGuruByStatus(data.guru)).map(
-              ([status, genderData]) => (
-                <View key={status} style={{ marginBottom: 8 }}>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      marginBottom: 3,
-                    }}
-                  >
-                    {status}
-                  </Text>
-                  {Object.entries(genderData).map(([gender, jumlah]) => (
-                    <View key={gender} style={styles.row}>
-                      <Text style={styles.label}>{gender}:</Text>
-                      <Text style={styles.value}>{jumlah} orang</Text>
-                    </View>
-                  ))}
-                </View>
-              ),
+          <Text style={styles.sectionTitle}>2. Data Guru</Text>
+          {data.guru?.length ? (
+            renderTable(
+              ['Status Guru', 'Laki-laki', 'Perempuan'],
+              Object.entries(groupedGuru).map(([status, genderData]) => ({
+                status,
+                'Laki-laki':
+                  (genderData as Record<string, number>)['Laki-laki'] || 0,
+                Perempuan:
+                  (genderData as Record<string, number>)['Perempuan'] || 0,
+              })),
             )
           ) : (
             <Text style={styles.emptyState}>Belum ada data guru</Text>
           )}
         </View>
-        {/* Data Rombongan Belajar */}
+        {/* Class Group Data */}
         <View style={styles.section}>
-          {' '}
-          <Text style={styles.sectionTitle}>Rombongan Belajar</Text>
-          {data.rombonganBelajar && data.rombonganBelajar.length > 0 ? (
-            Object.entries(groupRombelByTingkatan(data.rombonganBelajar)).map(
-              ([tingkatan, genderData]) => (
-                <View key={tingkatan} style={{ marginBottom: 8 }}>
-                  {' '}
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      marginBottom: 3,
-                    }}
-                  >
-                    Kelas {convertToRoman(tingkatan)}
-                  </Text>
-                  {Object.entries(genderData).map(([gender, jumlah]) => (
-                    <View key={gender} style={styles.row}>
-                      <Text style={styles.label}>{gender}:</Text>
-                      <Text style={styles.value}>{jumlah} siswa</Text>
-                    </View>
-                  ))}
-                </View>
-              ),
+          <Text style={styles.sectionTitle}>3. Rombongan Belajar</Text>
+          {data.rombonganBelajar?.length ? (
+            renderTable(
+              ['Kelas', 'Laki-laki', 'Perempuan'],
+              Object.entries(groupedRombel).map(([tingkatan, genderData]) => ({
+                kelas: `Kelas ${convertToRoman(tingkatan)}`,
+                'Laki-laki':
+                  (genderData as Record<string, number>)['Laki-laki'] || 0,
+                Perempuan:
+                  (genderData as Record<string, number>)['Perempuan'] || 0,
+              })),
             )
           ) : (
             <Text style={styles.emptyState}>
               Belum ada data rombongan belajar
             </Text>
           )}
-        </View>
-        {/* Data Sarana */}
+        </View>{' '}
+        {/* Facility Data */}
         <View style={styles.section}>
-          {' '}
-          <Text style={styles.sectionTitle}>Data Sarana</Text>
-          {data.sarana && data.sarana.length > 0 ? (
-            <View style={styles.table}>
-              <View style={[styles.tableRow, styles.tableHeader]}>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>Nama Sarana</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>Total</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>Baik</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>Rusak</Text>
-                </View>
-              </View>
-              {Object.entries(groupSaranaByName(data.sarana)).map(
-                ([name, saranaData]) => (
-                  <View key={name} style={styles.tableRow}>
-                    <View style={styles.tableCol}>
-                      <Text style={styles.tableCellLeft}>{name}</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                      <Text style={styles.tableCell}>{saranaData.total}</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                      <Text style={styles.tableCell}>{saranaData.baik}</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                      <Text style={styles.tableCell}>{saranaData.rusak}</Text>
-                    </View>
-                  </View>
-                ),
-              )}
-            </View>
+          <Text style={styles.sectionTitle}>4. Data Sarana</Text>
+          {data.sarana?.length ? (
+            renderTable(
+              ['Nama Sarana', 'Total', 'Baik', 'Rusak'],
+              Object.entries(groupedSarana).map(([name, saranaData]) => ({
+                nama: name,
+                total: (saranaData as GroupedFacilityData[string]).total,
+                baik: (saranaData as GroupedFacilityData[string]).baik,
+                rusak: (saranaData as GroupedFacilityData[string]).rusak,
+              })),
+              ['8%', '52%', '13.33%', '13.33%', '13.34%'],
+            )
           ) : (
             <Text style={styles.emptyState}>Belum ada data sarana</Text>
           )}
-        </View>
-        {/* Data Prasarana */}
+        </View>{' '}
+        {/* Infrastructure Data */}
         <View style={styles.section}>
-          {' '}
-          <Text style={styles.sectionTitle}>Data Prasarana</Text>
-          {data.prasarana && data.prasarana.length > 0 ? (
-            <View style={styles.table}>
-              <View style={[styles.tableRow, styles.tableHeader]}>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>Nama Prasarana</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>Total</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>Baik</Text>
-                </View>
-                <View style={styles.tableCol}>
-                  <Text style={styles.tableCell}>Rusak</Text>
-                </View>
-              </View>
-              {Object.entries(groupPrasaranaByName(data.prasarana)).map(
-                ([name, prasaranaData]) => (
-                  <View key={name} style={styles.tableRow}>
-                    <View style={styles.tableCol}>
-                      <Text style={styles.tableCellLeft}>{name}</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                      <Text style={styles.tableCell}>
-                        {prasaranaData.total}
-                      </Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                      <Text style={styles.tableCell}>{prasaranaData.baik}</Text>
-                    </View>
-                    <View style={styles.tableCol}>
-                      <Text style={styles.tableCell}>
-                        {prasaranaData.rusak}
-                      </Text>
-                    </View>
-                  </View>
-                ),
-              )}
-            </View>
+          <Text style={styles.sectionTitle}>5. Data Prasarana</Text>
+          {data.prasarana?.length ? (
+            renderTable(
+              ['Nama Prasarana', 'Total', 'Baik', 'Rusak'],
+              Object.entries(groupedPrasarana).map(([name, prasaranaData]) => ({
+                nama: name,
+                total: (prasaranaData as GroupedFacilityData[string]).total,
+                baik: (prasaranaData as GroupedFacilityData[string]).baik,
+                rusak: (prasaranaData as GroupedFacilityData[string]).rusak,
+              })),
+              ['8%', '52%', '13.33%', '13.33%', '13.34%'],
+            )
           ) : (
             <Text style={styles.emptyState}>Belum ada data prasarana</Text>
           )}
         </View>
-        {/* Kebutuhan Prioritas */}
+        {/* Priority Needs */}
         <View style={styles.section}>
-          {' '}
-          <Text style={styles.sectionTitle}>Kebutuhan Prioritas</Text>
-          {data.kebutuhanPrioritas && data.kebutuhanPrioritas.length > 0 ? (
-            data.kebutuhanPrioritas.map((prioritas, index) => (
-              <View key={prioritas.id} style={{ marginBottom: 5 }}>
-                <Text style={{ fontSize: 9 }}>
-                  {index + 1}. {prioritas.penjelasan || 'Tidak ada penjelasan'}
-                </Text>
-              </View>
-            ))
-          ) : (
-            <Text style={styles.emptyState}>
-              Belum ada data kebutuhan prioritas
+          <Text style={styles.sectionTitle}>6. Kebutuhan Prioritas</Text>
+          <View style={styles.bulletList}>
+            <Text style={styles.bulletItem}>
+              {data.kebutuhanPrioritas?.[0]?.penjelasan ||
+                'Tidak ada data kebutuhan prioritas'}
             </Text>
-          )}
-        </View>{' '}
-        {/* Info Lampiran */}
+          </View>
+        </View>
+        {/* Attachments */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Lampiran</Text>
-          {imageLampiran.length > 0 ? (
-            <View>
-              {/* Summary */}
-              <View style={{ marginBottom: 10 }}>
-                <Text style={{ fontSize: 9, fontWeight: 500, marginBottom: 5 }}>
-                  Total: {imageLampiran.length} gambar lampiran
+          <Text style={styles.sectionTitle}>7. Lampiran</Text>
+          {data.lampiran?.length ? (
+            <View style={styles.bulletList}>
+              {data.lampiran.map((item) => (
+                <Text key={item.id} style={styles.bulletItem}>
+                  • {item.nama_dokumen}
+                  {item.keterangan && ` (${item.keterangan})`}
                 </Text>
-              </View>
-
-              {/* Images List */}
-              <View style={{ marginBottom: 8 }}>
-                <Text style={{ fontSize: 9, fontWeight: 500, marginBottom: 3 }}>
-                  📸 Daftar Lampiran Gambar:
-                </Text>
-                {imageLampiran.map((lampiran, index) => (
-                  <View
-                    key={lampiran.id}
-                    style={{ marginBottom: 2, marginLeft: 10 }}
-                  >
-                    <Text style={{ fontSize: 8 }}>
-                      {index + 1}. {lampiran.nama_dokumen}
-                      {lampiran.keterangan && ` - ${lampiran.keterangan}`}
-                    </Text>
-                  </View>
-                ))}
-              </View>
+              ))}
             </View>
           ) : (
-            <Text style={styles.emptyState}>Belum ada lampiran gambar</Text>
-          )}
+            <Text style={styles.emptyState}>Belum ada lampiran</Text>
+          )}{' '}
         </View>
       </Page>
-      {/* Image Lampiran Pages */}
+
+      {/* Image Attachment Pages */}
       {imageLampiranChunks.map((chunk, pageIndex) => (
-        <Page key={`image-${pageIndex}`} size="A4" style={styles.page}>
-          {/* Header */}
-          <View style={styles.header}>
-            {/* eslint-disable-next-line jsx-a11y/alt-text */}
-            <Image
-              style={styles.logo}
-              src={`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/logo-nias-selatan.svg`}
-            />
-            <View style={styles.headerText}>
-              <Text style={styles.headerTitle}>
-                PEMERINTAH KABUPATEN NIAS SELATAN
-              </Text>
-              <Text style={styles.headerSubtitle}>DINAS PENDIDIKAN</Text>
-              <Text style={styles.headerAddress}>
-                Jalan Arah Lagundri Km. 7 Fanayama Nias Selatan Sumatera Utara
-                {'\n'}
-                Email : disdiknisel90@gmail.com Kode Pos 22865
-              </Text>
-            </View>
-          </View>{' '}
-          <Text style={styles.title}>
-            LAMPIRAN - {data.nama_sekolah} (Halaman {pageIndex + 1})
-          </Text>
+        <Page key={`image-page-${pageIndex}`} size="A4" style={styles.page}>
+          <PDFHeader />
+          <Text style={styles.title}>LAMPIRAN DOKUMENTASI</Text>
           <View style={styles.lampiranContainer}>
-            {chunk.map((lampiran) => (
-              <View key={lampiran.id} style={styles.lampiranItem}>
-                <Text style={styles.lampiranTitle}>
-                  {lampiran.nama_dokumen}
-                </Text>
-                {lampiran.keterangan && (
-                  <Text
-                    style={{
-                      fontSize: 8,
-                      textAlign: 'center',
-                      marginBottom: 5,
-                      fontWeight: 300,
-                      color: '#666666',
-                    }}
-                  >
-                    {lampiran.keterangan}
+            {chunk.map((item) => (
+              <View key={item.id} style={styles.lampiranItem}>
+                <Text style={styles.lampiranTitle}>{item.nama_dokumen}</Text>{' '}
+                {item.keterangan && (
+                  <Text style={styles.lampiranDescription}>
+                    {item.keterangan}
                   </Text>
                 )}
                 {/* eslint-disable-next-line jsx-a11y/alt-text */}
-                <Image
-                  src={lampiran.url}
-                  style={{
-                    width: '100%',
-                    maxHeight: 250,
-                    objectFit: 'contain',
-                  }}
-                />
+                <Image src={item.url} style={styles.lampiranImage} />
               </View>
-            ))}
+            ))}{' '}
           </View>
         </Page>
       ))}
