@@ -269,14 +269,16 @@ export default function FormulirPage() {
     setCurrentStep(stepNumber);
   };
   return (
-    <>
-      {/* Main Content - Form Header */}
-      <main className="container mx-auto px-4 md:px-6 py-6 max-w-5xl">
-        <FormHeader />
-      </main>
-      {/* Step Indicator - Full Width */}
-      <div className="w-full mb-6">
-        {' '}
+    <div className="min-h-[calc(100vh-180px)] bg-background">
+      {' '}
+      {/* Header Section */}
+      <div className="bg-card">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <FormHeader />
+        </div>
+      </div>{' '}
+      {/* Step Indicator */}
+      <div>
         <StepIndicator
           currentStep={currentStep}
           completedSteps={completedSteps}
@@ -284,8 +286,8 @@ export default function FormulirPage() {
           onStepClick={handleStepClick}
         />
       </div>
-      {/* Form Content - Container with max-width */}{' '}
-      <div className="container mx-auto px-4 md:px-6 pb-6 max-w-5xl">
+      {/* Form Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {' '}
         {/* Show status message if form is disabled */}
         {isFormDisabled &&
@@ -299,7 +301,7 @@ export default function FormulirPage() {
               </div>
             );
           })()}
-        <Card className="p-4 md:p-6 shadow-sm border border-border/60 bg-background">
+        <Card className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-6 md:p-8">
           {' '}
           {currentStep === 1 && (
             <SchoolInfoForm
@@ -370,6 +372,6 @@ export default function FormulirPage() {
         open={showSuccessDialog}
         onOpenChange={setShowSuccessDialog}
       />
-    </>
+    </div>
   );
 }

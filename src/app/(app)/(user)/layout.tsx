@@ -7,9 +7,9 @@ interface UserLayoutProps {
 
 export default function UserLayout({ children }: UserLayoutProps) {
   return (
-    <div className="min-h-screen bg-muted flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <AppHeader />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 w-full">{children}</main>
       <AppFooter />
     </div>
   );

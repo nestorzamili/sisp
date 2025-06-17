@@ -326,7 +326,8 @@ export function SchoolInfoForm({
                     {hasExistingData('kecamatan') && (
                       <CheckCircle2 className="w-4 h-4 text-green-500" />
                     )}
-                  </FormLabel>{' '}                  <Select
+                  </FormLabel>{' '}
+                  <Select
                     onValueChange={field.onChange}
                     value={field.value}
                     disabled={isSubmitting || disabled}

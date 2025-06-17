@@ -85,43 +85,43 @@ export function StepIndicator({
     { number: 6, label: 'Prioritas Kebutuhan' },
     { number: 7, label: 'Lampiran' },
   ];
-
   return (
-    <div className="flex items-center justify-center mb-2 px-4">
-      <div className="flex items-center space-x-2 md:space-x-4 overflow-x-auto">
-        {steps.map((step, index) => {
-          const hasData =
-            dataCompletionStatus[
-              `step${step.number}` as keyof typeof dataCompletionStatus
-            ];
+    <div className="w-full">
+      <div className="flex items-center justify-center py-2 px-2 overflow-x-auto">
+        <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 min-w-max">
+          {steps.map((step, index) => {
+            const hasData =
+              dataCompletionStatus[
+                `step${step.number}` as keyof typeof dataCompletionStatus
+              ];
 
-          return (
-            <React.Fragment key={step.number}>
-              {' '}
-              <div
-                className={`flex items-center space-x-2 px-2 md:px-3 py-2 rounded-xl cursor-pointer transition-all duration-300 whitespace-nowrap ${
-                  currentStep === step.number
-                    ? 'bg-primary/10 text-primary shadow-sm border border-primary/20'
-                    : hasData
-                      ? 'bg-green-50 text-green-600 shadow-sm border border-green-200'
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
-                onClick={() => onStepClick(step.number)}
-              >
-                {getStepIcon(step.number)}
-                <span className="text-xs md:text-sm font-medium hidden sm:inline">
-                  {step.label}
-                </span>
-                <span className="text-xs font-medium sm:hidden">
-                  {step.number}
-                </span>
-              </div>
-              {index < steps.length - 1 && (
-                <ChevronRight className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground/60 flex-shrink-0" />
-              )}
-            </React.Fragment>
-          );
-        })}
+            return (
+              <React.Fragment key={step.number}>
+                <div
+                  className={`flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-2 rounded-lg sm:rounded-xl cursor-pointer transition-all duration-300 whitespace-nowrap flex-shrink-0 ${
+                    currentStep === step.number
+                      ? 'bg-primary/10 text-primary shadow-sm border border-primary/20'
+                      : hasData
+                        ? 'bg-green-50 text-green-600 shadow-sm border border-green-200'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
+                  onClick={() => onStepClick(step.number)}
+                >
+                  {getStepIcon(step.number)}
+                  <span className="text-xs sm:text-sm font-medium hidden md:inline">
+                    {step.label}
+                  </span>
+                  <span className="text-xs font-medium md:hidden">
+                    {step.number}
+                  </span>
+                </div>
+                {index < steps.length - 1 && (
+                  <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground/60 flex-shrink-0" />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
