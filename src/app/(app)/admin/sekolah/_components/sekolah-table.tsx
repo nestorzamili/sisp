@@ -7,7 +7,8 @@ import { DataTable } from '@/components/data-table';
 import { SekolahTableFilters } from './sekolah-table-filters';
 import { createSekolahColumns } from './sekolah-table-columns';
 import { SekolahWithDetails } from '@/types/sekolah';
-import { getAllSekolahWithCount } from '../action';
+import { getAllSekolahWithCount, getSekolahDetail } from '../action';
+import { downloadSekolahPDF } from '@/lib/pdf-utils';
 import { toast } from 'sonner';
 
 // Types for better type safety
@@ -153,15 +154,31 @@ export function SekolahTable() {
       }
     },
     [router],
+  ); // Download handler with PDF generation
+  const handleDownloadData = useCallback(
+    async (sekolah: SekolahWithDetails) => {
+      if (sekolah.id.startsWith('skeleton-')) return;
+
+      try {
+        toast.info('Mempersiapkan PDF...');
+
+        // Get detailed data for PDF generation
+        const detailResponse = await getSekolahDetail(sekolah.id);
+
+        if (!detailResponse.success || !detailResponse.data) {
+          toast.error('Gagal mengambil data detail sekolah');
+          return;
+        }
+
+        await downloadSekolahPDF(detailResponse.data);
+        toast.success('PDF berhasil diunduh');
+      } catch (error) {
+        console.error('Error downloading PDF:', error);
+        toast.error('Gagal mengunduh PDF. Silakan coba lagi.');
+      }
+    },
+    [],
   );
-
-  // Download handler (placeholder for now)
-  const handleDownloadData = useCallback((sekolah: SekolahWithDetails) => {
-    if (sekolah.id.startsWith('skeleton-')) return;
-
-    // TODO: Implement download functionality
-    toast.info('Fitur unduh data akan segera tersedia');
-  }, []);
   // Memoized columns using factory function
   const columns = useMemo(
     () =>
