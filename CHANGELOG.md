@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.7](https://github.com/nestorzamili/sisp/compare/v1.2.6...v1.2.7) (2025-06-18)
+
+
+### Bug Fixes
+
+* **deps:** update better-auth to version 1.2.9 and kysely to version 0.28.2 ([a65d52b](https://github.com/nestorzamili/sisp/commit/a65d52bf37b427027d4e25f95d58d860202d7cf6))
+
 ## [1.2.6](https://github.com/nestorzamili/sisp/compare/v1.2.5...v1.2.6) (2025-06-18)
 
 
