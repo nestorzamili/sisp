@@ -53,6 +53,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Preload critical images for better LCP */}
+        <link rel="preload" href="/school.png" as="image" type="image/png" />
+        <link
+          rel="preload"
+          href="/logo-nias-selatan.png"
+          as="image"
+          type="image/png"
+        />
+        {/* DNS prefetch for external resources */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+      </head>
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
       >

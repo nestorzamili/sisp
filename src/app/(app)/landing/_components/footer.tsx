@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
                     height={28}
                     className="mr-2"
                   />
-                  <span className="text-foreground">SISPS Nias Selatan</span>
+                  <span className="text-foreground">SISP SMP Nias Selatan</span>
                 </div>
                 <p className="text-muted-foreground mb-6 leading-relaxed">
                   Sistem pendataan sarana prasarana resmi dari Dinas Pendidikan
