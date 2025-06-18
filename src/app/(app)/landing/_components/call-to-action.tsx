@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Shield, Users, TrendingUp, Sparkles } from 'lucide-react';
+import { ArrowRight, Shield, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -14,11 +14,6 @@ const CallToAction: React.FC = () => {
       description: 'Keamanan terjamin',
     },
     {
-      icon: Users,
-      label: '138 Sekolah',
-      description: 'Sudah terdaftar',
-    },
-    {
       icon: TrendingUp,
       label: 'Analisis Akurat',
       description: 'Hasil terpercaya',
@@ -27,52 +22,62 @@ const CallToAction: React.FC = () => {
 
   return (
     <>
+      {' '}
       {/* Call to Action */}
       <section className="relative py-24 bg-gradient-to-br from-primary via-primary/95 to-blue-600 text-primary-foreground overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-10 left-10 w-32 h-32 border-2 border-current rounded-full animate-pulse"></div>
+        {' '}
+        {/* Enhanced background graphics consistent with other sections */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Animated gradient orbs for depth - increased visibility */}
+          <div className="absolute top-10 left-10 w-32 h-32 bg-white/25 rounded-full blur-2xl animate-pulse"></div>
           <div
-            className="absolute bottom-20 right-20 w-24 h-24 border-2 border-current rounded-full animate-pulse"
-            style={{ animationDelay: '1s' }}
+            className="absolute bottom-20 right-20 w-24 h-24 bg-white/20 rounded-full blur-xl animate-pulse"
+            style={{ animationDelay: '2s', animationDuration: '4s' }}
           ></div>
           <div
-            className="absolute top-1/2 left-1/4 w-16 h-16 border-2 border-current rounded-full animate-pulse"
-            style={{ animationDelay: '2s' }}
+            className="absolute top-1/2 left-1/4 w-16 h-16 bg-white/15 rounded-full blur-lg animate-pulse"
+            style={{ animationDelay: '1s', animationDuration: '3s' }}
           ></div>
 
-          {/* Floating Elements */}
-          <motion.div
-            animate={{
-              y: [0, -20, 0],
-              rotate: [0, 10, 0],
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-            className="absolute top-20 right-1/3 w-20 h-20 bg-white/10 rounded-2xl backdrop-blur-sm"
-          />
-          <motion.div
-            animate={{
-              y: [0, 15, 0],
-              x: [0, 10, 0],
-            }}
-            transition={{
-              duration: 10,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 3,
-            }}
-            className="absolute bottom-32 left-1/3 w-16 h-16 bg-white/5 rounded-full backdrop-blur-sm"
-          />
+          {/* CTA themed elements - increased visibility */}
+          <div className="absolute top-1/4 right-1/4">
+            <div className="opacity-40">
+              <div className="w-8 h-8 border-2 border-white/50 rounded-lg rotate-12"></div>
+            </div>
+          </div>
+
+          {/* Action indicators - increased visibility */}
+          <div className="absolute bottom-1/3 left-1/6">
+            <div className="opacity-35">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                <div className="w-6 h-0.5 bg-white/50 rounded-full"></div>
+                <div className="w-3 h-3 border border-white/60 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Additional CTA graphics - more visible */}
+          <div className="absolute top-1/6 left-1/3">
+            <div className="opacity-30">
+              <div className="grid grid-cols-2 gap-1">
+                <div className="w-2 h-6 bg-white/40 rounded-sm"></div>
+                <div className="w-2 h-4 bg-white/30 rounded-sm"></div>
+              </div>
+            </div>
+          </div>
+
+          <div className="absolute bottom-1/4 right-1/5">
+            <div className="opacity-35">
+              <div className="w-6 h-6 border-2 border-white/50 rounded-full relative">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white/60 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Subtle depth overlays */}
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent"></div>
         </div>
-
-        {/* Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-transparent to-blue-600/90"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-
         <div className="container mx-auto max-w-[1440px] px-6 text-center relative z-10">
           {/* Trust Indicators */}
           <motion.div
@@ -94,8 +99,11 @@ const CallToAction: React.FC = () => {
                     duration: 0.6,
                     delay: index * 0.2 + 0.2,
                   }}
-                  whileHover={{ scale: 1.05 }}
-                  className="flex items-center gap-3 px-6 py-3 bg-white/10 rounded-full backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/15 transition-all duration-300"
+                  whileHover={{
+                    scale: 1.02,
+                    transition: { duration: 0.15 },
+                  }}
+                  className="flex items-center gap-3 px-6 py-3 bg-white/10 rounded-full backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/15 transition-all duration-150"
                 >
                   <IndicatorIcon className="w-5 h-5" />
                   <div className="text-left">
@@ -119,18 +127,7 @@ const CallToAction: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="max-w-4xl mx-auto"
           >
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/15 border border-white/30 rounded-full text-white font-medium text-sm mb-8 backdrop-blur-sm"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>Bergabunglah dengan Sistem Terdepan</span>
-            </motion.div>
-
+            {' '}
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -143,7 +140,6 @@ const CallToAction: React.FC = () => {
                 Kebutuhan Sekolah Anda
               </span>
             </motion.h2>
-
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -155,7 +151,6 @@ const CallToAction: React.FC = () => {
               analisis prioritas kebutuhan yang akan mendukung perencanaan
               pembangunan pendidikan yang berkelanjutan di Nias Selatan.
             </motion.p>
-
             {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -165,11 +160,13 @@ const CallToAction: React.FC = () => {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
               <Link href="/sign-up">
+                {' '}
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.15 }}
                 >
-                  <Button className="group relative overflow-hidden bg-white text-primary hover:bg-white/95 font-bold text-lg px-10 py-6 rounded-2xl shadow-2xl hover:shadow-white/20 transition-all duration-300 min-w-[250px]">
+                  <Button className="group relative overflow-hidden bg-white text-primary hover:bg-white/95 font-bold text-lg px-10 py-6 rounded-2xl shadow-2xl hover:shadow-white/20 transition-all duration-150 min-w-[250px]">
                     {/* Button Background Animation */}
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
@@ -179,27 +176,29 @@ const CallToAction: React.FC = () => {
 
                     <span className="relative flex items-center gap-3 justify-center">
                       Daftarkan Sekolah Anda
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-150" />
                     </span>
                   </Button>
                 </motion.div>
               </Link>
 
               <Link href="/sign-in">
+                {' '}
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ duration: 0.15 }}
                 >
+                  {' '}
                   <Button
                     variant="outline"
-                    className="border-2 border-white/30 text-white hover:bg-white/10 font-semibold text-lg px-10 py-6 rounded-2xl backdrop-blur-sm transition-all duration-300 min-w-[200px]"
+                    className="border-2 border-white bg-white/15 text-white hover:bg-white hover:text-primary font-semibold text-lg px-10 py-6 rounded-2xl backdrop-blur-sm transition-all duration-150 min-w-[200px]"
                   >
                     Masuk Sistem
                   </Button>
                 </motion.div>
               </Link>
             </motion.div>
-
             {/* Additional Info */}
             <motion.div
               initial={{ opacity: 0 }}

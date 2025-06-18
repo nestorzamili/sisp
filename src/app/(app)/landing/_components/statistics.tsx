@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { TrendingUp, Users, Target, MapPin } from 'lucide-react';
 
@@ -47,56 +46,109 @@ const Statistics: React.FC = () => {
 
   return (
     <>
+      {' '}
       {/* Statistics Section */}
       <section
         id="statistics"
-        className="py-24 bg-gradient-to-b from-background to-muted/30 relative overflow-hidden"
+        className="py-24 relative overflow-hidden bg-background"
       >
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-48 h-48 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full blur-2xl"></div>
+        {/* Enhanced background graphics consistent with other sections */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Base background layer */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background to-muted/15 dark:from-background dark:to-muted/8"></div>
+
+          {/* Animated gradient orbs for depth */}
+          <div className="absolute top-20 right-20 w-64 h-64 bg-gradient-to-br from-primary/35 to-blue-600/20 dark:from-primary/20 dark:to-blue-600/12 rounded-full blur-3xl animate-pulse"></div>
+          <div
+            className="absolute bottom-20 left-20 w-48 h-48 bg-gradient-to-br from-blue-500/30 to-green-500/15 dark:from-blue-500/18 dark:to-green-500/10 rounded-full blur-2xl animate-pulse"
+            style={{ animationDelay: '2s', animationDuration: '5s' }}
+          ></div>
+          <div
+            className="absolute top-1/2 left-1/4 w-32 h-32 bg-gradient-to-br from-green-500/25 to-orange-500/15 dark:from-green-500/15 dark:to-orange-500/10 rounded-full blur-2xl animate-pulse"
+            style={{ animationDelay: '1s', animationDuration: '4s' }}
+          ></div>
+
+          {/* Statistics themed elements */}
+          <div className="absolute top-1/4 left-1/6">
+            <div className="grid grid-cols-3 gap-2 opacity-40 dark:opacity-20">
+              <div className="w-3 h-8 bg-primary/50 dark:bg-primary/25 rounded-sm"></div>
+              <div className="w-3 h-6 bg-blue-600/50 dark:bg-blue-600/25 rounded-sm"></div>
+              <div className="w-3 h-10 bg-green-500/50 dark:bg-green-500/25 rounded-sm"></div>
+            </div>
+          </div>
+
+          {/* Data visualization elements */}
+          <div className="absolute bottom-1/3 right-1/6">
+            <div className="opacity-25 dark:opacity-15">
+              <div className="flex items-end gap-1 mb-2">
+                <div className="w-2 h-6 bg-gradient-to-t from-primary/60 dark:from-primary/30 to-transparent rounded-sm"></div>
+                <div className="w-2 h-8 bg-gradient-to-t from-blue-600/60 dark:from-blue-600/30 to-transparent rounded-sm"></div>
+                <div className="w-2 h-4 bg-gradient-to-t from-green-500/60 dark:from-green-500/30 to-transparent rounded-sm"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Geographic/mapping elements */}
+          <div className="absolute top-1/6 right-1/3">
+            <div className="opacity-30 dark:opacity-18">
+              <div className="w-8 h-8 border-2 border-primary/50 dark:border-primary/25 rounded-full relative">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-primary/60 dark:bg-primary/30 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Abstract statistics symbols */}
+          <div className="absolute bottom-1/4 left-1/5 text-green-500/20 dark:text-green-500/12 text-lg font-light select-none">
+            📊
+          </div>
+          <div className="absolute top-1/5 right-1/5 text-primary/20 dark:text-primary/12 text-lg font-light select-none">
+            🎯
+          </div>
+
+          {/* Subtle depth overlays */}
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-primary/3 dark:via-primary/2 to-transparent"></div>
         </div>
 
         <div className="container mx-auto max-w-[1440px] px-6 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left Content */}
+          {' '}
+          <div className="grid grid-cols-1 gap-16">
+            {/* Header Content */}
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.8 }}
+              className="text-center"
             >
+              {' '}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-primary font-medium text-sm mb-6 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary/15 dark:bg-primary/20 border border-primary/30 dark:border-primary/40 rounded-full text-primary dark:text-primary font-medium text-sm mb-6 backdrop-blur-sm shadow-lg dark:shadow-primary/20"
               >
                 <TrendingUp className="w-4 h-4" />
                 <span>Target & Pencapaian</span>
               </motion.div>
-
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground dark:text-foreground mb-6 drop-shadow-sm">
                 Target Analisis Prioritas
-                <span className="block bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+                <span className="block text-2xl md:text-3xl text-slate-600 dark:text-slate-300 mt-2">
                   SMP Nias Selatan
                 </span>
               </h2>
-              <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
+              <p className="text-lg text-slate-600 dark:text-slate-300 mb-10 leading-relaxed">
                 Sistem menganalisis prioritas kebutuhan sarana prasarana dari
                 seluruh SMP di Kabupaten Nias Selatan untuk perencanaan
                 pembangunan yang efektif dan berkelanjutan.
-              </p>
-
+              </p>{' '}
               {/* Statistics Grid */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.2 }}
-                className="grid grid-cols-2 gap-6"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12"
               >
                 {stats.map((stat, index) => {
                   const StatIcon = stat.icon;
@@ -111,128 +163,42 @@ const Statistics: React.FC = () => {
                         delay: index * 0.1 + 0.3,
                       }}
                       whileHover={{
-                        scale: 1.05,
-                        transition: { duration: 0.3 },
+                        scale: 1.02,
+                        transition: { duration: 0.15 },
                       }}
-                      className={`p-6 bg-gradient-to-br ${stat.bgColor} border ${stat.borderColor} rounded-2xl backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 group`}
+                      className={`p-6 bg-gradient-to-br ${stat.bgColor} border ${stat.borderColor} rounded-2xl backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-150 group text-center`}
                     >
-                      <div className="flex items-center gap-4 mb-3">
+                      {/* Icon and Value - Side by Side */}
+                      <div className="flex items-center justify-center gap-4 mb-4">
                         <motion.div
-                          whileHover={{ scale: 1.1, rotate: 5 }}
-                          transition={{ duration: 0.2 }}
+                          whileHover={{ scale: 1.05 }}
+                          transition={{ duration: 0.15 }}
                           className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.bgColor} border ${stat.borderColor} flex items-center justify-center`}
                         >
                           <StatIcon
-                            className={`bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}
+                            className="text-primary group-hover:scale-105 transition-transform duration-150"
                             size={20}
                           />
                         </motion.div>
-                        <div className="text-3xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+
+                        <div className="text-4xl font-bold text-foreground group-hover:text-primary transition-colors duration-150">
                           {stat.value}
                         </div>
                       </div>
-                      <div className="font-semibold text-foreground mb-1">
+
+                      {/* Label and Description */}
+                      <div className="font-semibold text-foreground dark:text-foreground mb-1">
                         {stat.label}
                       </div>
-                      <div className="text-sm text-muted-foreground">
+                      <div className="text-sm text-slate-600 dark:text-slate-300">
                         {stat.description}
                       </div>
                     </motion.div>
                   );
                 })}
-              </motion.div>
-            </motion.div>
-
-            {/* Right Image */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-                className="relative rounded-2xl overflow-hidden shadow-2xl group"
-              >
-                {/* Image */}
-                <Image
-                  src="/school.png"
-                  alt="Peta Sebaran SMP Nias Selatan"
-                  className="w-full h-auto rounded-2xl group-hover:scale-105 transition-transform duration-500"
-                  height={500}
-                  width={700}
-                />
-
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent rounded-2xl"></div>
-
-                {/* Floating Badge */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
-                  className="absolute bottom-6 left-6 right-6"
-                >
-                  <div className="bg-background/90 backdrop-blur-md rounded-xl p-4 border border-border/50 shadow-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="font-semibold text-foreground">
-                          Nias Selatan
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Kabupaten
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-primary">
-                          138
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          SMP Total
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              </motion.div>
-
-              {/* Floating Elements */}
-              <motion.div
-                animate={{
-                  y: [0, -10, 0],
-                  rotate: [0, 3, 0],
-                }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-                className="absolute -top-6 -right-6 w-24 h-24 bg-primary/10 rounded-2xl backdrop-blur-sm border border-primary/20 flex items-center justify-center shadow-lg"
-              >
-                <Target className="text-primary" size={32} />
-              </motion.div>
-
-              <motion.div
-                animate={{
-                  y: [0, 8, 0],
-                  x: [0, 5, 0],
-                }}
-                transition={{
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                  delay: 2,
-                }}
-                className="absolute -bottom-4 -left-4 w-20 h-20 bg-blue-500/10 rounded-full backdrop-blur-sm border border-blue-500/20 flex items-center justify-center shadow-lg"
-              >
-                <MapPin className="text-blue-600" size={24} />
-              </motion.div>
+              </motion.div>{' '}
             </motion.div>
           </div>
-
           {/* Bottom Section */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -241,24 +207,26 @@ const Statistics: React.FC = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-center mt-20"
           >
+            {' '}
             <div className="max-w-3xl mx-auto">
-              <h3 className="text-2xl font-bold text-foreground mb-4">
+              <h3 className="text-2xl font-bold text-foreground dark:text-foreground mb-4">
                 Analisis Menyeluruh untuk Pembangunan Berkelanjutan
               </h3>
-              <p className="text-muted-foreground mb-8 leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
                 Dengan cakupan 100% SMP di Nias Selatan, sistem ini memberikan
                 gambaran lengkap kondisi sarana prasarana untuk mendukung
                 pengambilan keputusan yang tepat dalam alokasi anggaran
                 pembangunan.
               </p>
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.15 }}
                 className="inline-block"
               >
                 <a
                   href="#contact"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-150"
                 >
                   Hubungi Kami
                 </a>

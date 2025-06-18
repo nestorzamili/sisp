@@ -10,7 +10,7 @@ import ProcessFlow from './_components/process-flow';
 
 const LandingPage: React.FC = () => {
   return (
-    <div className="min-h-[1024px] bg-white font-sans">
+    <div className="min-h-screen bg-background font-sans">
       <Header />
       <HeroSection />
       <Features />

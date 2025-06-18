@@ -186,47 +186,31 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-blue-800 hover:bg-blue-900 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02];
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-150 transform hover:scale-[1.02];
   }
 
   .btn-secondary {
-    @apply bg-white hover:bg-slate-50 text-blue-800 border border-blue-200 font-semibold px-6 py-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-200;
+    @apply bg-background hover:bg-muted text-foreground border border-border font-semibold px-6 py-3 rounded-xl shadow-sm hover:shadow-md transition-all duration-150;
   }
 
   .btn-ghost {
-    @apply bg-transparent hover:bg-blue-50 text-blue-800 font-medium px-4 py-2 rounded-lg transition-colors duration-200;
+    @apply bg-transparent hover:bg-muted text-foreground font-medium px-4 py-2 rounded-lg transition-colors duration-150;
   }
 
   .card-primary {
-    @apply bg-white border border-slate-200/50 shadow-xl backdrop-blur-sm rounded-2xl;
-  }
-
-  .dark .card-primary {
-    @apply bg-slate-800/90 border-slate-700/50 shadow-2xl;
+    @apply bg-background border border-border shadow-xl backdrop-blur-sm rounded-2xl;
   }
 
   .input-primary {
-    @apply border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-xl;
-  }
-
-  .dark .input-primary {
-    @apply border-slate-600 focus:border-blue-400 focus:ring-blue-400 bg-slate-700 text-slate-100;
+    @apply border-border focus:border-primary focus:ring-primary/20 rounded-xl bg-background text-foreground;
   }
 
   .text-primary-brand {
-    @apply text-blue-800;
-  }
-
-  .dark .text-primary-brand {
-    @apply text-blue-400;
+    @apply text-primary;
   }
 
   .text-secondary-brand {
-    @apply text-slate-600;
-  }
-
-  .dark .text-secondary-brand {
-    @apply text-slate-400;
+    @apply text-muted-foreground;
   }
 
   .bg-auth-pattern {
@@ -398,6 +382,20 @@
   .auth-float-slow {
     animation: auth-float 10s ease-in-out infinite 1s;
   }
+
+  /* Prevent text blur during animations */
+  .no-text-blur {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
+  .smooth-transform {
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @keyframes fade-in {
@@ -466,6 +464,59 @@
   }
   50% {
     transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
