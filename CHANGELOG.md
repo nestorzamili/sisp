@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/nestorzamili/sisp/compare/v1.2.2...v1.2.3) (2025-06-18)
+
+
+### Chores
+
+* update middleware baseURL handling and matcher regex ([ff6d056](https://github.com/nestorzamili/sisp/commit/ff6d0569a1b9f936a0a20fc8759e1ce4fdb44490))
+
 ## [1.2.2](https://github.com/nestorzamili/sisp/compare/v1.2.1...v1.2.2) (2025-06-18)
 
 
