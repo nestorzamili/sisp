@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/nestorzamili/sisp/compare/v1.2.7...v1.3.0) (2025-06-18)
+
+
+### Features
+
+* **auth:** integrate custom ID generation with ulid ([a691e0e](https://github.com/nestorzamili/sisp/commit/a691e0e12fd3c1b5ec0ba208597d28c2f0619353))
+
 ## [1.2.7](https://github.com/nestorzamili/sisp/compare/v1.2.6...v1.2.7) (2025-06-18)
 
 
