@@ -109,7 +109,7 @@ const Header: React.FC = () => {
               onClick={handleLogoClick}
             >
               <Image
-                src="/logo-nias-selatan.svg"
+                src="/logo-nias-selatan.png"
                 alt="Logo Nias Selatan"
                 width={44}
                 height={44}

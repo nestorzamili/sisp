@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
             <div>
               <div className="text-2xl font-bold mb-4 flex items-center">
                 <Image
-                  src="/logo-nias-selatan.svg"
+                  src="/logo-nias-selatan.png"
                   alt="Logo Nias Selatan"
                   width={28}
                   height={28}

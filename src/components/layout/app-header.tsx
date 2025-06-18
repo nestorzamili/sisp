@@ -46,7 +46,7 @@ export function AppHeader() {
             onClick={handleLogoClick}
           >
             <Image
-              src="/logo-nias-selatan.svg"
+              src="/logo-nias-selatan.png"
               alt="Logo Nias Selatan"
               width={40}
               height={40}

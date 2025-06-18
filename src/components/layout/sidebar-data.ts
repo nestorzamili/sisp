@@ -11,7 +11,7 @@ export const sidebarData: SidebarData = {
   teams: [
     {
       name: 'Dinas Pendidikan',
-      logo: '/logo-nias-selatan.svg',
+      logo: '/logo-nias-selatan.png',
       plan: 'Sarana dan Prasarana SMP',
     },
   ],
