@@ -8,7 +8,6 @@ import { hashPassword, verifyPassword } from '@/lib/argon2';
 import { sendEmail } from '@/lib/mail';
 import { VerificationEmailTemplate } from '@/templates/account-approved';
 import { ResetPasswordEmailTemplate } from '@/templates/password-reset-email';
-import { createID, prefixes } from '@/utils/custom-id-gen';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -77,9 +76,7 @@ export const auth = betterAuth({
 
   advanced: {
     database: {
-      generateId: (options) => {
-        return createID(options.model as keyof typeof prefixes);
-      },
+      generateId: false,
     },
     ipAddress: {
       ipAddressHeaders: ['x-client-ip', 'x-forwarded-for', 'x-real-ip'],
