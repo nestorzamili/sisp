@@ -146,7 +146,7 @@ export class DashboardService {
   static async getGuruDistribution(): Promise<GuruStats[]> {
     try {
       const guruStats = await prisma.guru.groupBy({
-        by: ['status_guru'],
+        by: ['status_guru', 'jenis_kelamin'],
         _sum: {
           jumlah: true,
         },
@@ -161,6 +161,7 @@ export class DashboardService {
 
       return guruStats.map((item) => ({
         status: item.status_guru,
+        jenisKelamin: item.jenis_kelamin,
         jumlah: item._sum.jumlah || 0,
       }));
     } catch (error) {

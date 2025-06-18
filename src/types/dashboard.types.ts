@@ -29,6 +29,7 @@ export interface PrasaranaStats {
 
 export interface GuruStats {
   status: StatusGuru;
+  jenisKelamin: JenisKelamin;
   jumlah: number;
 }
 
@@ -63,6 +64,12 @@ export interface ChartDataPoint {
 
 export interface StackedChartData {
   tingkatan: string;
+  L: number;
+  P: number;
+}
+
+export interface StackedGuruData {
+  status: string;
   L: number;
   P: number;
 }

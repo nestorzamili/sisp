@@ -7,40 +7,80 @@ import {
 } from '@/components/ui/chart';
 import { PieChart, Pie } from 'recharts';
 import { SekolahStats } from '@/types/dashboard.types';
+import { useEffect, useState } from 'react';
+import { getSekolahStatusDistribution } from '../action';
+import { School } from 'lucide-react';
 
-interface StatusChartProps {
-  data: SekolahStats[];
-  isLoading?: boolean;
-}
+export function StatusChart() {
+  const [data, setData] = useState<SekolahStats[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-const chartConfig = {
-  DRAFT: {
-    label: 'Draft',
-    color: '#2563eb',
-  },
-  PENDING: {
-    label: 'Pending',
-    color: '#60a5fa',
-  },
-  APPROVED: {
-    label: 'Approved',
-    color: '#10b981',
-  },
-  REJECTED: {
-    label: 'Rejected',
-    color: '#ef4444',
-  },
-} satisfies ChartConfig;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const result = await getSekolahStatusDistribution();
+        if (result.success) {
+          setData(result.data);
+        }
+      } catch (error) {
+        console.error('Error fetching status distribution:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-export function StatusChart({ data, isLoading }: StatusChartProps) {
+    fetchData();
+  }, []);
+
+  const chartConfig = {
+    DRAFT: {
+      label: 'Draft',
+      color: '#2563eb',
+    },
+    PENDING: {
+      label: 'Pending',
+      color: '#60a5fa',
+    },
+    APPROVED: {
+      label: 'Approved',
+      color: '#10b981',
+    },
+    REJECTED: {
+      label: 'Rejected',
+      color: '#ef4444',
+    },
+  } satisfies ChartConfig;
   if (isLoading) {
     return (
       <Card>
+        {' '}
         <CardHeader>
-          <CardTitle>Status Sekolah</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <div className="h-5 w-5 bg-green-200 dark:bg-green-700 animate-pulse rounded"></div>
+            <div className="h-5 w-36 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="h-[300px] w-full bg-gray-200 animate-pulse rounded"></div>
+        <CardContent className="space-y-4">
+          {/* Pie chart skeleton */}
+          <div className="h-[300px] w-full flex items-center justify-center">
+            <div className="relative">
+              <div className="h-48 w-48 bg-gray-200 dark:bg-gray-700 animate-pulse rounded-full"></div>
+              <div className="absolute inset-6 bg-white dark:bg-gray-900 rounded-full"></div>
+            </div>
+          </div>
+          {/* Legend skeleton */}
+          <div className="space-y-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 bg-gray-300 dark:bg-gray-600 animate-pulse rounded"></div>
+                  <div className="h-3 w-16 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
+                </div>
+                <div className="h-3 w-8 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
     );
@@ -57,8 +97,12 @@ export function StatusChart({ data, isLoading }: StatusChartProps) {
 
   return (
     <Card>
+      {' '}
       <CardHeader>
-        <CardTitle>Distribusi Status Sekolah</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <School className="h-5 w-5 text-green-600" />
+          Distribusi Status Sekolah
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
@@ -76,7 +120,7 @@ export function StatusChart({ data, isLoading }: StatusChartProps) {
               content={
                 <ChartTooltipContent
                   formatter={(value, name) => [
-                    `${value} sekolah (${(((value as number) / total) * 100).toFixed(1)}%)`,
+                    `${value} sekolah (${(((value as number) / total) * 100).toFixed(1)}%) `,
                     name,
                   ]}
                 />

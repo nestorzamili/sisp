@@ -7,32 +7,78 @@ import {
 } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { SiswaStats, StackedChartData } from '@/types/dashboard.types';
+import { useEffect, useState } from 'react';
+import { getSiswaDistribution } from '../action';
+import { Users } from 'lucide-react';
 
-interface SiswaChartProps {
-  data: SiswaStats[];
-  isLoading?: boolean;
-}
+export function SiswaChart() {
+  const [data, setData] = useState<SiswaStats[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-const chartConfig = {
-  L: {
-    label: 'Laki-laki',
-    color: '#2563eb',
-  },
-  P: {
-    label: 'Perempuan',
-    color: '#ec4899',
-  },
-} satisfies ChartConfig;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const result = await getSiswaDistribution();
+        if (result.success) {
+          setData(result.data);
+        }
+      } catch (error) {
+        console.error('Error fetching siswa distribution:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-export function SiswaChart({ data, isLoading }: SiswaChartProps) {
+    fetchData();
+  }, []);
+
+  const chartConfig = {
+    L: {
+      label: 'Laki-laki',
+      color: '#2563eb',
+    },
+    P: {
+      label: 'Perempuan',
+      color: '#ec4899',
+    },
+  } satisfies ChartConfig;
   if (isLoading) {
     return (
       <Card>
+        {' '}
         <CardHeader>
-          <CardTitle>Distribusi Siswa berdasarkan Tingkatan</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <div className="h-5 w-5 bg-purple-200 dark:bg-purple-700 animate-pulse rounded"></div>
+            <div className="h-5 w-52 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="h-[300px] w-full bg-gray-200 animate-pulse rounded"></div>
+        <CardContent className="space-y-4">
+          {/* Chart area skeleton */}
+          <div className="h-[300px] w-full bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg flex items-end justify-center gap-1 p-4">
+            {/* Simulated stacked bars */}
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex flex-col w-12 gap-0">
+                <div
+                  className={`w-full bg-blue-200 dark:bg-blue-800 animate-pulse rounded-t h-${8 + (i % 3) * 4}`}
+                ></div>
+                <div
+                  className={`w-full bg-pink-200 dark:bg-pink-800 animate-pulse rounded-b h-${6 + (i % 4) * 3}`}
+                ></div>
+              </div>
+            ))}
+          </div>
+          {/* Legend skeleton */}
+          <div className="flex justify-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 bg-blue-200 dark:bg-blue-700 animate-pulse rounded"></div>
+              <div className="h-3 w-16 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 bg-pink-200 dark:bg-pink-700 animate-pulse rounded"></div>
+              <div className="h-3 w-18 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     );
@@ -68,7 +114,10 @@ export function SiswaChart({ data, isLoading }: SiswaChartProps) {
     <Card>
       {' '}
       <CardHeader>
-        <CardTitle>Distribusi Siswa berdasarkan Tingkatan Kelas</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <Users className="h-5 w-5 text-purple-600" />
+          Distribusi Siswa berdasarkan Tingkatan Kelas
+        </CardTitle>
       </CardHeader>
       <CardContent className="pl-2">
         <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
@@ -94,7 +143,7 @@ export function SiswaChart({ data, isLoading }: SiswaChartProps) {
               content={
                 <ChartTooltipContent
                   formatter={(value, name) => [
-                    `${value} siswa`,
+                    `${value} Siswa `,
                     chartConfig[name as keyof typeof chartConfig]?.label ||
                       name,
                   ]}

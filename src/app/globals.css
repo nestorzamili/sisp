@@ -70,51 +70,41 @@
 
 :root {
   --radius: 0.75rem;
-
-  /* Light mode - Professional blue-based theme for school */
   --background: #ffffff;
   --foreground: #1f2937;
   --card: #ffffff;
   --card-foreground: #1f2937;
   --popover: #ffffff;
   --popover-foreground: #1f2937;
-  --primary: #1e40af; /* blue-800 - professional and trustworthy */
+  --primary: #1e40af;
   --primary-foreground: #ffffff;
-  --secondary: #f8fafc; /* slate-50 */
-  --secondary-foreground: #334155; /* slate-700 */
-  --muted: #f1f5f9; /* slate-100 */
-  --muted-foreground: #64748b; /* slate-500 */
-  --accent: #f0f9ff; /* sky-50 */
-  --accent-foreground: #0c4a6e; /* sky-900 */
-  --destructive: #dc2626; /* red-600 */
+  --secondary: #f8fafc;
+  --secondary-foreground: #334155;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #f0f9ff;
+  --accent-foreground: #0c4a6e;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0; /* slate-200 */
-  --input: #f8fafc; /* slate-50 */
-  --ring: #1e40af; /* blue-800 */
-
-  /* Chart colors - Using OKLCH format as per shadcn documentation */
+  --border: #e2e8f0;
+  --input: #f8fafc; 
+  --ring: #1e40af; 
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-
-  /* Sidebar colors */
-  --sidebar: #f8fafc; /* slate-50 */
+  --sidebar: #f8fafc;
   --sidebar-foreground: #1f2937;
-  --sidebar-primary: #1e40af; /* blue-800 */
+  --sidebar-primary: #1e40af;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f0f9ff; /* sky-50 */
-  --sidebar-accent-foreground: #0c4a6e; /* sky-900 */
-  --sidebar-border: #e2e8f0; /* slate-200 */
-  --sidebar-ring: #1e40af; /* blue-800 */
-
-  /* Typography */
+  --sidebar-accent: #f0f9ff;
+  --sidebar-accent-foreground: #0c4a6e;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #1e40af;
   --font-sans: Inter, system-ui, -apple-system, sans-serif;
   --font-serif: Merriweather, Georgia, serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-
-  /* Shadows */
   --shadow-color: hsl(0 0% 0%);
   --shadow-opacity: 0.1;
   --shadow-blur: 12px;
@@ -135,43 +125,38 @@
 }
 
 .dark {
-  /* Soft Dark Mode - Modern and Professional */
-  --background: #0a0a0a; /* Very dark gray, not pure black */
-  --foreground: #f5f5f5; /* Soft white text */
-  --card: #171717; /* Dark gray for cards */
-  --card-foreground: #f5f5f5; /* Soft white text on cards */
-  --popover: #171717; /* Dark popover */
-  --popover-foreground: #f5f5f5; /* Soft white popover text */
-  --primary: #3b82f6; /* Blue-500 for primary actions */
-  --primary-foreground: #ffffff; /* White text on primary */
-  --secondary: #1f1f1f; /* Dark gray for secondary */
-  --secondary-foreground: #d4d4d4; /* Light gray text */
-  --muted: #141414; /* Muted background */
-  --muted-foreground: #a1a1aa; /* Muted text - zinc-400 */
-  --accent: #1f1f1f; /* Accent background */
-  --accent-foreground: #60a5fa; /* Light blue accent text */
-  --destructive: #ef4444; /* Red for destructive actions */
-  --destructive-foreground: #ffffff; /* White text on destructive */
-  --border: #2a2a2a; /* Soft dark border */
-  --input: #1f1f1f; /* Dark input background */
-  --ring: #3b82f6; /* Blue focus ring */
-
-  /* Chart colors - Dark mode variations using OKLCH */
-  --chart-1: oklch(0.548 0.243 264.376); /* Balanced blue */
-  --chart-2: oklch(0.756 0.17 162.48); /* Balanced cyan */
-  --chart-3: oklch(0.819 0.188 70.08); /* Balanced yellow */
-  --chart-4: oklch(0.687 0.265 303.9); /* Balanced purple */
-  --chart-5: oklch(0.705 0.246 16.439); /* Balanced orange */
-
-  /* Sidebar colors - Soft Dark mode */
-  --sidebar: #141414; /* Slightly lighter than background */
-  --sidebar-foreground: #f5f5f5; /* Soft white sidebar text */
-  --sidebar-primary: #3b82f6; /* Blue primary */
-  --sidebar-primary-foreground: #ffffff; /* White text */
-  --sidebar-accent: #1f1f1f; /* Dark accent */
-  --sidebar-accent-foreground: #60a5fa; /* Light blue accent text */
-  --sidebar-border: #2a2a2a; /* Soft dark border */
-  --sidebar-ring: #3b82f6; /* Blue ring */
+  --background: #1a1a1a; 
+  --foreground: #f5f5f5; 
+  --card: #262626; 
+  --card-foreground: #f5f5f5; 
+  --popover: #262626; 
+  --popover-foreground: #f5f5f5;
+  --primary: #3b82f6; 
+  --primary-foreground: #ffffff;
+  --secondary: #2d2d2d;
+  --secondary-foreground: #e5e5e5;
+  --muted: #202020;
+  --muted-foreground: #a1a1aa;
+  --accent: #2d2d2d;
+  --accent-foreground: #60a5fa;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #404040;
+  --input: #2d2d2d;
+  --ring: #3b82f6;
+  --chart-1: oklch(0.548 0.243 264.376);
+  --chart-2: oklch(0.756 0.17 162.48);
+  --chart-3: oklch(0.819 0.188 70.08);
+  --chart-4: oklch(0.687 0.265 303.9);
+  --chart-5: oklch(0.705 0.246 16.439);
+  --sidebar: #202020;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #2d2d2d;
+  --sidebar-accent-foreground: #60a5fa;
+  --sidebar-border: #404040;
+  --sidebar-ring: #3b82f6;
 }
 
 @layer base {
@@ -190,18 +175,16 @@
     font-variation-settings: "opsz" 32;
   }
 
-  /* Auth page specific styles */
   .auth-page-loaded {
     @apply bg-gradient-to-br from-slate-50 via-white to-blue-50/50;
   }
 
   .dark .auth-page-loaded {
-    @apply bg-gradient-to-br from-zinc-900 via-zinc-800 to-gray-900;
+    @apply bg-gradient-to-br from-zinc-800 via-zinc-700 to-gray-800;
   }
 }
 
 @layer components {
-  /* Button variations matching professional theme */
   .btn-primary {
     @apply bg-blue-800 hover:bg-blue-900 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02];
   }
@@ -214,7 +197,6 @@
     @apply bg-transparent hover:bg-blue-50 text-blue-800 font-medium px-4 py-2 rounded-lg transition-colors duration-200;
   }
 
-  /* Card styles */
   .card-primary {
     @apply bg-white border border-slate-200/50 shadow-xl backdrop-blur-sm rounded-2xl;
   }
@@ -223,7 +205,6 @@
     @apply bg-slate-800/90 border-slate-700/50 shadow-2xl;
   }
 
-  /* Input styles */
   .input-primary {
     @apply border-slate-300 focus:border-blue-500 focus:ring-blue-500 rounded-xl;
   }
@@ -232,7 +213,6 @@
     @apply border-slate-600 focus:border-blue-400 focus:ring-blue-400 bg-slate-700 text-slate-100;
   }
 
-  /* Text styles */
   .text-primary-brand {
     @apply text-blue-800;
   }
@@ -249,7 +229,6 @@
     @apply text-slate-400;
   }
 
-  /* Background patterns for auth pages - more subtle and professional */
   .bg-auth-pattern {
     background-image: radial-gradient(circle at 20% 50%, rgba(30, 64, 175, 0.04) 0%, transparent 50%),
                       radial-gradient(circle at 80% 20%, rgba(8, 145, 178, 0.04) 0%, transparent 50%),
@@ -262,7 +241,6 @@
                       radial-gradient(circle at 40% 80%, rgba(13, 148, 136, 0.04) 0%, transparent 50%);
   }
 
-  /* Auth decorative shapes */
   .auth-shape-primary {
     @apply border-primary/25;
   }
@@ -295,7 +273,6 @@
     @apply bg-orange-400/10;
   }
 
-  /* Landing page specific components */
   .hero-gradient {
     @apply bg-gradient-to-r from-white via-white/90 to-transparent;
   }
@@ -312,7 +289,6 @@
     @apply bg-slate-800 border-slate-700 hover:shadow-2xl;
   }
 
-  /* Form enhancements */
   .form-field {
     @apply space-y-2;
   }
@@ -335,7 +311,6 @@
 }
 
 @layer utilities {
-  /* Animation utilities */
   .animate-fade-in {
     animation: fade-in 0.8s ease-out;
   }
@@ -348,17 +323,14 @@
     animation: scale-in 0.4s ease-out;
   }
 
-  /* Backdrop blur utilities */
   .backdrop-blur-glass {
     backdrop-filter: blur(12px) saturate(180%);
   }
 
-  /* Custom border radius matching landing page */
   .rounded-button {
     border-radius: 12px;
   }
 
-  /* Gradient text */
   .text-gradient-red {
     background: linear-gradient(135deg, #dc2626, #ea580c);
     -webkit-background-clip: text;
@@ -366,7 +338,6 @@
     background-clip: text;
   }
 
-  /* Shape utilities for auth pages */
   .auth-triangle {
     width: 0;
     height: 0;
@@ -378,7 +349,6 @@
     clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
   }
 
-  /* Subtle floating animation for some shapes */
   .auth-float {
     animation: auth-float 8s ease-in-out infinite;
   }
@@ -392,7 +362,6 @@
   }
 }
 
-/* Keyframe animations */
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -435,7 +404,6 @@
   }
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -457,14 +425,13 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-red-400;
+  @apply bg-gray-400;
 }
 
 .dark ::-webkit-scrollbar-thumb:hover {
-  @apply bg-red-500;
+  @apply bg-slate-500;
 }
 
-/* Focus visible improvements */
 :focus-visible {
   @apply outline-2 outline-offset-2 outline-blue-500;
 }
@@ -473,7 +440,6 @@
   @apply outline-blue-400;
 }
 
-/* Selection styles */
 ::selection {
   @apply bg-blue-200 text-blue-900;
 }
