@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.4](https://github.com/nestorzamili/sisp/compare/v1.2.3...v1.2.4) (2025-06-18)
+
+
+### Chores
+
+* update middleware matcher to exclude image file types ([7558db6](https://github.com/nestorzamili/sisp/commit/7558db684ce1f6513345806727ef6cb6190b074f))
+
 ## [1.2.3](https://github.com/nestorzamili/sisp/compare/v1.2.2...v1.2.3) (2025-06-18)
 
 
