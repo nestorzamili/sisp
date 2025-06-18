@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.5](https://github.com/nestorzamili/sisp/compare/v1.2.4...v1.2.5) (2025-06-18)
+
+
+### Bug Fixes
+
+* **auth:** update rate limit model name and increase max requests ([0f81c6b](https://github.com/nestorzamili/sisp/commit/0f81c6bec9646bf9827312ef38e478ad7a05dcae))
+* **middleware:** refine matcher to exclude additional image file types ([0f81c6b](https://github.com/nestorzamili/sisp/commit/0f81c6bec9646bf9827312ef38e478ad7a05dcae))
+
 ## [1.2.4](https://github.com/nestorzamili/sisp/compare/v1.2.3...v1.2.4) (2025-06-18)
 
 
