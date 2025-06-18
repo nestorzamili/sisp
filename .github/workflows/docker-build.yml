@@ -1,0 +1,53 @@
+name: Docker Build and Push to GHCR
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Latest Tag
+        id: get-latest-tag
+        run: |
+          if git describe --tags --abbrev=0 > /dev/null 2>&1; then
+            echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
+          else
+            echo "LATEST_TAG=0.0.1" >> $GITHUB_ENV
+          fi
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.CR_PAT }}      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/sisp:${{ env.LATEST_TAG }}
+          build-args: |
+            GIT_TAG=${{ env.LATEST_TAG }}
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
+            BETTER_AUTH_URL=${{ secrets.BETTER_AUTH_URL }}
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+            NODE_ENV=production
+            NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
+            NEXT_PUBLIC_CLOUDINARY_API_KEY=${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}
+            CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}
+            EMAIL_USER=${{ secrets.EMAIL_USER }}
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+            WHATSAPP_API_KEY=${{ secrets.WHATSAPP_API_KEY }}
+            WHATSAPP_API_URL=${{ secrets.WHATSAPP_API_URL }}
+            WHATSAPP_ADMIN_NUMBERS=${{ secrets.WHATSAPP_ADMIN_NUMBERS }}
+            WHATSAPP_ENABLED=${{ secrets.WHATSAPP_ENABLED }}
