@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
     ],
   },
   serverExternalPackages: ['@node-rs/argon2'],
+  output: 'standalone',
 };
 
 export default nextConfig;
