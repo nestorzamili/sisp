@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/nestorzamili/sisp/compare/v1.2.1...v1.2.2) (2025-06-18)
+
+
+### Chores
+
+* ensure output is set to standalone in next.config.ts ([e25f829](https://github.com/nestorzamili/sisp/commit/e25f8299c00fb95e8d3e815c1d0d8dda10dc7abd))
+
 ## [1.2.1](https://github.com/nestorzamili/sisp/compare/v1.2.0...v1.2.1) (2025-06-18)
 
 
