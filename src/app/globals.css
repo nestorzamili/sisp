@@ -92,12 +92,12 @@
   --input: #f8fafc; /* slate-50 */
   --ring: #1e40af; /* blue-800 */
 
-  /* Chart colors - Professional blue/teal variations */
-  --chart-1: #1e40af; /* blue-800 */
-  --chart-2: #1e3a8a; /* blue-900 */
-  --chart-3: #0f766e; /* teal-700 */
-  --chart-4: #0891b2; /* cyan-600 */
-  --chart-5: #0c4a6e; /* sky-900 */
+  /* Chart colors - Using OKLCH format as per shadcn documentation */
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
 
   /* Sidebar colors */
   --sidebar: #f8fafc; /* slate-50 */
@@ -135,43 +135,43 @@
 }
 
 .dark {
-  /* Dark mode - Professional dark theme */
-  --background: #0f172a; /* slate-900 */
-  --foreground: #f1f5f9; /* slate-100 */
-  --card: #1e293b; /* slate-800 */
-  --card-foreground: #f1f5f9; /* slate-100 */
-  --popover: #1e293b; /* slate-800 */
-  --popover-foreground: #f1f5f9; /* slate-100 */
-  --primary: #3b82f6; /* blue-500 - lighter for dark mode */
-  --primary-foreground: #ffffff;
-  --secondary: #334155; /* slate-700 */
-  --secondary-foreground: #e2e8f0; /* slate-200 */
-  --muted: #1e293b; /* slate-800 */
-  --muted-foreground: #94a3b8; /* slate-400 */
-  --accent: #0c1e3e; /* very dark blue */
-  --accent-foreground: #7dd3fc; /* sky-300 */
-  --destructive: #ef4444; /* red-500 */
-  --destructive-foreground: #ffffff;
-  --border: #475569; /* slate-600 */
-  --input: #334155; /* slate-700 */
-  --ring: #3b82f6; /* blue-500 */
+  /* Soft Dark Mode - Modern and Professional */
+  --background: #0a0a0a; /* Very dark gray, not pure black */
+  --foreground: #f5f5f5; /* Soft white text */
+  --card: #171717; /* Dark gray for cards */
+  --card-foreground: #f5f5f5; /* Soft white text on cards */
+  --popover: #171717; /* Dark popover */
+  --popover-foreground: #f5f5f5; /* Soft white popover text */
+  --primary: #3b82f6; /* Blue-500 for primary actions */
+  --primary-foreground: #ffffff; /* White text on primary */
+  --secondary: #1f1f1f; /* Dark gray for secondary */
+  --secondary-foreground: #d4d4d4; /* Light gray text */
+  --muted: #141414; /* Muted background */
+  --muted-foreground: #a1a1aa; /* Muted text - zinc-400 */
+  --accent: #1f1f1f; /* Accent background */
+  --accent-foreground: #60a5fa; /* Light blue accent text */
+  --destructive: #ef4444; /* Red for destructive actions */
+  --destructive-foreground: #ffffff; /* White text on destructive */
+  --border: #2a2a2a; /* Soft dark border */
+  --input: #1f1f1f; /* Dark input background */
+  --ring: #3b82f6; /* Blue focus ring */
 
-  /* Chart colors - Dark mode variations */
-  --chart-1: #3b82f6; /* blue-500 */
-  --chart-2: #2563eb; /* blue-600 */
-  --chart-3: #0d9488; /* teal-600 */
-  --chart-4: #0891b2; /* cyan-600 */
-  --chart-5: #0284c7; /* sky-600 */
+  /* Chart colors - Dark mode variations using OKLCH */
+  --chart-1: oklch(0.548 0.243 264.376); /* Balanced blue */
+  --chart-2: oklch(0.756 0.17 162.48); /* Balanced cyan */
+  --chart-3: oklch(0.819 0.188 70.08); /* Balanced yellow */
+  --chart-4: oklch(0.687 0.265 303.9); /* Balanced purple */
+  --chart-5: oklch(0.705 0.246 16.439); /* Balanced orange */
 
-  /* Sidebar colors - Dark mode */
-  --sidebar: #1e293b; /* slate-800 */
-  --sidebar-foreground: #f1f5f9; /* slate-100 */
-  --sidebar-primary: #3b82f6; /* blue-500 */
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #0c1e3e; /* very dark blue */
-  --sidebar-accent-foreground: #7dd3fc; /* sky-300 */
-  --sidebar-border: #475569; /* slate-600 */
-  --sidebar-ring: #3b82f6; /* blue-500 */
+  /* Sidebar colors - Soft Dark mode */
+  --sidebar: #141414; /* Slightly lighter than background */
+  --sidebar-foreground: #f5f5f5; /* Soft white sidebar text */
+  --sidebar-primary: #3b82f6; /* Blue primary */
+  --sidebar-primary-foreground: #ffffff; /* White text */
+  --sidebar-accent: #1f1f1f; /* Dark accent */
+  --sidebar-accent-foreground: #60a5fa; /* Light blue accent text */
+  --sidebar-border: #2a2a2a; /* Soft dark border */
+  --sidebar-ring: #3b82f6; /* Blue ring */
 }
 
 @layer base {
@@ -196,7 +196,7 @@
   }
 
   .dark .auth-page-loaded {
-    @apply bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950/30;
+    @apply bg-gradient-to-br from-zinc-900 via-zinc-800 to-gray-900;
   }
 }
 
