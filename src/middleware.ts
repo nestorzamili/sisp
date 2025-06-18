@@ -30,7 +30,10 @@ export async function middleware(request: NextRequest) {
 
   try {
     const { data } = await betterFetch<Session>('/api/auth/get-session', {
-      baseURL: request.nextUrl.origin,
+      baseURL:
+        process.env.NODE_ENV === 'production'
+          ? process.env.BETTER_AUTH_URL // Use the explicit URL from env in production
+          : request.nextUrl.origin,
       headers: {
         cookie: request.headers.get('cookie') || '',
       },
@@ -73,5 +76,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$|.*\\.svg$).*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(png|jpg|jpeg|webp)$).*)',
+  ],
 };
