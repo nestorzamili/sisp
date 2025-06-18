@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/nestorzamili/sisp/compare/v1.2.0...v1.2.1) (2025-06-18)
+
+
+### Chores
+
+* fix indentation in docker-build.yml workflow ([36dedaa](https://github.com/nestorzamili/sisp/commit/36dedaab5005e2a6f0fea11249f03d61a4d36a6c))
+
 ## [1.2.0](https://github.com/nestorzamili/sisp/compare/v1.1.0...v1.2.0) (2025-06-18)
 
 
