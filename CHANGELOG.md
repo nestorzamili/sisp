@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.6](https://github.com/nestorzamili/sisp/compare/v1.2.5...v1.2.6) (2025-06-18)
+
+
+### Bug Fixes
+
+* **auth:** update rate limit model name to 'RateLimit' ([c580fa6](https://github.com/nestorzamili/sisp/commit/c580fa6022b027280cb2a83da90448acc83b826c))
+
 ## [1.2.5](https://github.com/nestorzamili/sisp/compare/v1.2.4...v1.2.5) (2025-06-18)
 
 
