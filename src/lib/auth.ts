@@ -62,7 +62,7 @@ export const auth = betterAuth({
   rateLimit: {
     enabled: true,
     storage: 'database',
-    modelName: 'rate_limits',
+    modelName: 'RateLimit',
     window: 5 * 60,
     max: 10,
   },
