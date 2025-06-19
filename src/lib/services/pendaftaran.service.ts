@@ -169,7 +169,7 @@ export class PendaftaranService {
         try {
           if (isWhatsAppEnabled && user.Sekolah!.phone) {
             const whatsappService = new WhatsAppService();
-            const loginUrl = `${process.env.NEXT_PUBLIC_API_URL}/sign-in`;
+            const loginUrl = `${process.env.BETTER_AUTH_URL}/sign-in`;
             await whatsappService.sendApprovalNotification(
               user.Sekolah!.phone,
               user.Sekolah!.nama_sekolah,
