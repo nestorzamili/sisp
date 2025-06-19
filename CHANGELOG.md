@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.1](https://github.com/nestorzamili/sisp/compare/v1.3.0...v1.3.1) (2025-06-19)
+
+
+### Chores
+
+* **auth:** remove unused database ID generation configuration ([5475483](https://github.com/nestorzamili/sisp/commit/5475483a617f2ed440b80b3cd018f8b5d7be992f))
+* downgrade better-auth dependency from 1.2.9 to 1.2.8 and update database ID generation configuration ([18c4ce6](https://github.com/nestorzamili/sisp/commit/18c4ce6a4ecf84945d2f74152528b61c216b6c8f))
+* remove ulid dependency and custom ID generation ([7878c4d](https://github.com/nestorzamili/sisp/commit/7878c4d3bd3896b341632d20dae08f3ccd8bca71))
+
+
+### Code Refactoring
+
+* change default ID generation from uuid to cuid for User, Session, Account, Verification, and RateLimit models ([31396f6](https://github.com/nestorzamili/sisp/commit/31396f69cd9ee5b38ced2005258a194188cd1094))
+
 ## [1.3.0](https://github.com/nestorzamili/sisp/compare/v1.2.7...v1.3.0) (2025-06-18)
 
 
