@@ -27,7 +27,7 @@ model User {
   banReason  String?   @default("Waiting for admin approval")
   banExpires DateTime?
 
-  @@map("user")
+  @@map("users")
 }
 
 model Session {
@@ -45,7 +45,7 @@ model Session {
 
   impersonatedBy String?
 
-  @@map("session")
+  @@map("sessions")
 }
 
 model Account {
@@ -66,7 +66,7 @@ model Account {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("account")
+  @@map("accounts")
 }
 
 model Verification {
@@ -78,16 +78,7 @@ model Verification {
   value      String
   expiresAt  DateTime
 
-  @@map("verification")
-}
-
-model RateLimit {
-  id          String @id @default(uuid())
-  key         String
-  count       Int
-  lastRequest BigInt @map("last_request")
-
-  @@map("rate_limit")
+  @@map("verifications")
 }
 
 model Sekolah {

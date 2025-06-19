@@ -59,13 +59,11 @@ export const auth = betterAuth({
     },
   },
 
-  // rateLimit: {
-  //   enabled: true,
-  //   storage: 'database',
-  //   modelName: 'RateLimit',
-  //   window: 5 * 60,
-  //   max: 10,
-  // },
+  rateLimit: {
+    enabled: true,
+    window: 5 * 60,
+    max: 10,
+  },
 
   session: {
     cookieCache: {
