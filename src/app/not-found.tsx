@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Home, Search, ArrowLeft, FileX } from 'lucide-react';
+import { Home, Search, FileX } from 'lucide-react';
 import Image from 'next/image';
+import BackButton from '@/components/ui/back-button';
 
 export default function NotFound() {
   return (
@@ -39,7 +40,6 @@ export default function NotFound() {
                 <span className="text-white font-bold text-sm">!</span>
               </div>
             </div>
-
             {/* Error Message */}
             <div className="mb-8">
               <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -56,7 +56,6 @@ export default function NotFound() {
                 valid.
               </p>
             </div>
-
             {/* Suggestions */}
             <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 mb-8">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-3">
@@ -82,7 +81,6 @@ export default function NotFound() {
                 </li>
               </ul>
             </div>
-
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" className="font-medium">
@@ -103,18 +101,10 @@ export default function NotFound() {
                   Masuk ke Sistem
                 </Link>
               </Button>
-            </div>
-
+            </div>{' '}
             {/* Back Button */}
             <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-              <Button
-                variant="ghost"
-                onClick={() => window.history.back()}
-                className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Kembali ke halaman sebelumnya
-              </Button>
+              <BackButton />
             </div>
           </CardContent>
         </Card>
