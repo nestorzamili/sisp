@@ -75,9 +75,6 @@ export const auth = betterAuth({
   },
 
   advanced: {
-    database: {
-      generateId: false,
-    },
     ipAddress: {
       ipAddressHeaders: ['x-client-ip', 'x-forwarded-for', 'x-real-ip'],
       disableIpTracking: false,
