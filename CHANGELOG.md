@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/nestorzamili/sisp/compare/v1.2.5...v1.3.0) (2025-06-19)
+
+
+### Features
+
+* add BackButton component and integrate it into NotFound page ([7fd2ca0](https://github.com/nestorzamili/sisp/commit/7fd2ca0391ee2b93be097e59792cba1ae834dc54))
+
+
+### Bug Fixes
+
+* **auth:** update rate limit model name to 'RateLimit' ([c580fa6](https://github.com/nestorzamili/sisp/commit/c580fa6022b027280cb2a83da90448acc83b826c))
+* **deps:** update better-auth to version 1.2.9 and kysely to version 0.28.2 ([a65d52b](https://github.com/nestorzamili/sisp/commit/a65d52bf37b427027d4e25f95d58d860202d7cf6))
+* update environment variables and database schema ([26fb6b3](https://github.com/nestorzamili/sisp/commit/26fb6b312affcf45fa55f4eb99ba0ffa0ba97d5c))
+
 ## [1.2.5](https://github.com/nestorzamili/sisp/compare/v1.2.4...v1.2.5) (2025-06-18)
 
 
