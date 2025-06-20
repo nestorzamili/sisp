@@ -7,6 +7,7 @@ import { RombonganBelajarService } from '@/lib/services/rombongan-belajar.servic
 import { SaranaService } from '@/lib/services/sarana.service';
 import { PrasaranaService } from '@/lib/services/prasarana.service';
 import { KebutuhanPrioritasService } from '@/lib/services/kebutuhan-prioritas.service';
+import { LampiranService } from '@/lib/services/lampiran.service';
 import { JenisRuangan } from '@/types/sarana';
 import { headers } from 'next/headers';
 
@@ -40,7 +41,6 @@ export async function getDataCompletionStatusAction() {
     const currentYear = new Date().getFullYear();
     const tahunAjaran = `${currentYear}/${currentYear + 1}`;
 
-    // Check Step 1: School Info Completion
     const step1Complete = !!(
       sekolah.nama_sekolah &&
       sekolah.npsn &&
@@ -48,7 +48,7 @@ export async function getDataCompletionStatusAction() {
       sekolah.nip_kepala_sekolah &&
       sekolah.alamat_sekolah &&
       sekolah.kecamatan
-    ); // Check Step 2: Teacher Data Completion
+    );
     const teacherResult = await guruService.getGuruBySekolah(
       sekolah.id,
       currentYear.toString(),
@@ -59,7 +59,6 @@ export async function getDataCompletionStatusAction() {
       teacherResult.data.length > 0 &&
       teacherResult.data.some((guru) => guru.jumlah > 0);
 
-    // Check Step 3: Student Data Completion
     const studentResult =
       await rombonganBelajarService.getRombonganBelajarBySekolah(
         sekolah.id,
@@ -69,12 +68,11 @@ export async function getDataCompletionStatusAction() {
       studentResult.success &&
       studentResult.data &&
       studentResult.data.length > 0 &&
-      studentResult.data.some((rombel) => rombel.jumlah_siswa > 0); // Check Step 4: Sarana Data Completion
+      studentResult.data.some((rombel) => rombel.jumlah_siswa > 0);
     const saranaData = await SaranaService.getSaranaBySekolahIdAndTahunAjaran(
       sekolah.id,
       tahunAjaran,
     );
-    // Check if all essential sarana types are present and have meaningful data
     const essentialSaranaTypes: JenisRuangan[] = [
       'RuangKelas',
       'Perpustakaan',
@@ -91,7 +89,6 @@ export async function getDataCompletionStatusAction() {
       existingSaranaTypes.includes(type),
     );
 
-    // Also check that at least some sarana have meaningful data (not all zeros)
     const hasMeaningfulData = saranaData.some(
       (s) =>
         s.jumlah_total > 0 ||
@@ -101,12 +98,11 @@ export async function getDataCompletionStatusAction() {
     const step4Complete =
       saranaData.length > 0 && hasAllEssentialTypes && hasMeaningfulData;
 
-    // Check Step 5: Prasarana Data Completion
     const prasaranaData =
       await PrasaranaService.getPrasaranaBySekolahIdAndTahunAjaran(
         sekolah.id,
         tahunAjaran,
-      ); // Check if at least some prasarana data exists and has meaningful data
+      );
     const hasPrasaranaData = prasaranaData.some(
       (p) =>
         p.jumlah_total > 0 ||
@@ -114,21 +110,23 @@ export async function getDataCompletionStatusAction() {
         p.jumlah_kondisi_rusak > 0,
     );
     const step5Complete = prasaranaData.length > 0 && hasPrasaranaData;
-
-    // Check Step 6: Priority Needs Data Completion
     const step6Complete =
       await KebutuhanPrioritasService.hasKebutuhanPrioritasData(
         sekolah.id,
         tahunAjaran,
       );
 
-    // Check Step 7: Lampiran Data Completion (optional, always true)
-    const step7Complete = true; // Lampiran is optional, so it's always considered complete
+    const lampiranData = await LampiranService.getLampiranBySekolahId(
+      sekolah.id,
+    );
+    const hasLampiranData = lampiranData.length > 0;
+    const statusNotDraft = sekolah.status !== 'DRAFT';
+    const step7Complete = hasLampiranData || statusNotDraft;
 
     return {
       success: true,
       data: {
-        sekolahStatus: sekolah.status, // Add school status
+        sekolahStatus: sekolah.status,
         step1: step1Complete,
         step2: step2Complete,
         step3: step3Complete,

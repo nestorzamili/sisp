@@ -28,6 +28,7 @@ export function ProfileDropdown() {
           onSuccess: () => {
             router.push('/sign-in');
             toast.success('Anda telah berhasil keluar.');
+            router.refresh();
           },
           onError: () => {
             toast.error('Gagal keluar. Silakan coba lagi.');

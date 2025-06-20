@@ -115,20 +115,17 @@ export default function HomePage() {
     <div className="min-h-[calc(100vh-180px)] bg-background">
       {' '}
       {/* Welcome Section */}
-      <div className="bg-card">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <WelcomeCard
-            userName={data.user.name}
-            sekolahStatus={data.sekolah?.status}
-          />
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <WelcomeCard
+          userName={data.user.name}
+          sekolahStatus={data.sekolah?.status}
+        />
       </div>{' '}
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
           {data.sekolah ? (
             <>
-              {/* Thank You Message for Approved Status */}
               {data.sekolah.status === 'APPROVED' && (
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6">
                   <div className="flex items-start gap-4">
