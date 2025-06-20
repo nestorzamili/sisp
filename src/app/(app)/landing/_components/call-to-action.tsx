@@ -128,7 +128,7 @@ const CallToAction: React.FC = () => {
             className="max-w-4xl mx-auto"
           >
             {' '}
-            <motion.h2
+            <motion.h3
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -139,7 +139,7 @@ const CallToAction: React.FC = () => {
               <span className="block text-2xl md:text-3xl lg:text-4xl opacity-90 mt-2">
                 Kebutuhan Sekolah Anda
               </span>
-            </motion.h2>
+            </motion.h3>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -159,14 +159,21 @@ const CallToAction: React.FC = () => {
               transition={{ duration: 0.8, delay: 0.6 }}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center"
             >
-              <Link href="/sign-up">
+              {' '}
+              <Link
+                href="/sign-up"
+                aria-label="Daftarkan sekolah Anda untuk pendataan sarana prasarana"
+              >
                 {' '}
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ duration: 0.15 }}
                 >
-                  <Button className="group relative overflow-hidden bg-white text-primary hover:bg-white/95 font-bold text-lg px-10 py-6 rounded-2xl shadow-2xl hover:shadow-white/20 transition-all duration-150 min-w-[250px]">
+                  <Button
+                    className="group relative overflow-hidden bg-white text-primary hover:bg-white/95 font-bold text-lg px-10 py-6 rounded-2xl shadow-2xl hover:shadow-white/20 transition-all duration-150 min-w-[250px]"
+                    aria-label="Daftarkan Sekolah Anda - Mulai proses pendaftaran sekolah"
+                  >
                     {/* Button Background Animation */}
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
@@ -180,9 +187,11 @@ const CallToAction: React.FC = () => {
                     </span>
                   </Button>
                 </motion.div>
-              </Link>
-
-              <Link href="/sign-in">
+              </Link>{' '}
+              <Link
+                href="/sign-in"
+                aria-label="Masuk ke sistem SISP untuk sekolah yang sudah terdaftar"
+              >
                 {' '}
                 <motion.div
                   whileHover={{ scale: 1.02 }}
@@ -193,6 +202,7 @@ const CallToAction: React.FC = () => {
                   <Button
                     variant="outline"
                     className="border-2 border-white bg-white/15 text-white hover:bg-white hover:text-primary font-semibold text-lg px-10 py-6 rounded-2xl backdrop-blur-sm transition-all duration-150 min-w-[200px]"
+                    aria-label="Masuk Sistem - Login ke platform SISP"
                   >
                     Masuk Sistem
                   </Button>
@@ -209,23 +219,26 @@ const CallToAction: React.FC = () => {
             >
               <p className="text-sm opacity-80 mb-4">
                 Butuh bantuan? Tim support kami siap membantu Anda
-              </p>
+              </p>{' '}
               <div className="flex flex-wrap justify-center gap-6 text-sm">
                 <a
                   href="#contact"
                   className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
+                  aria-label="Hubungi tim support untuk bantuan teknis"
                 >
                   📞 Hubungi Support
                 </a>
                 <a
                   href="#process"
                   className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
+                  aria-label="Lihat panduan lengkap penggunaan sistem"
                 >
                   📖 Panduan Penggunaan
                 </a>
                 <a
                   href="#features"
                   className="hover:underline opacity-80 hover:opacity-100 transition-opacity"
+                  aria-label="Jelajahi fitur-fitur yang tersedia di sistem"
                 >
                   ⚡ Lihat Fitur
                 </a>

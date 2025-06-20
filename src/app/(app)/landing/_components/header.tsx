@@ -132,10 +132,14 @@ const Header: React.FC = () => {
                   Bidang Sarana dan Prasarana SMP
                 </span>
               </div>
-            </div>
-
+            </div>{' '}
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-1">
+            <nav
+              className="hidden lg:flex items-center space-x-1"
+              role="navigation"
+              aria-label="Menu navigasi utama"
+            >
+              {' '}
               {navItems.map((item, index) => (
                 <button
                   key={item.id}
@@ -146,37 +150,44 @@ const Header: React.FC = () => {
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   }`}
                   style={{ animationDelay: `${0.2 + index * 0.05}s` }}
+                  aria-label={`Navigasi ke bagian ${item.label}`}
+                  aria-current={activeTab === item.id ? 'page' : undefined}
                 >
                   <span className="relative z-10 text-sm">{item.label}</span>
                 </button>
               ))}
             </nav>
-
             {/* Desktop Auth Buttons */}
             <div className="hidden lg:flex items-center space-x-3 opacity-0 animate-[slideInRight_0.6s_ease-out_0.3s_forwards]">
               <div className="transition-transform duration-150 hover:scale-105">
                 <ModeToggle />
-              </div>
-              <Link href="/sign-up">
+              </div>{' '}
+              <Link href="/sign-up" aria-label="Daftar akun baru untuk sekolah">
                 <Button
                   variant="outline"
                   className="border-primary/20 hover:border-primary hover:bg-primary/5 transition-all duration-150 hover:scale-105 hover:shadow-md"
                 >
                   Daftar
                 </Button>
-              </Link>
-              <Link href="/sign-in">
+              </Link>{' '}
+              <Link
+                href="/sign-in"
+                aria-label="Masuk ke sistem untuk sekolah yang sudah terdaftar"
+              >
                 <Button className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-150 hover:scale-105">
                   <LogIn className="mr-2 h-4 w-4" />
                   Masuk
                 </Button>
               </Link>
-            </div>
-
+            </div>{' '}
             {/* Mobile Menu Button */}
             <button
               className="lg:hidden p-2 rounded-xl hover:bg-muted/50 transition-all duration-150 hover:scale-105"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={
+                mobileMenuOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'
+              }
+              aria-expanded={mobileMenuOpen}
             >
               <div className="transition-transform duration-150">
                 {mobileMenuOpen ? (
@@ -195,7 +206,12 @@ const Header: React.FC = () => {
           >
             {' '}
             <div className="pb-6 pt-4 bg-background/95 backdrop-blur-xl rounded-xl mt-2 border border-border/50 shadow-xl">
-              <nav className="flex flex-col space-y-1 mt-2 px-4">
+              <nav
+                className="flex flex-col space-y-1 mt-2 px-4"
+                role="navigation"
+                aria-label="Menu navigasi mobile"
+              >
+                {' '}
                 {navItems.map((item) => (
                   <button
                     key={item.id}
@@ -205,6 +221,8 @@ const Header: React.FC = () => {
                         ? 'text-primary bg-primary/10 border-l-4 border-primary'
                         : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                     }`}
+                    aria-label={`Navigasi ke bagian ${item.label}`}
+                    aria-current={activeTab === item.id ? 'page' : undefined}
                   >
                     {item.label}
                   </button>
@@ -214,16 +232,22 @@ const Header: React.FC = () => {
               <div className="flex flex-col space-y-3 mt-5 pt-4 px-4 border-t border-border/50">
                 <div className="flex justify-center mb-1">
                   <ModeToggle />
-                </div>
-                <Link href="/sign-up">
+                </div>{' '}
+                <Link
+                  href="/sign-up"
+                  aria-label="Daftar akun baru untuk sekolah - Mobile"
+                >
                   <Button
                     variant="outline"
                     className="w-full h-11 transition-all duration-150 hover:scale-[1.02] hover:shadow-md"
                   >
                     Daftar
                   </Button>
-                </Link>
-                <Link href="/sign-in">
+                </Link>{' '}
+                <Link
+                  href="/sign-in"
+                  aria-label="Masuk ke sistem untuk sekolah yang sudah terdaftar - Mobile"
+                >
                   <Button className="w-full h-11 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 transition-all duration-150 hover:scale-[1.02] hover:shadow-lg">
                     <LogIn className="mr-2 h-4 w-4" />
                     Masuk

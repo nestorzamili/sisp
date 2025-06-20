@@ -209,11 +209,11 @@ const ProcessFlow: React.FC = () => {
                             size={32}
                           />
                         </div>
-                      </motion.div>
+                      </motion.div>{' '}
                       {/* Content */}
-                      <h4 className="font-bold text-foreground mb-3 text-xl group-hover:text-primary transition-colors duration-300">
+                      <h3 className="font-bold text-foreground mb-3 text-xl group-hover:text-primary transition-colors duration-300">
                         {step.title}
-                      </h4>
+                      </h3>
                       <p className="text-sm text-muted-foreground leading-relaxed">
                         {step.description}
                       </p>

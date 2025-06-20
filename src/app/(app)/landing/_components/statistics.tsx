@@ -224,9 +224,11 @@ const Statistics: React.FC = () => {
                 transition={{ duration: 0.15 }}
                 className="inline-block"
               >
+                {' '}
                 <a
                   href="#contact"
                   className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-blue-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-150"
+                  aria-label="Hubungi tim Dinas Pendidikan untuk informasi lebih lanjut"
                 >
                   Hubungi Kami
                 </a>

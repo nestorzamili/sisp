@@ -5,7 +5,6 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/sign-in', '/sign-up', '/forgot-password', '/landing'],
         disallow: [
           '/admin/*',
           '/api/*',
@@ -19,7 +18,6 @@ export default function robots(): MetadataRoute.Robots {
       },
       {
         userAgent: 'Googlebot',
-        allow: ['/', '/sign-in', '/sign-up', '/landing'],
         disallow: [
           '/admin/*',
           '/api/*',

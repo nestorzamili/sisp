@@ -62,12 +62,16 @@ const HeroSection: React.FC = () => {
             Platform digital untuk pendataan dan monitoring sarana prasarana SMP
             di Kabupaten Nias Selatan.
           </p>
-          {/* CTA Button - More delayed */}
+          {/* CTA Button - More delayed */}{' '}
           <div className="animate-[fadeInDelayed_0.3s_ease-out_0.2s_both]">
-            <Link href="/sign-in">
+            <Link
+              href="/sign-in"
+              aria-label="Mulai input data sarana prasarana sekolah"
+            >
               <Button
                 size="lg"
                 className="group bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                aria-label="Mulai Input Data - Masuk ke sistem untuk input data sekolah"
               >
                 <span className="flex items-center gap-2 text-lg">
                   Mulai Input Data

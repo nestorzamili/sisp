@@ -72,6 +72,7 @@ const Footer: React.FC = () => {
                       whileTap={{ scale: 0.95 }}
                       transition={{ duration: 0.15 }}
                       className="w-10 h-10 rounded-full bg-muted flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-150 group"
+                      aria-label={`Kunjungi halaman ${Icon.name} kami`}
                     >
                       <Icon
                         size={18}
@@ -107,6 +108,7 @@ const Footer: React.FC = () => {
                         whileHover={{ x: 4 }}
                         transition={{ duration: 0.15 }}
                         className="text-muted-foreground hover:text-primary transition-colors duration-150 cursor-pointer block"
+                        aria-label={`Navigasi ke bagian ${label}`}
                       >
                         {label}
                       </motion.a>
@@ -179,17 +181,22 @@ const Footer: React.FC = () => {
                   pengembangan pendidikan di Nias Selatan.
                 </p>
                 <div className="flex">
+                  {' '}
                   <input
                     type="email"
                     placeholder="Alamat email Anda"
                     className="bg-muted text-foreground px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary w-full border-none text-sm transition-all duration-150"
+                    aria-label="Masukkan alamat email untuk newsletter"
                   />
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-l-none transition-colors duration-150">
+                    <Button
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-l-none transition-colors duration-150"
+                      aria-label="Berlangganan newsletter"
+                    >
                       <IconSend size={16} />
                     </Button>
                   </motion.div>
@@ -216,6 +223,7 @@ const Footer: React.FC = () => {
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.15 }}
                     className="text-primary hover:text-primary/80 transition-colors duration-150 font-medium"
+                    aria-label="Kunjungi website Nestor Zamili - Developer"
                   >
                     Nestor Zamili
                   </motion.a>
