@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.4.0](https://github.com/nestorzamili/sisp/compare/v1.3.0...v1.4.0) (2025-06-20)
+
+
+### Features
+
+* implement user profile management with form validation and image upload ([72baec3](https://github.com/nestorzamili/sisp/commit/72baec3f24830edd4524f9dd2b06a43b201a3160))
+
+
+### Chores
+
+* comment out rate limit configuration in auth module ([18b3103](https://github.com/nestorzamili/sisp/commit/18b31038d65e2b7f3f74d0bca9eedd137f9eb98f))
+* disable push trigger in release workflow and remove release manifest ([0ddc651](https://github.com/nestorzamili/sisp/commit/0ddc651b73655f4881f3b98c1310acb1bb88b173))
+
+
+### Code Refactoring
+
+* **data-completion:** streamline data completion checks and add lampiran validation ([3654bc4](https://github.com/nestorzamili/sisp/commit/3654bc428dd5ec3568510fd1feb6e75bc6c7fb05))
+* enhance accessibility and semantics in landing components ([01095be](https://github.com/nestorzamili/sisp/commit/01095be7aefe5199d23bc2f5d733183ea663e920))
+* **header:** improve mobile menu styles and spacing ([fee7661](https://github.com/nestorzamili/sisp/commit/fee7661f9ccf3968b3b79bef92bdb9ac75f78e49))
+* **middleware:** enhance route handling for robots.txt and sitemap.xml ([d158576](https://github.com/nestorzamili/sisp/commit/d1585762e09f0c00a4155ddd012717ff05f410f4))
+* **next.config:** enhance configuration settings for image handling and performance ([8a3c480](https://github.com/nestorzamili/sisp/commit/8a3c480f50e346e7d7f08083c948fe91373150f8))
+* **prasarana-tab:** replace table implementation with DataTable for improved data handling ([c1255bf](https://github.com/nestorzamili/sisp/commit/c1255bffdfcf410547b5286c5971a55123a0ae1e))
+* **sarana-tab:** replace table implementation with DataTable for enhanced data management ([c1255bf](https://github.com/nestorzamili/sisp/commit/c1255bffdfcf410547b5286c5971a55123a0ae1e))
+* update Coming Soon component text and add Help Center page ([156d5be](https://github.com/nestorzamili/sisp/commit/156d5beaf1e25d03b7974ab9d6139b9dad581297))
+* update database schema and error handling components ([dfa8810](https://github.com/nestorzamili/sisp/commit/dfa88101bdc445366762d814832c07ca170541fc))
+* update labels and improve table structure in recent sekolah and approval components ([1ecc950](https://github.com/nestorzamili/sisp/commit/1ecc9505535963ae22b24cbc67c40c2512df7f25))
+* update README for clarity and consistency ([b3b528d](https://github.com/nestorzamili/sisp/commit/b3b528d4318a58a7ac24179d8f5640628377e147))
+
 ## [1.3.0](https://github.com/nestorzamili/sisp/compare/v1.2.5...v1.3.0) (2025-06-19)
 
 
