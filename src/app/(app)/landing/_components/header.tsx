@@ -190,10 +190,11 @@ const Header: React.FC = () => {
           {/* Mobile Menu */}
           <div
             className={`lg:hidden transition-all duration-300 overflow-hidden ${
-              mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+              mobileMenuOpen ? 'max-h-[35rem] opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
-            <div className="pb-4 pt-2 bg-background/95 backdrop-blur-xl rounded-xl mt-2 border border-border/50 shadow-xl">
+            {' '}
+            <div className="pb-6 pt-4 bg-background/95 backdrop-blur-xl rounded-xl mt-2 border border-border/50 shadow-xl">
               <nav className="flex flex-col space-y-1 mt-2 px-4">
                 {navItems.map((item) => (
                   <button
@@ -210,20 +211,20 @@ const Header: React.FC = () => {
                 ))}
               </nav>
 
-              <div className="flex flex-col space-y-3 mt-4 pt-4 px-4 border-t border-border/50">
-                <div className="flex justify-center">
+              <div className="flex flex-col space-y-3 mt-5 pt-4 px-4 border-t border-border/50">
+                <div className="flex justify-center mb-1">
                   <ModeToggle />
                 </div>
                 <Link href="/sign-up">
                   <Button
                     variant="outline"
-                    className="w-full transition-all duration-150 hover:scale-[1.02] hover:shadow-md"
+                    className="w-full h-11 transition-all duration-150 hover:scale-[1.02] hover:shadow-md"
                   >
                     Daftar
                   </Button>
                 </Link>
                 <Link href="/sign-in">
-                  <Button className="w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 transition-all duration-150 hover:scale-[1.02] hover:shadow-lg">
+                  <Button className="w-full h-11 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 transition-all duration-150 hover:scale-[1.02] hover:shadow-lg">
                     <LogIn className="mr-2 h-4 w-4" />
                     Masuk
                   </Button>
