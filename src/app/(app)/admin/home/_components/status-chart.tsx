@@ -39,15 +39,15 @@ export function StatusChart() {
       color: '#2563eb',
     },
     PENDING: {
-      label: 'Pending',
+      label: 'Menunggu Review',
       color: '#60a5fa',
     },
     APPROVED: {
-      label: 'Approved',
+      label: 'Disetujui',
       color: '#10b981',
     },
     REJECTED: {
-      label: 'Rejected',
+      label: 'Ditolak',
       color: '#ef4444',
     },
   } satisfies ChartConfig;

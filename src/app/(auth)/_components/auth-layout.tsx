@@ -31,8 +31,9 @@ export default function AuthLayout({ children, title, subtitle }: Props) {
       <AuthBackgroundShapes />
 
       <main className="flex flex-col flex-grow w-full h-full relative z-10">
+        {' '}
         <div className="flex flex-col justify-center items-center min-h-screen px-4 py-8">
-          <div className="w-full max-w-[440px] mx-auto">
+          <div className="w-full max-w-[420px] mx-auto">
             <div className="flex flex-col items-center">
               <div className="flex flex-col items-center text-center space-y-3 mb-5">
                 <div className="flex flex-col items-center space-y-3">

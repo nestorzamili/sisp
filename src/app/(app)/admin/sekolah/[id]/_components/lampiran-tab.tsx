@@ -120,7 +120,7 @@ export function LampiranTab({ data }: LampiranTabProps) {
                         className="flex items-center gap-2"
                       >
                         <Eye className="w-4 h-4" />
-                        Preview
+                        Lihat
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-[95vw] sm:max-w-5xl max-h-[90vh] overflow-auto">

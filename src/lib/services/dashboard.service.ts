@@ -90,6 +90,7 @@ export class DashboardService {
         },
         where: {
           sekolah: {
+            status: 'APPROVED',
             user: {
               role: { not: 'admin' },
             },
@@ -121,6 +122,7 @@ export class DashboardService {
         },
         where: {
           sekolah: {
+            status: 'APPROVED',
             user: {
               role: { not: 'admin' },
             },
@@ -152,6 +154,7 @@ export class DashboardService {
         },
         where: {
           sekolah: {
+            status: 'APPROVED',
             user: {
               role: { not: 'admin' },
             },
@@ -178,6 +181,7 @@ export class DashboardService {
         },
         where: {
           sekolah: {
+            status: 'APPROVED',
             user: {
               role: { not: 'admin' },
             },

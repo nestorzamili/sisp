@@ -50,7 +50,7 @@ export function RecentSekolahTable() {
       case 'APPROVED':
         return 'Disetujui';
       case 'PENDING':
-        return 'Menunggu';
+        return 'Menunggu Review';
       case 'REJECTED':
         return 'Ditolak';
       case 'DRAFT':

@@ -42,14 +42,29 @@ export function ReviewDetailCard({
     | 'prioritas'
     | 'lampiran'
   >('info');
+
+  // Helper functions to calculate totals
+  const getTotalGuru = () => {
+    if (!data.guru) return 0;
+    return data.guru.reduce((total, guru) => total + guru.jumlah, 0);
+  };
+
+  const getTotalSiswa = () => {
+    if (!data.rombonganBelajar) return 0;
+    return data.rombonganBelajar.reduce(
+      (total, rombel) => total + rombel.jumlah_siswa,
+      0,
+    );
+  };
+
   const tabs = [
     { id: 'info', label: 'Informasi Dasar', icon: School },
-    { id: 'guru', label: 'Data Guru', icon: Users, count: data.guru?.length },
+    { id: 'guru', label: 'Data Guru', icon: Users, count: getTotalGuru() },
     {
       id: 'rombel',
       label: 'Rombongan Belajar',
       icon: BookOpen,
-      count: data.rombonganBelajar?.length,
+      count: getTotalSiswa(),
     },
     {
       id: 'sarana',
@@ -121,7 +136,7 @@ export function ReviewDetailCard({
             disabled={isLoading}
             className="bg-green-600 hover:bg-green-700"
           >
-            Setujui
+            Setuju
           </Button>{' '}
         </div>
       </div>

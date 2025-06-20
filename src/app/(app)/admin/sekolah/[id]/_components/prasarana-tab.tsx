@@ -1,5 +1,13 @@
 import { Building2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { SekolahWithDetails } from '@/types/sekolah';
 
 interface PrasaranaTabProps {
@@ -52,43 +60,46 @@ export function PrasaranaTab({ data }: PrasaranaTabProps) {
           <Building2 className="h-5 w-5" />
           Data Prasarana ({data.prasarana?.length || 0})
         </CardTitle>
-      </CardHeader>
+      </CardHeader>{' '}
       <CardContent>
         {data.prasarana && data.prasarana.length > 0 ? (
-          <div className="space-y-4">
-            {Object.entries(groupPrasaranaByName(data.prasarana)).map(
-              ([name, prasaranaData]) => (
-                <div key={name} className="p-4 border rounded-lg space-y-2">
-                  <h4 className="text-sm font-medium">{name}</h4>
-                  <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-muted-foreground min-w-[120px]">
-                      Total:
-                    </span>
-                    <span className="text-sm">{prasaranaData.total}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-muted-foreground min-w-[120px]">
-                      Baik:
-                    </span>
-                    <span className="text-sm">{prasaranaData.baik}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-muted-foreground min-w-[120px]">
-                      Rusak:
-                    </span>
-                    <span className="text-sm">{prasaranaData.rusak}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-muted-foreground min-w-[120px]">
-                      Keterangan:
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {prasaranaData.keterangan || '-'}
-                    </span>
-                  </div>
-                </div>
-              ),
-            )}
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-center w-16">No</TableHead>
+                  <TableHead className="w-1/3">Nama Prasarana</TableHead>
+                  <TableHead className="text-center w-20">Baik</TableHead>
+                  <TableHead className="text-center w-20">Rusak</TableHead>
+                  <TableHead className="text-center w-20">Total</TableHead>
+                  <TableHead className="w-1/3">Keterangan</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Object.entries(groupPrasaranaByName(data.prasarana)).map(
+                  ([name, prasaranaData], index) => (
+                    <TableRow key={name}>
+                      <TableCell className="text-center font-medium">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="font-medium">{name}</TableCell>
+                      <TableCell className="text-center">
+                        {prasaranaData.baik}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {prasaranaData.rusak}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {prasaranaData.total}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {prasaranaData.keterangan || '-'}
+                      </TableCell>
+                    </TableRow>
+                  ),
+                )}
+              </TableBody>
+            </Table>
           </div>
         ) : (
           <p className="text-muted-foreground text-center py-8">

@@ -2,6 +2,14 @@
 
 import { Building2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { SekolahWithDetails } from '@/types/sekolah';
 
 interface SaranaTabProps {
@@ -54,43 +62,47 @@ export function SaranaTab({ data }: SaranaTabProps) {
           <Building2 className="h-5 w-5" />
           Data Sarana ({data.sarana?.length || 0})
         </CardTitle>
-      </CardHeader>
+      </CardHeader>{' '}
       <CardContent>
         {data.sarana && data.sarana.length > 0 ? (
-          <div className="space-y-4">
-            {Object.entries(groupSaranaByName(data.sarana)).map(
-              ([name, saranaData]) => (
-                <div key={name} className="p-4 border rounded-lg space-y-2">
-                  <h4 className="text-sm font-medium">{name}</h4>
-                  <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-muted-foreground min-w-[120px]">
-                      Total:
-                    </span>
-                    <span className="text-sm">{saranaData.total}</span>
-                  </div>{' '}
-                  <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-muted-foreground min-w-[120px]">
-                      Baik:
-                    </span>
-                    <span className="text-sm">{saranaData.baik}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-muted-foreground min-w-[120px]">
-                      Rusak:
-                    </span>
-                    <span className="text-sm">{saranaData.rusak}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-sm font-medium text-muted-foreground min-w-[120px]">
-                      Keterangan:
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {saranaData.keterangan || '-'}
-                    </span>
-                  </div>
-                </div>
-              ),
-            )}
+          <div className="rounded-md border">
+            <Table>
+              {' '}
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-center w-16">No</TableHead>
+                  <TableHead className="w-1/3">Nama Sarana</TableHead>
+                  <TableHead className="text-center w-20">Baik</TableHead>
+                  <TableHead className="text-center w-20">Rusak</TableHead>
+                  <TableHead className="text-center w-20">Total</TableHead>
+                  <TableHead className="w-1/3">Keterangan</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {Object.entries(groupSaranaByName(data.sarana)).map(
+                  ([name, saranaData], index) => (
+                    <TableRow key={name}>
+                      <TableCell className="text-center font-medium">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="font-medium">{name}</TableCell>
+                      <TableCell className="text-center">
+                        {saranaData.baik}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {saranaData.rusak}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {saranaData.total}
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {saranaData.keterangan || '-'}
+                      </TableCell>
+                    </TableRow>
+                  ),
+                )}
+              </TableBody>
+            </Table>
           </div>
         ) : (
           <p className="text-muted-foreground text-center py-8">

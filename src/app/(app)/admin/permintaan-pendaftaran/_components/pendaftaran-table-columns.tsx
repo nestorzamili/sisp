@@ -187,7 +187,7 @@ export const ActionsCell = ({
             className="cursor-pointer text-green-600"
           >
             <Check className="mr-2 h-4 w-4" />
-            Setujui
+            Terima
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => onReject(pendaftaran)}

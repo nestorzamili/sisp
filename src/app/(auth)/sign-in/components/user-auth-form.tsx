@@ -17,7 +17,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import { PasswordInput } from '@/components/password-input';
 import Link from 'next/link';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
@@ -46,7 +45,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       );
     }
   }, [searchParams]);
-
   const formSchema = z.object({
     email: z
       .string()
@@ -56,18 +54,15 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       .string()
       .min(1, { message: 'Password harus diisi' })
       .min(8, { message: 'Password minimal 8 karakter' }),
-    rememberMe: z.boolean(),
   });
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { email: '', password: '', rememberMe: false },
+    defaultValues: { email: '', password: '' },
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setError(null);
-    // Clear success message and URL parameters when user tries to sign in
     setSuccessMessage(null);
     if (searchParams?.get('message')) {
       router.replace('/sign-in', { scroll: false });
@@ -78,7 +73,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         {
           email: data.email,
           password: data.password,
-          rememberMe: data.rememberMe,
           callbackURL: '/home',
         },
         {
@@ -171,25 +165,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                       autoComplete="current-password"
                     />
                   </FormControl>
-                  <FormMessage className="form-error" />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="rememberMe"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-x-2 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormLabel className="text-sm font-normal cursor-pointer">
-                    Ingat saya
-                  </FormLabel>
+                  <FormMessage className="form-error" />{' '}
                 </FormItem>
               )}
             />
