@@ -1,27 +1,50 @@
 'use client';
 
-import { Building2 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { useMemo, useState } from 'react';
+import { DataTable } from '@/components/data-table';
+import { ColumnDef, RowSelectionState } from '@tanstack/react-table';
+import { Checkbox } from '@/components/ui/checkbox';
 import { SekolahWithDetails } from '@/types/sekolah';
+
+interface GroupedSarana {
+  nama_sarana: string;
+  total: number;
+  baik: number;
+  rusak: number;
+  keterangan: string | null;
+}
 
 interface SaranaTabProps {
   data: SekolahWithDetails;
 }
 
-export function SaranaTab({ data }: SaranaTabProps) {
-  // Helper function to group sarana by name
-  const groupSaranaByName = (saranaData: typeof data.sarana) => {
-    if (!saranaData) return {};
+// SelectCell component similar to review-table
+const SelectCell = ({
+  isSelected,
+  onToggle,
+}: {
+  isSelected: boolean;
+  onToggle: (selected: boolean) => void;
+}) => {
+  return (
+    <Checkbox
+      checked={isSelected}
+      onCheckedChange={(value) => onToggle(!!value)}
+      aria-label="Select row"
+    />
+  );
+};
 
-    const grouped = saranaData.reduce(
+export function SaranaTab({ data }: SaranaTabProps) {
+  // Row selection state
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+  // Transform sarana data to array format for DataTable
+  const tableData: GroupedSarana[] = useMemo(() => {
+    if (!data.sarana || data.sarana.length === 0) return [];
+
+    // Group sarana by name
+    const grouped = data.sarana.reduce(
       (acc, sarana) => {
         const name = sarana.nama_sarana;
         if (!acc[name]) {
@@ -52,63 +75,110 @@ export function SaranaTab({ data }: SaranaTabProps) {
       >,
     );
 
-    return grouped;
-  };
+    // Convert to array format
+    return Object.entries(grouped).map(([nama_sarana, saranaData]) => ({
+      nama_sarana,
+      total: saranaData.total,
+      baik: saranaData.baik,
+      rusak: saranaData.rusak,
+      keterangan: saranaData.keterangan,
+    }));
+  }, [data.sarana]);
+
+  // Define columns for DataTable
+  const columns: ColumnDef<GroupedSarana>[] = useMemo(
+    () => [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && 'indeterminate')
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <SelectCell
+            isSelected={row.getIsSelected()}
+            onToggle={(selected) => row.toggleSelected(selected)}
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+        size: 40,
+      },
+      {
+        accessorKey: 'nama_sarana',
+        header: 'Nama Sarana',
+        cell: ({ getValue }) => (
+          <div className="font-medium">{getValue() as string}</div>
+        ),
+        enableSorting: false,
+        size: 200,
+      },
+      {
+        accessorKey: 'baik',
+        header: 'Baik',
+        cell: ({ getValue }) => (
+          <div className="text-left">{getValue() as number}</div>
+        ),
+        enableSorting: false,
+        size: 80,
+      },
+      {
+        accessorKey: 'rusak',
+        header: 'Rusak',
+        cell: ({ getValue }) => (
+          <div className="text-left">{getValue() as number}</div>
+        ),
+        enableSorting: false,
+        size: 80,
+      },
+      {
+        accessorKey: 'total',
+        header: 'Total',
+        cell: ({ getValue }) => (
+          <div className="text-left">{getValue() as number}</div>
+        ),
+        enableSorting: false,
+        size: 80,
+      },
+      {
+        accessorKey: 'keterangan',
+        header: 'Keterangan',
+        cell: ({ getValue }) => (
+          <div className="text-left">{(getValue() as string) || '-'}</div>
+        ),
+        enableSorting: false,
+        size: 200,
+      },
+    ],
+    [],
+  );
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Building2 className="h-5 w-5" />
-          Data Sarana ({data.sarana?.length || 0})
-        </CardTitle>
-      </CardHeader>{' '}
-      <CardContent>
-        {data.sarana && data.sarana.length > 0 ? (
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="text-center w-16">No</TableHead>
-                  <TableHead className="w-1/3">Nama Sarana</TableHead>
-                  <TableHead className="text-center w-20">Baik</TableHead>
-                  <TableHead className="text-center w-20">Rusak</TableHead>
-                  <TableHead className="text-center w-20">Total</TableHead>
-                  <TableHead className="w-1/3">Keterangan</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {Object.entries(groupSaranaByName(data.sarana)).map(
-                  ([name, saranaData], index) => (
-                    <TableRow key={name}>
-                      <TableCell className="text-center font-medium">
-                        {index + 1}
-                      </TableCell>
-                      <TableCell className="font-medium">{name}</TableCell>
-                      <TableCell className="text-center">
-                        {saranaData.baik}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {saranaData.rusak}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {saranaData.total}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {saranaData.keterangan || '-'}
-                      </TableCell>
-                    </TableRow>
-                  ),
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        ) : (
-          <p className="text-muted-foreground text-center py-8">
-            Belum ada data sarana
-          </p>
-        )}
-      </CardContent>
-    </Card>
+    <div>
+      {tableData.length > 0 ? (
+        <DataTable
+          columns={columns}
+          data={tableData}
+          pagination={{
+            pageIndex: 0,
+            pageSize: 10,
+          }}
+          rowSelection={rowSelection}
+          onRowSelectionChange={setRowSelection}
+        />
+      ) : (
+        <p className="text-muted-foreground text-center py-8">
+          Belum ada data sarana
+        </p>
+      )}
+    </div>
   );
 }
