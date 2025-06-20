@@ -2,7 +2,6 @@ import {
   IconChecklist,
   IconHelp,
   IconLayoutDashboard,
-  IconUsers,
   IconSchool,
 } from '@tabler/icons-react';
 import { type SidebarData } from './types';
@@ -39,11 +38,6 @@ export const sidebarData: SidebarData = {
           url: '/admin/sekolah',
           icon: IconSchool,
         },
-        {
-          title: 'Pengguna',
-          url: '/admin/pengguna',
-          icon: IconUsers,
-        },
       ],
     },
     {
@@ -51,7 +45,7 @@ export const sidebarData: SidebarData = {
       items: [
         {
           title: 'Help Center',
-          url: '/help-center',
+          url: '/admin/help-center',
           icon: IconHelp,
         },
       ],
