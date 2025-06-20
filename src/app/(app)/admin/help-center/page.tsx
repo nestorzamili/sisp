@@ -1,8 +1,8 @@
 import ComingSoon from '@/components/coming-soon';
 
-export default function HelpCenterPage() {
+export default function ProfilePage() {
   return (
-    <div className="flex h-full w-full items-center justify-center">
+    <div>
       <ComingSoon />
     </div>
   );

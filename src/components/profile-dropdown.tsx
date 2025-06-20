@@ -108,16 +108,18 @@ export function ProfileDropdown() {
             </p>
           </div>
         </div>
-
-        <DropdownMenuSeparator className="opacity-50 mt-2" />
+        <DropdownMenuSeparator className="opacity-50 mt-2" />{' '}
         <DropdownMenuGroup>
           <DropdownMenuItem
             asChild
             className="p-3 cursor-pointer hover:bg-primary/5 focus:bg-primary/10"
           >
-            <Link href="/profile" className="flex items-center gap-2">
+            <Link
+              href={user.role === 'admin' ? '/admin/profile' : '/profile'}
+              className="flex items-center gap-2"
+            >
               <User size={16} className="text-muted-foreground" />
-              <span>Profile</span>
+              <span>Profil</span>
               <DropdownMenuShortcut className="text-xs opacity-60">
                 ⇧⌘P
               </DropdownMenuShortcut>
