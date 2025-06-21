@@ -1,78 +1,73 @@
 import { NextRequest, NextResponse } from 'next/server';
-import type { auth } from '@/lib/auth';
-import { betterFetch } from '@better-fetch/fetch';
+import { getSessionCookie, getCookieCache } from 'better-auth/cookies';
 
-type Session = typeof auth.$Infer.Session;
+const PUBLIC_ROUTES = new Set([
+  '/',
+  '/sign-in',
+  '/sign-up',
+  '/forgot-password',
+  '/reset-password',
+]);
+
+const AUTH_PATHS = new Set([
+  '/sign-in',
+  '/sign-up',
+  '/forgot-password',
+  '/reset-password',
+]);
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Skip middleware untuk robots.txt dan sitemap.xml
   if (pathname === '/robots.txt' || pathname === '/sitemap.xml') {
     return NextResponse.next();
   }
-
-  const publicRoutes = [
-    '/',
-    '/sign-in',
-    '/sign-up',
-    '/forgot-password',
-    '/reset-password',
-  ];
-
-  const authPaths = [
-    '/sign-in',
-    '/sign-up',
-    '/forgot-password',
-    '/reset-password',
-  ];
-
+  // Check if route is public
   const isPublicRoute =
-    publicRoutes.includes(pathname) ||
-    authPaths.some((authPath) => pathname.startsWith(authPath + '/'));
+    PUBLIC_ROUTES.has(pathname) ||
+    Array.from(AUTH_PATHS).some((authPath) =>
+      pathname.startsWith(`${authPath}/`),
+    );
 
-  let session: Session | null = null;
+  const sessionCookie = getSessionCookie(request);
 
-  try {
-    const { data } = await betterFetch<Session>('/api/auth/get-session', {
-      baseURL:
-        process.env.NODE_ENV === 'production'
-          ? process.env.BETTER_AUTH_URL // Use the explicit URL from env in production
-          : request.nextUrl.origin,
-      headers: {
-        cookie: request.headers.get('cookie') || '',
-      },
-    });
-    session = data;
-  } catch (error) {
-    // Log error if needed, but continue with null session
-    console.error('Failed to fetch session:', error);
-    session = null;
-  }
-
-  // Jika tidak ada session dan bukan public route, redirect ke sign-in
-  if (!session && !isPublicRoute) {
+  if (!sessionCookie && !isPublicRoute) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  // Jika ada session dan mencoba akses auth pages, redirect ke home yang sesuai
-  if (session && authPaths.includes(pathname)) {
-    const redirectUrl = session.user.role === 'admin' ? '/admin/home' : '/home';
+  if (!sessionCookie && isPublicRoute) {
+    return NextResponse.next();
+  }
+
+  let session = null;
+  try {
+    session = await getCookieCache(request);
+  } catch (error) {
+    console.error('Failed to get session from cookie cache:', error);
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
+
+  if (!session?.user) {
+    return NextResponse.redirect(new URL('/sign-in', request.url));
+  }
+
+  const { role } = session.user;
+  const isAdminRoute = pathname.startsWith('/admin');
+  const isAuthPath = AUTH_PATHS.has(pathname);
+  const isRootPath = pathname === '/';
+
+  if (isAuthPath) {
+    const redirectUrl = role === 'admin' ? '/admin/home' : '/home';
     return NextResponse.redirect(new URL(redirectUrl, request.url));
   }
 
-  // Role-based redirects untuk authenticated users
-  if (session) {
-    const isAdminRoute = pathname.startsWith('/admin');
-    const isAdminUser = session.user.role === 'admin';
-
-    // Admin mencoba akses non-admin routes (kecuali root path)
-    if (isAdminUser && !isAdminRoute && pathname !== '/') {
+  // Role-based access control
+  if (role === 'admin') {
+    if (!isRootPath && !isAdminRoute) {
       return NextResponse.redirect(new URL('/admin/home', request.url));
     }
-
-    // Non-admin mencoba akses admin routes
-    if (!isAdminUser && isAdminRoute) {
+  } else {
+    if (isAdminRoute) {
       return NextResponse.redirect(new URL('/home', request.url));
     }
   }

@@ -82,7 +82,7 @@ model Verification {
 }
 
 model rateLimit {
-  id          String  @id
+  id          String  @id @default(uuid())
   key         String?
   count       Int?
   lastRequest BigInt?

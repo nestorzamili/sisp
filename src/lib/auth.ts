@@ -102,7 +102,9 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    generateId: false,
+    database: {
+      generateId: false,
+    },
     ipAddress: {
       ipAddressHeaders: [
         'x-client-ip',
@@ -112,16 +114,10 @@ export const auth = betterAuth({
       ],
       disableIpTracking: false,
     },
-    useSecureCookies: true,
-    cookies: {
-      session_token: {
-        name: 'samunu.session_token',
-        attributes: {
-          httpOnly: true,
-          secure: true,
-        },
-      },
-    },
-    cookiePrefix: 'samunu',
   },
+
+  trustedOrigins: [
+    process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+    'http://localhost:3223',
+  ],
 });
