@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.4.1](https://github.com/nestorzamili/sisp/compare/v1.4.0...v1.4.1) (2025-06-21)
+
+
+### Bug Fixes
+
+* **auth:** correct email recipient in change email verification process ([aa4109a](https://github.com/nestorzamili/sisp/commit/aa4109aa7d7592c908b304642d69c658daad3ec1))
+* **auth:** correct parameters order in change email verification template ([3c2d2fc](https://github.com/nestorzamili/sisp/commit/3c2d2fc54dcb035e5e240133a179530111309b0c))
+* **auth:** enhance logger configuration and update rate limit custom rules ([d3c1f91](https://github.com/nestorzamili/sisp/commit/d3c1f91ed7cd896d74806222a473fa30e681d400))
+* **auth:** implement change email verification process and rate limiting model ([c634b74](https://github.com/nestorzamili/sisp/commit/c634b74eb4779819931570b2d7ddf3b0ca164a05))
+* **auth:** swap ipAddress header positions for better tracking ([78e08ce](https://github.com/nestorzamili/sisp/commit/78e08ce3fb724e17c8774006328d23fd6bfb3da4))
+* **auth:** update authentication middleware and session handling ([d072c11](https://github.com/nestorzamili/sisp/commit/d072c11b95026da8f47ec6fb1115d31e7ebd1a3c))
+* **command-menu:** update theme labels to local language ([8dc4d1a](https://github.com/nestorzamili/sisp/commit/8dc4d1a639acc38ddf80034112de96c21b9fd78d))
+* **email:** add Change Email Verification template ([8b5f85d](https://github.com/nestorzamili/sisp/commit/8b5f85d3d53765cce9963566379eb96ac8a1a266))
+* **middleware:** improve session handling and route redirection logic ([f44855e](https://github.com/nestorzamili/sisp/commit/f44855e482f4bf080b4cbca0ce4ac037b12033b8))
+* **not-found:** enhance 404 error page design and content ([380bd28](https://github.com/nestorzamili/sisp/commit/380bd288c23a9fd31456e53d0f9f66794704e727))
+
 ## [1.4.0](https://github.com/nestorzamili/sisp/compare/v1.3.0...v1.4.0) (2025-06-20)
 
 
