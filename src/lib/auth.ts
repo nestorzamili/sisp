@@ -8,18 +8,44 @@ import { hashPassword, verifyPassword } from '@/lib/argon2';
 import { sendEmail } from '@/lib/mail';
 import { VerificationEmailTemplate } from '@/templates/account-approved';
 import { ResetPasswordEmailTemplate } from '@/templates/password-reset-email';
+import { ChangeEmailVerificationTemplate } from '@/templates/change-email-verification';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
+
+  appName: 'SISP SMP Nias Selatan',
   plugins: [
-    nextCookies(),
     admin({
       bannedUserMessage:
         'Akun Anda belum diaktifkan. Mohon tunggu persetujuan dari admin',
     }),
+    nextCookies(),
   ],
+
+  user: {
+    additionalFields: {
+      role: {
+        type: ['admin', 'user'],
+        input: false,
+      },
+    },
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async ({ user, newEmail, url }) => {
+        try {
+          await sendEmail({
+            to: newEmail,
+            subject: 'Verifikasi Perubahan Email - SISP SMP Nias Selatan',
+            html: ChangeEmailVerificationTemplate(url, newEmail, user.name),
+          });
+        } catch (error) {
+          throw error;
+        }
+      },
+    },
+  },
 
   emailAndPassword: {
     enabled: true,
@@ -59,24 +85,43 @@ export const auth = betterAuth({
       }
     },
   },
-
   rateLimit: {
     enabled: true,
-    window: 5 * 60,
-    max: 10,
+    window: 5 * 60, // 5 minutes
+    max: 10, // 10 requests per window
+    storage: 'database',
+    modelName: 'rateLimit',
   },
 
   session: {
+    expiresIn: 60 * 60 * 24 * 7,
+    updateAge: 60 * 60 * 24,
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60, // Cache duration in seconds
+      maxAge: 5 * 60,
     },
   },
-
   advanced: {
+    generateId: false,
     ipAddress: {
-      ipAddressHeaders: ['x-client-ip', 'x-forwarded-for', 'x-real-ip'],
+      ipAddressHeaders: [
+        'x-client-ip',
+        'x-forwarded-for',
+        'x-real-ip',
+        'cf-connecting-ip',
+      ],
       disableIpTracking: false,
     },
+    useSecureCookies: true,
+    cookies: {
+      session_token: {
+        name: 'samunu.session_token',
+        attributes: {
+          httpOnly: true,
+          secure: true,
+        },
+      },
+    },
+    cookiePrefix: 'samunu',
   },
 });

@@ -81,6 +81,15 @@ model Verification {
   @@map("verifications")
 }
 
+model rateLimit {
+  id          String  @id
+  key         String?
+  count       Int?
+  lastRequest BigInt?
+
+  @@map("rate_limits")
+}
+
 model Sekolah {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
