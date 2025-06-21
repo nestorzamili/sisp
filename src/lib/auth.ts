@@ -107,10 +107,10 @@ export const auth = betterAuth({
     },
     ipAddress: {
       ipAddressHeaders: [
-        'x-client-ip',
+        'cf-connecting-ip',
         'x-forwarded-for',
         'x-real-ip',
-        'cf-connecting-ip',
+        'x-client-ip',
       ],
       disableIpTracking: false,
     },
