@@ -17,8 +17,8 @@ Status: Menunggu persetujuan dari admin.
 
 Silakan login ke dashboard admin untuk melakukan verifikasi dan persetujuan pendaftaran sekolah.
 
-_Sistem Informasi Sarana dan Prasarana SMP_  
-_Dinas Pendidikan Kabupaten Nias Selatan_`;
+_Dinas Pendidikan Kabupaten Nias Selatan_
+_Bidang Sarana dan Prasarana SMP_`;
   }
   static createApprovalMessage(
     schoolName: string,
@@ -36,8 +36,8 @@ Selamat, akun sekolah Anda telah disetujui.
 Silakan login ke sistem melalui tautan berikut untuk mulai menginput data sarana dan prasarana:
 ${loginUrl}
 
-_Sistem Informasi Sarana dan Prasarana SMP_  
-_Dinas Pendidikan Kabupaten Nias Selatan_`;
+_Dinas Pendidikan Kabupaten Nias Selatan_
+_Bidang Sarana dan Prasarana SMP_`;
   }
   static createRejectionMessage(
     schoolName: string,
@@ -56,7 +56,7 @@ Alasan Penolakan: ${reason}
 
 Silakan hubungi admin untuk informasi lebih lanjut atau lakukan pendaftaran ulang dengan data yang sesuai.
 
-_Sistem Informasi Sarana dan Prasarana SMP_  
-_Dinas Pendidikan Kabupaten Nias Selatan_`;
+_Dinas Pendidikan Kabupaten Nias Selatan_
+_Bidang Sarana dan Prasarana SMP_`;
   }
 }

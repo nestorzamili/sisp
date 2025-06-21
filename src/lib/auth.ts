@@ -34,7 +34,7 @@ export const auth = betterAuth({
       try {
         await sendEmail({
           to: user.email,
-          subject: 'Reset Password - SISP Nias Selatan',
+          subject: 'Reset Password - SISP MSP Nias Selatan',
           html: ResetPasswordEmailTemplate(url, user.name),
         });
       } catch (error) {
@@ -46,11 +46,12 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: false,
     autoSignInAfterVerification: true,
+    expiresIn: 60 * 60 * 24,
     sendVerificationEmail: async ({ user, url }) => {
       try {
         await sendEmail({
           to: user.email,
-          subject: 'Verifikasi Email - SISP Nias Selatan',
+          subject: 'Verifikasi Email - SISP SMP Nias Selatan',
           html: VerificationEmailTemplate(url, user.name),
         });
       } catch (error) {

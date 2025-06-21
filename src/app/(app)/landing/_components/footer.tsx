@@ -214,10 +214,10 @@ const Footer: React.FC = () => {
               className="flex flex-col items-center"
             >
               <div className="text-muted-foreground text-sm text-center">
-                © 2025 Dinas Pendidikan Kabupaten Nias Selatan. Hak cipta
-                dilindungi undang-undang.
+                © 2025 Dinas Pendidikan Kabupaten Nias Selatan. Bidang Sarana
+                dan Prasarana SMP.
                 <div className="mt-1">
-                  Dibuat oleh{' '}
+                  Powered by{' '}
                   <motion.a
                     href="https://nestorzamili.works/"
                     whileHover={{ scale: 1.05 }}

@@ -38,7 +38,8 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Nestor Zamili', url: 'https://nestorzamili.works' }],
   creator: 'Nestor Zamili',
-  publisher: 'Dinas Pendidikan Kabupaten Nias Selatan',
+  publisher:
+    'Dinas Pendidikan Kabupaten Nias Selatan. Bidang Sarana dan Prasarana SMP',
   robots: 'index, follow',
   other: {
     'msapplication-TileColor': '#2563eb',
