@@ -19,9 +19,11 @@ const AUTH_PATHS = new Set([
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Skip middleware for static files and special routes
   if (pathname === '/robots.txt' || pathname === '/sitemap.xml') {
     return NextResponse.next();
   }
+
   // Check if route is public
   const isPublicRoute =
     PUBLIC_ROUTES.has(pathname) ||
@@ -31,14 +33,15 @@ export async function middleware(request: NextRequest) {
 
   const sessionCookie = getSessionCookie(request);
 
-  if (!sessionCookie && !isPublicRoute) {
+  // Handle unauthenticated users
+  if (!sessionCookie) {
+    if (isPublicRoute) {
+      return NextResponse.next();
+    }
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  if (!sessionCookie && isPublicRoute) {
-    return NextResponse.next();
-  }
-
+  // Get session for authenticated users
   let session = null;
   try {
     session = await getCookieCache(request);
@@ -47,6 +50,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
+  // Invalid session
   if (!session?.user) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
@@ -56,6 +60,7 @@ export async function middleware(request: NextRequest) {
   const isAuthPath = AUTH_PATHS.has(pathname);
   const isRootPath = pathname === '/';
 
+  // Redirect authenticated users away from auth pages
   if (isAuthPath) {
     const redirectUrl = role === 'admin' ? '/admin/home' : '/home';
     return NextResponse.redirect(new URL(redirectUrl, request.url));
@@ -63,16 +68,21 @@ export async function middleware(request: NextRequest) {
 
   // Role-based access control
   if (role === 'admin') {
-    if (!isRootPath && !isAdminRoute) {
-      return NextResponse.redirect(new URL('/admin/home', request.url));
+    // Admin can access root path and admin routes
+    if (isRootPath || isAdminRoute) {
+      return NextResponse.next();
     }
+    // Redirect admin from non-admin routes (except root) to admin home
+    return NextResponse.redirect(new URL('/admin/home', request.url));
   } else {
+    // Regular user
     if (isAdminRoute) {
+      // Redirect regular users away from admin routes
       return NextResponse.redirect(new URL('/home', request.url));
     }
+    // Regular users can access all other routes including root
+    return NextResponse.next();
   }
-
-  return NextResponse.next();
 }
 
 export const config = {
