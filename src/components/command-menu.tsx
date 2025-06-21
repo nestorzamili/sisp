@@ -80,15 +80,15 @@ export function CommandMenu() {
           <CommandSeparator />
           <CommandGroup heading="Theme">
             <CommandItem onSelect={() => runCommand(() => setTheme('light'))}>
-              <IconSun /> <span>Light</span>
+              <IconSun /> <span>Terang</span>
             </CommandItem>
             <CommandItem onSelect={() => runCommand(() => setTheme('dark'))}>
               <IconMoon className="scale-90" />
-              <span>Dark</span>
+              <span>Gelap</span>
             </CommandItem>
             <CommandItem onSelect={() => runCommand(() => setTheme('system'))}>
               <IconDeviceLaptop />
-              <span>System</span>
+              <span>Sistem</span>
             </CommandItem>
           </CommandGroup>
         </ScrollArea>
