@@ -39,9 +39,9 @@ export const auth = betterAuth({
       sendChangeEmailVerification: async ({ user, newEmail, url }) => {
         try {
           await sendEmail({
-            to: newEmail,
+            to: user.email,
             subject: 'Verifikasi Perubahan Email - SISP SMP Nias Selatan',
-            html: ChangeEmailVerificationTemplate(url, newEmail, user.name),
+            html: ChangeEmailVerificationTemplate(url, user.name, newEmail),
           });
         } catch (error) {
           throw error;
