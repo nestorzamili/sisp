@@ -16,6 +16,9 @@ export const auth = betterAuth({
   }),
 
   appName: 'SISP SMP Nias Selatan',
+  logger: {
+    level: 'debug',
+  },
   plugins: [
     admin({
       bannedUserMessage:
@@ -87,10 +90,16 @@ export const auth = betterAuth({
   },
   rateLimit: {
     enabled: true,
-    window: 5 * 60, // 5 minutes
-    max: 10, // 10 requests per window
+    window: 5 * 60,
+    max: 10,
     storage: 'database',
     modelName: 'rateLimit',
+    customRules: {
+      '/api/auth/get-session': {
+        max: 100,
+        window: 5 * 60, // 5 minutes
+      },
+    },
   },
 
   session: {
