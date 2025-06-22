@@ -9,6 +9,7 @@ import { Main } from '@/components/layout/main';
 import { ProfileDropdown } from '@/components/profile-dropdown';
 import { Search } from '@/components/search';
 import { ModeToggle } from '@/components/theme-switch';
+import { NotificationDropdown } from '@/components/notifications/notification-dropdown';
 import { AppFooter } from '@/components/layout/app-footer';
 
 export default function AdminLayout({
@@ -35,8 +36,9 @@ export default function AdminLayout({
               )}
             >
               <Header fixed>
-                <Search />
+                <Search />{' '}
                 <div className="ml-auto flex items-center gap-2">
+                  <NotificationDropdown />
                   <ModeToggle />
                   <ProfileDropdown />
                 </div>

@@ -19,7 +19,8 @@ model User {
 
   sessions        Session[]
   accounts        Account[]
-  reviewedSekolah Sekolah[] @relation("Reviewer")
+  notifications   Notification[]
+  reviewedSekolah Sekolah[]      @relation("Reviewer")
   Sekolah         Sekolah?
 
   role       String?   @default("user")
@@ -260,4 +261,49 @@ enum ReviewStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+model Notification {
+  id          String                @id @default(uuid())
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  title       String
+  message     String
+  type        NotificationType      @default(INFO)
+  priority    NotificationPriority  @default(MEDIUM)
+  userId      String?
+  user        User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isRead      Boolean               @default(false)
+  readAt      DateTime?
+  actionUrl   String?
+  actionLabel String?
+  category    NotificationCategory?
+  isGlobal    Boolean               @default(false)
+  expiresAt   DateTime?
+  relatedId   String?
+  relatedType String?
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum NotificationCategory {
+  SYSTEM
+  APPROVAL
+  DATA_SUBMISSION
+  REMINDER
+  ANNOUNCEMENT
 }

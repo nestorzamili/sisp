@@ -9,6 +9,7 @@ import { WhatsAppService } from './whatsapp.service';
 import { sendEmail } from '@/lib/mail';
 import { AccountRejectedEmailTemplate } from '@/templates/account-rejected';
 import { sendVerificationEmail } from '@/lib/auth-client';
+import { notificationService } from './notification.service';
 
 export class PendaftaranService {
   static async getPendingRegistrations(
@@ -161,7 +162,23 @@ export class PendaftaranService {
           banned: false,
           banReason: null,
         },
-      });
+      }); // Create user approval notification
+      try {
+        await notificationService.createUserNotification(userId, {
+          title: 'Akun Disetujui',
+          message: `Selamat! Akun Anda telah disetujui. Anda sekarang dapat mengakses sistem SISP Nias Selatan.`,
+          type: 'SUCCESS',
+          priority: 'HIGH',
+          category: 'APPROVAL',
+          actionUrl: '/home',
+          actionLabel: 'Masuk ke Dashboard',
+        });
+      } catch (notificationError) {
+        console.error(
+          'Failed to create approval notification:',
+          notificationError,
+        );
+      }
 
       const isWhatsAppEnabled = process.env.WHATSAPP_ENABLED === 'true';
 
@@ -184,7 +201,6 @@ export class PendaftaranService {
         } catch (whatsappError) {
           console.error('Failed to send WhatsApp notification:', whatsappError);
         }
-
         try {
           await sendVerificationEmail({
             email: user.email,
@@ -276,7 +292,6 @@ export class PendaftaranService {
               whatsappError,
             );
           }
-
           try {
             const emailHtml = AccountRejectedEmailTemplate(
               userData.name,

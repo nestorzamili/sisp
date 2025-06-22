@@ -25,12 +25,15 @@ export async function saveLampiranDataAction(data: Step7Data) {
           keterangan: lampiran.keterangan,
         });
       }
-    }
+    } // Update school status to PENDING when final step is submitted
+    const submitResult = await SekolahService.submitForReview(schoolData!.id);
 
-    // Update school status to PENDING when final step is submitted
-    await SekolahService.updateSekolah(schoolData!.id, {
-      status: 'PENDING',
-    });
+    if (!submitResult.success) {
+      return {
+        success: false,
+        error: submitResult.error || 'Gagal submit data untuk review',
+      };
+    }
 
     return {
       success: true,

@@ -8,6 +8,7 @@ import {
   CreateSekolahData,
   UpdateSekolahData,
 } from '@/types/sekolah';
+import { notificationService } from './notification.service';
 
 export class SekolahService {
   /**
@@ -184,78 +185,6 @@ export class SekolahService {
     }
   }
 
-  static async getSekolahByNpsn(
-    npsn: string,
-  ): Promise<SekolahServiceResponse<SekolahWithDetails>> {
-    try {
-      const sekolah = await prisma.sekolah.findUnique({
-        where: { npsn },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
-      });
-
-      if (!sekolah) {
-        return {
-          success: false,
-          error: 'Sekolah tidak ditemukan',
-        };
-      }
-
-      return {
-        success: true,
-        data: sekolah,
-      };
-    } catch (error) {
-      console.error('Error fetching sekolah by NPSN:', error);
-      return {
-        success: false,
-        error: 'Gagal mengambil data sekolah',
-      };
-    }
-  }
-
-  /**
-   * Convenience method for getting all sekolah with default pagination
-   */
-  static async getAll({
-    search = '',
-    kecamatan,
-    includeDetails = false,
-    limit = 50,
-  }: {
-    search?: string;
-    kecamatan?: string;
-    includeDetails?: boolean;
-    limit?: number;
-  } = {}): Promise<SekolahServiceResponse<SekolahWithDetails[]>> {
-    try {
-      const result = await SekolahService.getPaginated({
-        page: 1,
-        pageSize: limit,
-        search,
-        kecamatan,
-        includeDetails,
-        sortField: 'nama_sekolah',
-        sortDirection: 'asc',
-      });
-
-      return {
-        success: true,
-        data: result.sekolah,
-      };
-    } catch (error) {
-      console.error('Error fetching all sekolah:', error);
-      return { success: false, error: 'Gagal mengambil daftar sekolah' };
-    }
-  }
-
   static async checkNpsnExists(
     npsn: string,
     excludeId?: string,
@@ -392,69 +321,6 @@ export class SekolahService {
         success: true,
         data: {
           totalSekolah,
-          totalSarana: sarana._sum.jumlah_total || 0,
-          totalPrasarana: prasarana._sum.jumlah_total || 0,
-          totalGuru: guru._sum.jumlah || 0,
-          totalSiswa: rombel._sum.jumlah_siswa || 0,
-          totalKebutuhanPrioritas: kebutuhan,
-          totalLampiran: lampiran,
-        },
-      };
-    } catch (error) {
-      console.error('Error fetching sekolah statistics:', error);
-      return {
-        success: false,
-        error: 'Gagal mengambil statistik sekolah',
-      };
-    }
-  }
-
-  /**
-   * Get statistics for a specific sekolah
-   */
-  static async getSekolahStatistics(
-    sekolahId: string,
-    tahunAjaran: string,
-  ): Promise<
-    SekolahServiceResponse<{
-      totalSarana: number;
-      totalPrasarana: number;
-      totalGuru: number;
-      totalSiswa: number;
-      totalKebutuhanPrioritas: number;
-      totalLampiran: number;
-    }>
-  > {
-    try {
-      const [sarana, prasarana, guru, rombel, kebutuhan, lampiran] =
-        await Promise.all([
-          prisma.sarana.aggregate({
-            where: { sekolahId, tahun_ajaran: tahunAjaran },
-            _sum: { jumlah_total: true },
-          }),
-          prisma.prasarana.aggregate({
-            where: { sekolahId, tahun_ajaran: tahunAjaran },
-            _sum: { jumlah_total: true },
-          }),
-          prisma.guru.aggregate({
-            where: { sekolahId, tahun_ajaran: tahunAjaran },
-            _sum: { jumlah: true },
-          }),
-          prisma.rombonganBelajar.aggregate({
-            where: { sekolahId, tahun_ajaran: tahunAjaran },
-            _sum: { jumlah_siswa: true },
-          }),
-          prisma.kebutuhanPrioritas.count({
-            where: { sekolahId, tahun_ajaran: tahunAjaran },
-          }),
-          prisma.lampiran.count({
-            where: { sekolahId },
-          }),
-        ]);
-
-      return {
-        success: true,
-        data: {
           totalSarana: sarana._sum.jumlah_total || 0,
           totalPrasarana: prasarana._sum.jumlah_total || 0,
           totalGuru: guru._sum.jumlah || 0,
@@ -721,103 +587,92 @@ export class SekolahService {
   }
 
   /**
-   * Delete a sekolah
+   * Submit sekolah for review (change status from DRAFT to PENDING)
    */
-  static async deleteSekolah(
+  static async submitForReview(
     sekolahId: string,
-  ): Promise<SekolahServiceResponse<boolean>> {
+  ): Promise<SekolahServiceResponse<SekolahWithDetails>> {
     try {
-      // Check if sekolah exists
-      const existingSekolah = await prisma.sekolah.findUnique({
+      // Get sekolah with user data
+      const sekolah = await prisma.sekolah.findUnique({
         where: { id: sekolahId },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
       });
 
-      if (!existingSekolah) {
+      if (!sekolah) {
         return {
           success: false,
           error: 'Sekolah tidak ditemukan',
         };
       }
 
-      // Delete sekolah (this will cascade delete related data)
-      await prisma.sekolah.delete({
+      if (sekolah.status !== ReviewStatus.DRAFT) {
+        return {
+          success: false,
+          error:
+            'Hanya sekolah dengan status DRAFT yang dapat disubmit untuk review',
+        };
+      }
+
+      // Update status to PENDING
+      const updatedSekolah = await prisma.sekolah.update({
         where: { id: sekolahId },
+        data: {
+          status: ReviewStatus.PENDING,
+          updatedAt: new Date(),
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
       });
+
+      // Create notification for admin/reviewers about new data submission
+      try {
+        // Get admin users to notify about new submission
+        const adminUsers = await prisma.user.findMany({
+          where: { role: 'admin' },
+          select: { id: true },
+        });
+
+        // Send notification to all admin users
+        for (const admin of adminUsers) {
+          await notificationService.createReviewRequestNotification(
+            admin.id,
+            sekolah.nama_sekolah,
+            sekolahId,
+          );
+        }
+      } catch (notificationError) {
+        console.error(
+          'Failed to create review request notification:',
+          notificationError,
+        );
+        // Don't fail the submission if notification fails
+      }
 
       return {
         success: true,
-        data: true,
+        data: updatedSekolah,
       };
     } catch (error) {
-      console.error('Error deleting sekolah:', error);
+      console.error('Error submitting sekolah for review:', error);
       return {
         success: false,
-        error: 'Gagal menghapus data sekolah',
-      };
-    }
-  }
-
-  /**
-   * Validate sekolah data before creation
-   */
-  static async validateSekolahData(data: CreateSekolahData): Promise<{
-    isValid: boolean;
-    errors: string[];
-  }> {
-    const errors: string[] = [];
-
-    try {
-      // Check required fields
-      if (!data.nama_sekolah?.trim()) {
-        errors.push('Nama sekolah wajib diisi');
-      }
-
-      if (!data.npsn?.trim()) {
-        errors.push('NPSN wajib diisi');
-      }
-
-      if (!data.userId?.trim()) {
-        errors.push('User ID wajib diisi');
-      }
-
-      // Validate NPSN format (assuming 8 digits)
-      if (data.npsn && !/^\d{8}$/.test(data.npsn.trim())) {
-        errors.push('NPSN harus berupa 8 digit angka');
-      }
-
-      // Check if NPSN already exists
-      if (data.npsn) {
-        const npsnExists = await SekolahService.checkNpsnExists(data.npsn);
-        if (npsnExists) {
-          errors.push('NPSN sudah digunakan oleh sekolah lain');
-        }
-      }
-
-      // Check if user already has a sekolah
-      if (data.userId) {
-        const existingSekolah = await prisma.sekolah.findUnique({
-          where: { userId: data.userId },
-        });
-
-        if (existingSekolah) {
-          errors.push('User sudah memiliki sekolah');
-        }
-      }
-
-      // Validate phone number format if provided
-      if (data.phone && !/^[\d\-\+\(\)\s]+$/.test(data.phone)) {
-        errors.push('Format nomor telepon tidak valid');
-      }
-
-      return {
-        isValid: errors.length === 0,
-        errors,
-      };
-    } catch (error) {
-      console.error('Error validating sekolah data:', error);
-      return {
-        isValid: false,
-        errors: ['Terjadi kesalahan saat validasi data'],
+        error: 'Gagal submit data untuk review',
       };
     }
   }

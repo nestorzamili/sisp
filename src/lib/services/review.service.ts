@@ -8,6 +8,7 @@ import {
   ReviewHistoryItem,
   ReviewStats,
 } from '@/types/review';
+import { notificationService } from './notification.service';
 
 export class ReviewService {
   /**
@@ -159,6 +160,22 @@ export class ReviewService {
         },
       });
 
+      // Create approval notification for user
+      try {
+        await notificationService.createApprovalNotification(
+          sekolah.user.id,
+          sekolah.nama_sekolah,
+          true, // isApproved = true
+          notes,
+        );
+      } catch (notificationError) {
+        console.error(
+          'Failed to create approval notification:',
+          notificationError,
+        );
+        // Don't fail the approval process if notification fails
+      }
+
       // TODO: Send notification to user (email/WhatsApp)
       // You can implement notification sending here
 
@@ -211,6 +228,22 @@ export class ReviewService {
           reviewedById: reviewedById,
         },
       });
+
+      // Create revision request notification for user
+      try {
+        await notificationService.createApprovalNotification(
+          sekolah.user.id,
+          sekolah.nama_sekolah,
+          false, // isApproved = false (revision needed)
+          reason,
+        );
+      } catch (notificationError) {
+        console.error(
+          'Failed to create revision notification:',
+          notificationError,
+        );
+        // Don't fail the revision process if notification fails
+      }
 
       // TODO: Send notification to user about revision request
       // You can implement notification sending here
