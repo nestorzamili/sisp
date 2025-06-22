@@ -270,12 +270,12 @@ export function VerificationEmailTemplate(url: string, name?: string) {
                 <path d="M9 12L11 14L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </div>
-            <div class="success-text">Akun Berhasil Disetujui</div>
+            <div class="success-text">Verifikasi Email Diperlukan</div>
           </div>
           
           <div class="greeting">Halo${name ? ' ' + name : ''}! 👋</div>
           <div class="description">
-            Selamat! Akun Anda telah <strong>disetujui</strong> oleh administrator. Untuk melengkapi proses pendaftaran dan memastikan keamanan akun Anda, silakan verifikasi alamat email dengan mengklik tombol di bawah ini.
+            Untuk melanjutkan proses dan memastikan keamanan akun Anda, kami memerlukan verifikasi email. Silakan klik tombol di bawah ini untuk mengonfirmasi alamat email Anda.
           </div>
 
           <div class="button-container">
@@ -293,7 +293,7 @@ export function VerificationEmailTemplate(url: string, name?: string) {
 
           <div class="note">
             <div class="note-text">
-              <strong>⚠️ Penting:</strong> Jika Anda tidak merasa mengajukan pendaftaran, abaikan email ini. Tautan verifikasi akan kedaluwarsa dalam <strong>24 jam</strong> demi keamanan.
+              <strong>⚠️ Penting:</strong> Jika Anda tidak merasa mengajukan pendaftaran atau perubahan email, abaikan email ini. Tautan verifikasi ini hanya berlaku selama <strong>24 jam</strong> untuk alasan keamanan.
             </div>
           </div>
         </div>
