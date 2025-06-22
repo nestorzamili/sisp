@@ -23,8 +23,6 @@ export const auth = betterAuth({
       type: 'console',
       options: {
         format: 'json',
-        colorize: true,
-        prettyPrint: true,
       },
     },
   },
