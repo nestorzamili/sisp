@@ -102,9 +102,9 @@ export const auth = betterAuth({
     storage: 'database',
     modelName: 'rateLimit',
     customRules: {
-      '/api/auth/get-session': {
-        max: 100,
-        window: 5 * 60, // 5 minutes
+      '/get-session': {
+        max: 30,
+        window: 5 * 60,
       },
     },
   },

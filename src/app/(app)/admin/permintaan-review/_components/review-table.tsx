@@ -84,7 +84,7 @@ export function ReviewTable() {
       const response = await getAllRequestReviews({
         page: currentPage + 1,
         limit: pageSize,
-        search,
+        search: search.length < 2 ? '' : search,
         sortBy: sortBy.id,
         sortOrder: sortBy.desc ? 'desc' : 'asc',
       });
@@ -96,8 +96,7 @@ export function ReviewTable() {
         setData([]);
         setTotalRows(0);
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
+    } catch {
       toast.error('Terjadi kesalahan saat mengambil data');
       setData([]);
       setTotalRows(0);
@@ -105,21 +104,24 @@ export function ReviewTable() {
       setIsLoading(false);
     }
   }, [currentPage, pageSize, search, sortBy]);
-
-  // Debounced search with automatic page reset
   useEffect(() => {
     const timer = setTimeout(() => {
-      setCurrentPage(0);
-      fetchData();
+      if (search.length === 0 || search.length >= 2) {
+        fetchData();
+      }
     }, 300);
-
     return () => clearTimeout(timer);
   }, [search, fetchData]);
 
-  // Effect for other filters and pagination
   useEffect(() => {
     fetchData();
   }, [currentPage, pageSize, sortBy, fetchData]);
+
+  useEffect(() => {
+    if (search.length >= 2 && currentPage !== 0) {
+      setCurrentPage(0);
+    }
+  }, [search, currentPage]);
 
   // Sorting handler
   const handleSortingChange = useCallback((sortingArray: SortState[]) => {
@@ -158,7 +160,6 @@ export function ReviewTable() {
     [router],
   );
 
-  // Action handlers with error handling
   const handleConfirmApproval = useCallback(
     async (sekolahId: string, notes?: string) => {
       try {
@@ -170,14 +171,12 @@ export function ReviewTable() {
         } else {
           toast.error(response.error || 'Gagal menyetujui review');
         }
-      } catch (error) {
-        console.error('Error approving review:', error);
+      } catch {
         toast.error('Terjadi kesalahan saat menyetujui review');
       }
     },
     [fetchData],
   );
-
   const handleConfirmRevision = useCallback(
     async (sekolahId: string, reason: string) => {
       try {
@@ -191,8 +190,7 @@ export function ReviewTable() {
         } else {
           toast.error(response.error || 'Gagal mengirim permintaan revisi');
         }
-      } catch (error) {
-        console.error('Error requesting revision:', error);
+      } catch {
         toast.error('Terjadi kesalahan saat mengirim permintaan revisi');
       }
     },

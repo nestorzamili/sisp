@@ -21,8 +21,8 @@ export function PendingReviewTable() {
         if (result.success) {
           setData(result.data);
         }
-      } catch (error) {
-        console.error('Error fetching pending reviews:', error);
+      } catch {
+        // Silent fail for dashboard widget
       } finally {
         setIsLoading(false);
       }

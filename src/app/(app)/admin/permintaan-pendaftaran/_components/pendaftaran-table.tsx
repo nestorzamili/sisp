@@ -14,39 +14,29 @@ import { PendaftaranTableFilters } from './pendaftaran-table-filters';
 import { ApprovalDialog } from './approval-dialog';
 import { RejectionDialog } from './rejection-dialog';
 
-// Types for better type safety
 interface SortState {
   id: string;
   desc: boolean;
 }
 
-// Constants
 const DEFAULT_PAGE_SIZE = 10;
 
 export function PendaftaranTable() {
-  // State management
   const [data, setData] = useState<PendaftaranData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalRows, setTotalRows] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
-
-  // Filters
   const [search, setSearch] = useState('');
-
-  // Sorting
   const [sortBy, setSortBy] = useState<SortState>({
     id: 'createdAt',
     desc: true,
   });
-
-  // UI state
   const [approvalDialog, setApprovalDialog] = useState(false);
   const [rejectionDialog, setRejectionDialog] = useState(false);
   const [selectedPendaftaran, setSelectedPendaftaran] =
     useState<PendaftaranData | null>(null);
 
-  // Helper function to create skeleton data
   const createSkeletonData = useCallback((count: number): PendaftaranData[] => {
     return Array.from({ length: count }, (_, index) => ({
       id: `skeleton-${index}`,
@@ -60,7 +50,6 @@ export function PendaftaranTable() {
     }));
   }, []);
 
-  // Memoized skeleton data
   const skeletonData = useMemo(
     () => createSkeletonData(pageSize),
     [pageSize, createSkeletonData],
@@ -85,8 +74,7 @@ export function PendaftaranTable() {
         setData([]);
         setTotalRows(0);
       }
-    } catch (error) {
-      console.error('Error fetching data:', error);
+    } catch {
       toast.error('Terjadi kesalahan saat mengambil data');
       setData([]);
       setTotalRows(0);
@@ -95,20 +83,24 @@ export function PendaftaranTable() {
     }
   }, [currentPage, pageSize, search, sortBy]);
 
-  // Debounced search with automatic page reset
   useEffect(() => {
     const timer = setTimeout(() => {
-      setCurrentPage(0);
-      fetchData();
+      if (search.length === 0 || search.length >= 2) {
+        fetchData();
+      }
     }, 300);
-
     return () => clearTimeout(timer);
   }, [search, fetchData]);
 
-  // Effect for other filters and pagination
   useEffect(() => {
     fetchData();
   }, [currentPage, pageSize, sortBy, fetchData]);
+
+  useEffect(() => {
+    if (search.length >= 2 && currentPage !== 0) {
+      setCurrentPage(0);
+    }
+  }, [search, currentPage]);
   // Sorting handler
   const handleSortingChange = useCallback((sortingArray: SortState[]) => {
     setSortBy(
@@ -150,8 +142,7 @@ export function PendaftaranTable() {
         } else {
           toast.error(response.error || 'Gagal menyetujui pendaftaran');
         }
-      } catch (error) {
-        console.error('Error approving pendaftaran:', error);
+      } catch {
         toast.error('Terjadi kesalahan saat menyetujui pendaftaran');
       }
     },
@@ -169,8 +160,7 @@ export function PendaftaranTable() {
         } else {
           toast.error(response.error || 'Gagal menolak pendaftaran');
         }
-      } catch (error) {
-        console.error('Error rejecting pendaftaran:', error);
+      } catch {
         toast.error('Terjadi kesalahan saat menolak pendaftaran');
       }
     },

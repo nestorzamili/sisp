@@ -11,13 +11,11 @@ import { getAllSekolahWithCount, getSekolahDetail } from '../action';
 import { downloadSekolahPDF } from '@/lib/pdf-utils';
 import { toast } from 'sonner';
 
-// Types for better type safety
 interface SortState {
   id: string;
   desc: boolean;
 }
 
-// Constants
 const DEFAULT_PAGE_SIZE = 10;
 
 export function SekolahTable() {
@@ -38,9 +36,9 @@ export function SekolahTable() {
     id: 'nama_sekolah',
     desc: false,
   });
-
   // UI state
-  const [rowSelection, setRowSelection] = useState({}); // Helper function to create skeleton data
+  const [rowSelection, setRowSelection] = useState({});
+
   const createSkeletonData = useCallback(
     (count: number): SekolahWithDetails[] => {
       return Array.from({ length: count }, (_, index) => ({
@@ -69,11 +67,11 @@ export function SekolahTable() {
     [],
   );
 
-  // Memoized skeleton data
   const skeletonData = useMemo(
     () => createSkeletonData(pageSize),
     [pageSize, createSkeletonData],
   );
+
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -82,39 +80,44 @@ export function SekolahTable() {
         limit: pageSize,
         search: search,
         kecamatan: kecamatanFilter !== 'all' ? kecamatanFilter : undefined,
-        status: 'APPROVED', // Always filter for approved schools only
+        status: 'APPROVED',
         sortBy: sortBy.id,
         sortOrder: sortBy.desc ? 'desc' : 'asc',
       });
-
       if (response.success) {
         setData(response.data || []);
         setTotalRows(response.totalRows || 0);
       } else {
-        console.error('Failed to fetch sekolah:', response.error);
         setData([]);
         setTotalRows(0);
       }
-    } catch (error) {
-      console.error('Error fetching sekolah:', error);
+    } catch {
       setData([]);
       setTotalRows(0);
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, pageSize, search, kecamatanFilter, sortBy]); // Debounced search with automatic page reset
+  }, [currentPage, pageSize, search, kecamatanFilter, sortBy]);
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      setCurrentPage(0);
-      fetchData();
+      if (search.length === 0 || search.length >= 2) {
+        fetchData();
+      }
     }, 300);
     return () => clearTimeout(timer);
   }, [search, fetchData]);
-  // Effect for other filters and pagination
+
   useEffect(() => {
     fetchData();
-  }, [currentPage, pageSize, sortBy, kecamatanFilter, fetchData]);
-  // Optimized handlers with useCallback
+  }, [currentPage, pageSize, kecamatanFilter, sortBy, fetchData]);
+
+  useEffect(() => {
+    if (search.length >= 2 && currentPage !== 0) {
+      setCurrentPage(0);
+    }
+  }, [search, currentPage]);
+
   const handlePaginationChange = useCallback(
     (newPagination: { pageIndex: number; pageSize: number }) => {
       setCurrentPage(newPagination.pageIndex);
@@ -130,8 +133,9 @@ export function SekolahTable() {
         : { id: 'nama_sekolah', desc: false },
     );
   }, []);
+
   const handleFilterChange = useCallback((type: string, value: string) => {
-    setCurrentPage(0); // Reset to first page when filtering
+    setCurrentPage(0);
     switch (type) {
       case 'search':
         setSearch(value);
@@ -146,7 +150,8 @@ export function SekolahTable() {
     setSearch('');
     setKecamatanFilter('all');
     setCurrentPage(0);
-  }, []); // Dialog handlers
+  }, []);
+
   const handleViewDetails = useCallback(
     (sekolah: SekolahWithDetails) => {
       if (sekolah?.id && !sekolah.id.startsWith('skeleton-')) {
@@ -154,7 +159,8 @@ export function SekolahTable() {
       }
     },
     [router],
-  ); // Download handler with PDF generation
+  );
+
   const handleDownloadData = useCallback(
     async (sekolah: SekolahWithDetails) => {
       if (sekolah.id.startsWith('skeleton-')) return;
@@ -162,7 +168,6 @@ export function SekolahTable() {
       try {
         toast.info('Mempersiapkan PDF...');
 
-        // Get detailed data for PDF generation
         const detailResponse = await getSekolahDetail(sekolah.id);
 
         if (!detailResponse.success || !detailResponse.data) {
@@ -172,14 +177,13 @@ export function SekolahTable() {
 
         await downloadSekolahPDF(detailResponse.data);
         toast.success('PDF berhasil diunduh');
-      } catch (error) {
-        console.error('Error downloading PDF:', error);
+      } catch {
         toast.error('Gagal mengunduh PDF. Silakan coba lagi.');
       }
     },
     [],
   );
-  // Memoized columns using factory function
+
   const columns = useMemo(
     () =>
       createSekolahColumns({
@@ -191,7 +195,6 @@ export function SekolahTable() {
   );
   return (
     <div className="space-y-4">
-      {/* Filters */}{' '}
       <SekolahTableFilters
         searchValue={search}
         onSearchChange={(value) => handleFilterChange('search', value)}

@@ -1,30 +1,19 @@
-'use client';
+import { auth } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 
-import { useSession } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
-
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session, isPending } = useSession();
-  const router = useRouter();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  const redirectUrl = useMemo(() => {
-    if (!session?.user) return null;
-    return session.user.role === 'admin' ? '/admin/home' : '/home';
-  }, [session?.user]);
-
-  useEffect(() => {
-    if (session?.user && !isPending && redirectUrl) {
-      router.replace(redirectUrl);
-    }
-  }, [session?.user, isPending, router, redirectUrl]);
-
-  if (isPending || session?.user) {
-    return null;
+  if (session?.user) {
+    const redirectUrl = session.user.role === 'admin' ? '/admin/home' : '/home';
+    redirect(redirectUrl);
   }
 
   return <>{children}</>;

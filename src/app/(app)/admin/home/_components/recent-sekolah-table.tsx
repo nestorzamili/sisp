@@ -20,8 +20,8 @@ export function RecentSekolahTable() {
         if (result.success) {
           setData(result.data);
         }
-      } catch (error) {
-        console.error('Error fetching recent sekolah:', error);
+      } catch {
+        // Silent fail for dashboard widget
       } finally {
         setIsLoading(false);
       }
