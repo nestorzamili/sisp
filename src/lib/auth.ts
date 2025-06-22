@@ -17,7 +17,16 @@ export const auth = betterAuth({
 
   appName: 'SISP SMP Nias Selatan',
   logger: {
+    disabled: false,
     level: 'debug',
+    transport: {
+      type: 'console',
+      options: {
+        format: 'json',
+        colorize: true,
+        prettyPrint: true,
+      },
+    },
   },
   plugins: [
     admin({
