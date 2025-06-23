@@ -375,9 +375,7 @@ export class NotificationService {
           success: false,
           error: 'No users found for the selected target audience',
         };
-      }
-
-      // Create notifications for all target users with broadcast metadata
+      } // Create notifications for all target users with broadcast metadata
       const createdNotifications = [];
       const broadcastId = `broadcast-${Date.now()}`;
 
@@ -398,14 +396,8 @@ export class NotificationService {
         }
       }
 
-      // Create one master global notification for history with broadcast details
-      const audienceLabel = this.getAudienceLabel(targetAudience);
-      await this.createGlobalNotification({
-        ...notificationData,
-        relatedType: 'BROADCAST',
-        relatedId: broadcastId,
-        actionLabel: `${audienceLabel} (${createdNotifications.length} users)`,
-      });
+      // No need to create global notification as it would duplicate for users
+      // Individual notifications are sufficient for broadcast
 
       return {
         success: true,
@@ -433,34 +425,40 @@ export class NotificationService {
     error?: string;
   }> {
     try {
-      const [totalUsers, activeSchools, adminUsers, totalNotifications] =
-        await Promise.all([
-          // Total users yang aktif (tidak di-banned)
-          prisma.user.count({
-            where: {
-              banned: false,
-            },
-          }),
-          // Total sekolah yang aktif (role user, tidak di-banned)
-          prisma.user.count({
-            where: {
-              role: 'user',
-              banned: false,
-            },
-          }),
-          // Total admin
-          prisma.user.count({
-            where: {
-              role: 'admin',
-            },
-          }),
-          // Total notifikasi
-          prisma.notification.count({
-            where: {
-              isGlobal: true, // Hanya yang broadcast/global
-            },
-          }),
-        ]);
+      const [totalUsers, activeSchools, adminUsers] = await Promise.all([
+        // Total users yang aktif (tidak di-banned)
+        prisma.user.count({
+          where: {
+            banned: false,
+          },
+        }),
+        // Total sekolah yang aktif (role user, tidak di-banned)
+        prisma.user.count({
+          where: {
+            role: 'user',
+            banned: false,
+          },
+        }),
+        // Total admin
+        prisma.user.count({
+          where: {
+            role: 'admin',
+          },
+        }),
+      ]);
+
+      // Count unique broadcast notifications separately
+      const uniqueBroadcasts = await prisma.notification.findMany({
+        where: {
+          relatedType: 'BROADCAST',
+        },
+        select: {
+          relatedId: true,
+        },
+        distinct: ['relatedId'],
+      });
+
+      const totalNotifications = uniqueBroadcasts.length;
 
       return {
         success: true,
@@ -479,7 +477,6 @@ export class NotificationService {
       };
     }
   }
-
   /**
    * Get broadcast notifications history for admin
    */
@@ -492,10 +489,10 @@ export class NotificationService {
     error?: string;
   }> {
     try {
-      // Get all notifications that are marked as broadcast
+      // Get all notifications that are marked as broadcast (using relatedType)
       const notifications = await prisma.notification.findMany({
         where: {
-          isGlobal: true, // Only global notifications
+          relatedType: 'BROADCAST', // Filter by broadcast type
         },
         orderBy: {
           createdAt: 'desc',
