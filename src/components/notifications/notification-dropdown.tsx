@@ -303,7 +303,6 @@ export function NotificationDropdown() {
         notification={selectedNotification}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        onMarkAsRead={markAsRead}
         onAction={handleAction}
       />
     </>

@@ -18,7 +18,6 @@ import {
   AlertTriangle,
   ExternalLink,
   Clock,
-  Eye,
 } from 'lucide-react';
 import {
   Notification,
@@ -33,7 +32,6 @@ interface NotificationDialogProps {
   notification: Notification | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onMarkAsRead?: (notificationId: string) => void;
   onAction?: (notification: Notification) => void;
 }
 
@@ -108,20 +106,12 @@ export function NotificationDialog({
   notification,
   open,
   onOpenChange,
-  onMarkAsRead,
   onAction,
 }: NotificationDialogProps) {
   if (!notification) return null;
-
   const handleAction = () => {
     if (onAction) {
       onAction(notification);
-    }
-  };
-
-  const handleMarkAsRead = () => {
-    if (onMarkAsRead && !notification.isRead) {
-      onMarkAsRead(notification.id);
     }
   };
 
@@ -184,17 +174,6 @@ export function NotificationDialog({
         </div>
         <Separator />{' '}
         <div className="flex justify-end gap-3">
-          {!notification.isRead && onMarkAsRead && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleMarkAsRead}
-              className="text-xs flex items-center gap-1"
-            >
-              <Eye className="w-3 h-3" />
-              Tandai Dibaca
-            </Button>
-          )}
           {notification.actionUrl && notification.actionLabel && (
             <Button
               size="sm"

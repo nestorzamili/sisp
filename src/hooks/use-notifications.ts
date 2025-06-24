@@ -50,14 +50,13 @@ export function useNotifications(userId?: string) {
           setLoading(true);
         }
         setError(null);
-
         const [notificationsResult, statsResult] = await Promise.all([
           getUserNotifications(),
           getNotificationStats(),
         ]);
 
         // Check if request was aborted
-        if (abortControllerRef.current.signal.aborted) {
+        if (abortControllerRef.current?.signal.aborted) {
           return;
         }
 
@@ -72,7 +71,10 @@ export function useNotifications(userId?: string) {
         }
       } catch (err) {
         // Only set error if request wasn't aborted
-        if (!abortControllerRef.current?.signal.aborted) {
+        if (
+          abortControllerRef.current &&
+          !abortControllerRef.current.signal.aborted
+        ) {
           setError('Terjadi kesalahan saat mengambil notifikasi');
           console.error('Error fetching notifications:', err);
         }
