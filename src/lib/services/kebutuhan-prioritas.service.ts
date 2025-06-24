@@ -58,55 +58,6 @@ export class KebutuhanPrioritasService {
   }
 
   /**
-   * Update existing priority need record
-   */
-  static async updateKebutuhanPrioritas(
-    id: string,
-    data: Partial<CreateKebutuhanPrioritasData>,
-  ): Promise<KebutuhanPrioritasServiceResponse<KebutuhanPrioritas>> {
-    try {
-      const kebutuhanPrioritas = await prisma.kebutuhanPrioritas.update({
-        where: { id },
-        data,
-      });
-
-      return {
-        success: true,
-        data: kebutuhanPrioritas,
-      };
-    } catch (error) {
-      console.error('Error updating kebutuhan prioritas:', error);
-      return {
-        success: false,
-        error: 'Failed to update priority need',
-      };
-    }
-  }
-
-  /**
-   * Delete priority need record
-   */
-  static async deleteKebutuhanPrioritas(
-    id: string,
-  ): Promise<KebutuhanPrioritasServiceResponse<void>> {
-    try {
-      await prisma.kebutuhanPrioritas.delete({
-        where: { id },
-      });
-
-      return {
-        success: true,
-      };
-    } catch (error) {
-      console.error('Error deleting kebutuhan prioritas:', error);
-      return {
-        success: false,
-        error: 'Failed to delete priority need',
-      };
-    }
-  }
-
-  /**
    * Save priority needs data from form submission
    */
   static async saveKebutuhanPrioritasFromForm(

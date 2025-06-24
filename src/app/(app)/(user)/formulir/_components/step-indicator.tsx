@@ -9,6 +9,7 @@ import {
   Wrench,
   Target,
   FileText,
+  Eye,
 } from 'lucide-react';
 
 interface StepIndicatorProps {
@@ -23,6 +24,7 @@ interface StepIndicatorProps {
     step5: boolean;
     step6: boolean;
     step7: boolean;
+    step8: boolean;
   };
   onStepClick: (stepNumber: number) => void;
 }
@@ -38,7 +40,6 @@ export function StepIndicator({
       dataCompletionStatus[
         `step${stepNumber}` as keyof typeof dataCompletionStatus
       ];
-
     if (hasData) {
       return <CheckCircle className="w-5 h-5 text-green-600" />;
     } else if (stepNumber === currentStep) {
@@ -54,8 +55,10 @@ export function StepIndicator({
         <Wrench className="w-5 h-5 text-primary" />
       ) : stepNumber === 6 ? (
         <Target className="w-5 h-5 text-primary" />
-      ) : (
+      ) : stepNumber === 7 ? (
         <FileText className="w-5 h-5 text-primary" />
+      ) : (
+        <Eye className="w-5 h-5 text-primary" />
       );
     } else {
       return stepNumber === 1 ? (
@@ -70,12 +73,13 @@ export function StepIndicator({
         <Wrench className="w-5 h-5 text-muted-foreground" />
       ) : stepNumber === 6 ? (
         <Target className="w-5 h-5 text-muted-foreground" />
-      ) : (
+      ) : stepNumber === 7 ? (
         <FileText className="w-5 h-5 text-muted-foreground" />
+      ) : (
+        <Eye className="w-5 h-5 text-muted-foreground" />
       );
     }
   };
-
   const steps = [
     { number: 1, label: 'Informasi Sekolah' },
     { number: 2, label: 'Data Guru' },
@@ -84,6 +88,7 @@ export function StepIndicator({
     { number: 5, label: 'Data Prasarana' },
     { number: 6, label: 'Prioritas Kebutuhan' },
     { number: 7, label: 'Lampiran' },
+    { number: 8, label: 'Review & Submit' },
   ];
   return (
     <div className="w-full">

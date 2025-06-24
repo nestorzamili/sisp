@@ -83,10 +83,10 @@ export function StatusCard({ status, reviewNotes }: StatusCardProps) {
             {config.label}
           </Badge>
         </div>
-      </CardHeader>
+      </CardHeader>{' '}
       <CardContent className="space-y-4">
         <p className="text-sm">{config.description}</p>
-        {reviewNotes && (
+        {reviewNotes && status !== 'PENDING' && (
           <Alert>
             <AlertCircle className="w-4 h-4" />
             <AlertDescription>

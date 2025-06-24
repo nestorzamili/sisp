@@ -392,12 +392,8 @@ export class NotificationService {
             `Failed to create notification for user ${userId}:`,
             error,
           );
-          // Continue with other users even if one fails
         }
       }
-
-      // No need to create global notification as it would duplicate for users
-      // Individual notifications are sufficient for broadcast
 
       return {
         success: true,

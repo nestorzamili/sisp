@@ -299,7 +299,7 @@ export class PendaftaranService {
             );
             await sendEmail({
               to: userData.email,
-              subject: 'SISP Nias Selatan - Permohonan Pendaftaran Ditolak',
+              subject: 'SISP SMP Nias Selatan - Permohonan Pendaftaran Ditolak',
               html: emailHtml,
             });
           } catch (emailError) {

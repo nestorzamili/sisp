@@ -1,7 +1,6 @@
 'use server';
 
 import { LampiranService } from '@/lib/services/lampiran.service';
-import { SekolahService } from '@/lib/services/sekolah.service';
 import { Step7Data } from '../_schema/attachments.schema';
 import { validateAuthAndSchool } from '../_utils/auth-school.util';
 
@@ -25,20 +24,11 @@ export async function saveLampiranDataAction(data: Step7Data) {
           keterangan: lampiran.keterangan,
         });
       }
-    } // Update school status to PENDING when final step is submitted
-    const submitResult = await SekolahService.submitForReview(schoolData!.id);
-
-    if (!submitResult.success) {
-      return {
-        success: false,
-        error: submitResult.error || 'Gagal submit data untuk review',
-      };
     }
 
     return {
       success: true,
-      message:
-        'Data lampiran berhasil disimpan dan status sekolah diperbarui ke PENDING',
+      message: 'Data lampiran berhasil disimpan',
     };
   } catch (error) {
     console.error('Error saving lampiran data:', error);

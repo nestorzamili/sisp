@@ -45,12 +45,18 @@ export function WelcomeCard({ userName, sekolahStatus }: WelcomeCardProps) {
           </p>
         </div>{' '}
         <div className="flex flex-col sm:flex-row gap-3">
+          {' '}
           <Link href="/formulir" className="flex-1">
             <Button className="w-full" size="lg">
               {sekolahStatus === 'APPROVED' || sekolahStatus === 'PENDING' ? (
                 <>
                   <Eye className="w-4 h-4 mr-2" />
                   Lihat Data Sekolah
+                </>
+              ) : sekolahStatus === 'REJECTED' ? (
+                <>
+                  <FileText className="w-4 h-4 mr-2" />
+                  Perbaiki Data
                 </>
               ) : (
                 <>

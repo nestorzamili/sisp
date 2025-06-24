@@ -115,7 +115,6 @@ export async function getDataCompletionStatusAction() {
         sekolah.id,
         tahunAjaran,
       );
-
     const lampiranData = await LampiranService.getLampiranBySekolahId(
       sekolah.id,
     );
@@ -123,10 +122,23 @@ export async function getDataCompletionStatusAction() {
     const statusNotDraft = sekolah.status !== 'DRAFT';
     const step7Complete = hasLampiranData || statusNotDraft;
 
+    // Step 8 is always available if all previous steps are complete
+    const allPreviousStepsComplete =
+      step1Complete &&
+      step2Complete &&
+      step3Complete &&
+      step4Complete &&
+      step5Complete &&
+      step6Complete &&
+      step7Complete;
+    const step8Complete =
+      allPreviousStepsComplete && sekolah.status === 'PENDING';
+
     return {
       success: true,
       data: {
         sekolahStatus: sekolah.status,
+        reviewNote: sekolah.reviewNotes,
         step1: step1Complete,
         step2: step2Complete,
         step3: step3Complete,
@@ -134,6 +146,7 @@ export async function getDataCompletionStatusAction() {
         step5: step5Complete,
         step6: step6Complete,
         step7: step7Complete,
+        step8: step8Complete,
       },
     };
   } catch (error) {

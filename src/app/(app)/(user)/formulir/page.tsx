@@ -11,6 +11,8 @@ import { FacilityDataForm } from './_components/facility-data-form';
 import { InfrastructureDataForm } from './_components/infrastructure-data-form';
 import { PriorityNeedsForm } from './_components/priority-needs-form';
 import { AttachmentsForm } from './_components/attachments-form';
+import { ReviewDataForm } from './_components/review-data-form';
+import { StatusMessage } from './_components/status-message';
 import { ConfirmationDialog } from './_components/confirmation-dialog';
 import { SuccessDialog } from './_components/success-dialog';
 import { toast } from 'sonner';
@@ -35,6 +37,7 @@ export default function FormulirPage() {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [dataCompletionStatus, setDataCompletionStatus] = useState({
     sekolahStatus: '',
+    reviewNote: null as string | null,
     step1: false,
     step2: false,
     step3: false,
@@ -42,45 +45,16 @@ export default function FormulirPage() {
     step5: false,
     step6: false,
     step7: false,
+    step8: false,
   });
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [pendingSubmitData, setPendingSubmitData] = useState<Step7Data | null>(
-    null,
-  );
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Check if forms should be disabled based on school status
   const isFormDisabled =
     dataCompletionStatus.sekolahStatus === 'PENDING' ||
     dataCompletionStatus.sekolahStatus === 'APPROVED';
-
-  // Get status message based on school status
-  const getStatusMessage = () => {
-    switch (dataCompletionStatus.sekolahStatus) {
-      case 'PENDING':
-        return {
-          bgColor: 'bg-yellow-50 border-yellow-200',
-          textColor: 'text-yellow-800',
-          title: 'Menunggu Verifikasi',
-          message:
-            'Data telah disubmit dan sedang dalam proses verifikasi oleh Dinas Pendidikan. Form tidak dapat diedit saat ini.',
-        };
-      case 'APPROVED':
-        return {
-          bgColor: 'bg-green-50 border-green-200',
-          textColor: 'text-green-800',
-          title: 'Data Disetujui',
-          message: 'Data Anda telah diverifikasi dan disetujui.',
-        };
-      default:
-        return {
-          bgColor: 'bg-blue-50 border-blue-200',
-          textColor: 'text-blue-800',
-          title: 'Informasi',
-          message: 'Form tidak dapat diedit saat ini.',
-        };
-    }
-  };
 
   // Load data completion status on component mount
   useEffect(() => {
@@ -91,6 +65,9 @@ export default function FormulirPage() {
         if (result.success && result.data) {
           const safeData = {
             sekolahStatus: result.data.sekolahStatus || '',
+            reviewNote:
+              (result.data as { reviewNote?: string | null })?.reviewNote ||
+              null,
             step1: Boolean(result.data.step1),
             step2: Boolean(result.data.step2),
             step3: Boolean(result.data.step3),
@@ -98,6 +75,7 @@ export default function FormulirPage() {
             step5: Boolean(result.data.step5),
             step6: Boolean(result.data.step6),
             step7: Boolean(result.data.step7),
+            step8: Boolean(result.data.step8),
           };
 
           setDataCompletionStatus(safeData);
@@ -116,26 +94,38 @@ export default function FormulirPage() {
   }, []);
   // Refresh completion status after form submissions
   const refreshCompletionStatus = async () => {
-    const result = await getDataCompletionStatusAction();
-    if (result.success && result.data) {
-      const safeData = {
-        sekolahStatus: result.data.sekolahStatus || '',
-        step1: Boolean(result.data.step1),
-        step2: Boolean(result.data.step2),
-        step3: Boolean(result.data.step3),
-        step4: Boolean(result.data.step4),
-        step5: Boolean(result.data.step5),
-        step6: Boolean(result.data.step6),
-        step7: Boolean(result.data.step7),
-      };
+    try {
+      console.log('Refreshing completion status...');
+      const result = await getDataCompletionStatusAction();
 
-      setDataCompletionStatus(safeData);
+      if (result.success && result.data) {
+        console.log('New status from server:', result.data.sekolahStatus);
 
-      const completed = Object.entries(safeData)
-        .filter(([key, isComplete]) => key.startsWith('step') && isComplete)
-        .map(([step]) => parseInt(step.replace('step', '')));
+        const safeData = {
+          sekolahStatus: result.data.sekolahStatus || '',
+          reviewNote:
+            (result.data as { reviewNote?: string | null })?.reviewNote || null,
+          step1: Boolean(result.data.step1),
+          step2: Boolean(result.data.step2),
+          step3: Boolean(result.data.step3),
+          step4: Boolean(result.data.step4),
+          step5: Boolean(result.data.step5),
+          step6: Boolean(result.data.step6),
+          step7: Boolean(result.data.step7),
+          step8: Boolean(result.data.step8),
+        };
 
-      setCompletedSteps(completed);
+        setDataCompletionStatus(safeData);
+        console.log('Updated dataCompletionStatus:', safeData);
+
+        const completed = Object.entries(safeData)
+          .filter(([key, isComplete]) => key.startsWith('step') && isComplete)
+          .map(([step]) => parseInt(step.replace('step', '')));
+
+        setCompletedSteps(completed);
+      }
+    } catch (error) {
+      console.error('Error refreshing completion status:', error);
     }
   };
   const onStep1Submit = async (data: Step1Data) => {
@@ -236,30 +226,48 @@ export default function FormulirPage() {
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
-  const onStep7Submit = (data: Step7Data) => {
-    // Store the data and show confirmation dialog
-    setPendingSubmitData(data);
-    setShowConfirmationDialog(true);
-  };
-
-  const handleConfirmSubmit = async () => {
-    if (!pendingSubmitData) return;
-
-    setIsSubmitting(true);
+  const onStep7Submit = async (data: Step7Data) => {
     try {
-      const result = await saveLampiranDataAction(pendingSubmitData);
+      const result = await saveLampiranDataAction(data);
       if (result.success) {
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 7), 7]);
         await refreshCompletionStatus();
-        setShowConfirmationDialog(false);
-        setShowSuccessDialog(true);
-        setPendingSubmitData(null);
+        toast.success('Data lampiran berhasil disimpan');
+        setCurrentStep(8);
       } else {
         toast.error(result.error || 'Gagal menyimpan data lampiran');
       }
     } catch (error) {
       console.error('Unexpected error saving lampiran data:', error);
       toast.error('Terjadi kesalahan saat menyimpan data');
+    }
+  };
+  const onStep8Submit = () => {
+    // Step 8 is review and final submit
+    setShowConfirmationDialog(true);
+  };
+  const handleConfirmSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      // Import the submit action
+      const { submitAllDataAction } = await import(
+        './_actions/review-data.action'
+      );
+      const result = await submitAllDataAction();
+      if (result.success) {
+        setCompletedSteps((prev) => [...prev.filter((s) => s !== 8), 8]);
+
+        // Force refresh completion status to get updated status
+        await refreshCompletionStatus();
+
+        setShowConfirmationDialog(false);
+        setShowSuccessDialog(true);
+      } else {
+        toast.error(result.error || 'Gagal submit data');
+      }
+    } catch (error) {
+      console.error('Unexpected error submitting data:', error);
+      toast.error('Terjadi kesalahan saat submit data');
     } finally {
       setIsSubmitting(false);
     }
@@ -289,18 +297,11 @@ export default function FormulirPage() {
       {/* Form Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {' '}
-        {/* Show status message if form is disabled */}
-        {isFormDisabled &&
-          (() => {
-            const statusInfo = getStatusMessage();
-            return (
-              <div className={`mb-4 p-4 rounded-lg ${statusInfo.bgColor}`}>
-                <p className={`${statusInfo.textColor} text-sm`}>
-                  <strong>{statusInfo.title}:</strong> {statusInfo.message}
-                </p>
-              </div>
-            );
-          })()}
+        {/* Show status message */}
+        <StatusMessage
+          sekolahStatus={dataCompletionStatus.sekolahStatus}
+          reviewNote={dataCompletionStatus.reviewNote}
+        />
         <Card className="bg-card rounded-xl shadow-sm border overflow-hidden p-6 md:p-8">
           {' '}
           {currentStep === 1 && (
@@ -356,6 +357,13 @@ export default function FormulirPage() {
               onBack={() => setCurrentStep(6)}
               disabled={isFormDisabled}
               hideFormInfo={isFormDisabled}
+            />
+          )}
+          {currentStep === 8 && (
+            <ReviewDataForm
+              onSubmit={onStep8Submit}
+              onBack={() => setCurrentStep(7)}
+              disabled={isFormDisabled}
             />
           )}
         </Card>

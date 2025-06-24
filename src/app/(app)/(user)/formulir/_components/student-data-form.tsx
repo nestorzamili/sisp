@@ -238,24 +238,25 @@ export function StudentDataForm({
       )}{' '}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          {' '}
           <div className="space-y-5">
-            {/* Kelas VII */}
+            {/* Kelas 7 */}
             <ClassSection
-              title="Kelas VII"
+              title="Kelas 7"
               lakiFieldName="siswaKelas7Laki"
               perempuanFieldName="siswaKelas7Perempuan"
             />
 
-            {/* Kelas VIII */}
+            {/* Kelas 8 */}
             <ClassSection
-              title="Kelas VIII"
+              title="Kelas 8"
               lakiFieldName="siswaKelas8Laki"
               perempuanFieldName="siswaKelas8Perempuan"
             />
 
-            {/* Kelas IX */}
+            {/* Kelas 9 */}
             <ClassSection
-              title="Kelas IX"
+              title="Kelas 9"
               lakiFieldName="siswaKelas9Laki"
               perempuanFieldName="siswaKelas9Perempuan"
             />

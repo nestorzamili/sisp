@@ -5,8 +5,6 @@ import {
   ReviewServiceResponse,
   ReviewPaginationParams,
   ReviewPaginationResult,
-  ReviewHistoryItem,
-  ReviewStats,
 } from '@/types/review';
 import { notificationService } from './notification.service';
 
@@ -259,16 +257,20 @@ export class ReviewService {
       };
     }
   }
+
   /**
-   * Get review history for a sekolah
-   */ static async getReviewHistory(
+   * Submit sekolah for review (change status from DRAFT to PENDING)
+   */ static async submitForReview(
     sekolahId: string,
-  ): Promise<ReviewServiceResponse<ReviewHistoryItem[]>> {
+  ): Promise<
+    ReviewServiceResponse<{ id: string; status: ReviewStatus; updatedAt: Date }>
+  > {
     try {
+      // Get sekolah with user data
       const sekolah = await prisma.sekolah.findUnique({
         where: { id: sekolahId },
         include: {
-          reviewedBy: {
+          user: {
             select: {
               id: true,
               name: true,
@@ -285,58 +287,68 @@ export class ReviewService {
         };
       }
 
-      // For now, return basic review info
-      // You can extend this to include detailed history if needed
-      const history = [
-        {
-          id: sekolah.id,
-          status: sekolah.status,
-          reviewedAt: sekolah.reviewedAt,
-          reviewNotes: sekolah.reviewNotes,
-          reviewedBy: sekolah.reviewedBy,
-        },
-      ];
+      if (
+        sekolah.status !== ReviewStatus.DRAFT &&
+        sekolah.status !== ReviewStatus.REJECTED
+      ) {
+        return {
+          success: false,
+          error:
+            'Hanya sekolah dengan status DRAFT atau REJECTED yang dapat disubmit untuk review',
+        };
+      }
 
-      return {
-        success: true,
-        data: history,
-      };
-    } catch (error) {
-      console.error('Error getting review history:', error);
-      return {
-        success: false,
-        error: 'Gagal mengambil riwayat review',
-      };
-    }
-  }
-
-  /**
-   * Get review statistics
-   */ static async getReviewStats(): Promise<
-    ReviewServiceResponse<ReviewStats>
-  > {
-    try {
-      const [pending, approved, rejected, draft] = await Promise.all([
-        prisma.sekolah.count({ where: { status: ReviewStatus.PENDING } }),
-        prisma.sekolah.count({ where: { status: ReviewStatus.APPROVED } }),
-        prisma.sekolah.count({ where: { status: ReviewStatus.REJECTED } }),
-        prisma.sekolah.count({ where: { status: ReviewStatus.DRAFT } }),
-      ]);
-
-      return {
-        success: true,
+      // Update status to PENDING
+      const updatedSekolah = await prisma.sekolah.update({
+        where: { id: sekolahId },
         data: {
-          pending,
-          approved,
-          rejected,
-          draft,
+          status: ReviewStatus.PENDING,
+          updatedAt: new Date(),
         },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      // Create notification for admin/reviewers about new data submission
+      try {
+        // Get admin users to notify about new submission
+        const adminUsers = await prisma.user.findMany({
+          where: { role: 'admin' },
+          select: { id: true },
+        });
+
+        // Send notification to all admin users
+        for (const admin of adminUsers) {
+          await notificationService.createReviewRequestNotification(
+            admin.id,
+            sekolah.nama_sekolah,
+            sekolahId,
+          );
+        }
+      } catch (notificationError) {
+        console.error(
+          'Failed to create review request notification:',
+          notificationError,
+        );
+        // Don't fail the submission if notification fails
+      }
+
+      return {
+        success: true,
+        data: updatedSekolah,
       };
     } catch (error) {
-      console.error('Error getting review stats:', error);
+      console.error('Error submitting sekolah for review:', error);
       return {
         success: false,
-        error: 'Gagal mengambil statistik review',
+        error: 'Gagal submit data untuk review',
       };
     }
   }

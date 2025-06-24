@@ -57,55 +57,6 @@ export class PrasaranaService {
   }
 
   /**
-   * Update existing prasarana record
-   */
-  static async updatePrasarana(
-    id: string,
-    data: Partial<CreatePrasaranaData>,
-  ): Promise<PrasaranaServiceResponse<Prasarana>> {
-    try {
-      const prasarana = await prisma.prasarana.update({
-        where: { id },
-        data,
-      });
-
-      return {
-        success: true,
-        data: prasarana,
-      };
-    } catch (error) {
-      console.error('Error updating prasarana:', error);
-      return {
-        success: false,
-        error: 'Failed to update prasarana',
-      };
-    }
-  }
-
-  /**
-   * Delete prasarana record
-   */
-  static async deletePrasarana(
-    id: string,
-  ): Promise<PrasaranaServiceResponse<void>> {
-    try {
-      await prisma.prasarana.delete({
-        where: { id },
-      });
-
-      return {
-        success: true,
-      };
-    } catch (error) {
-      console.error('Error deleting prasarana:', error);
-      return {
-        success: false,
-        error: 'Failed to delete prasarana',
-      };
-    }
-  }
-
-  /**
    * Save prasarana data from form submission
    */
   static async savePrasaranaFromForm(
@@ -232,22 +183,5 @@ export class PrasaranaService {
       default:
         return { baik: 0, rusak: 0 };
     }
-  }
-
-  /**
-   * Helper function to determine condition from counts
-   */
-  private static getKondisiFromCounts(prasarana: {
-    jumlah_total: number;
-    jumlah_kondisi_baik: number;
-    jumlah_kondisi_rusak: number;
-  }): string {
-    if (prasarana.jumlah_total === 0) return '';
-    if (prasarana.jumlah_kondisi_baik === prasarana.jumlah_total) return 'baik';
-    if (prasarana.jumlah_kondisi_rusak === prasarana.jumlah_total)
-      return 'rusak-berat';
-    if (prasarana.jumlah_kondisi_baik > prasarana.jumlah_kondisi_rusak)
-      return 'rusak-ringan';
-    return 'rusak-sedang';
   }
 }

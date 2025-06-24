@@ -35,18 +35,6 @@ export class LampiranService {
     });
   }
 
-  static async updateLampiran(
-    id: string,
-    data: Partial<CreateLampiranData>,
-  ): Promise<Lampiran> {
-    return await prisma.lampiran.update({
-      where: {
-        id,
-      },
-      data,
-    });
-  }
-
   static async deleteAllLampiranBySekolahId(sekolahId: string): Promise<void> {
     await prisma.lampiran.deleteMany({
       where: {
