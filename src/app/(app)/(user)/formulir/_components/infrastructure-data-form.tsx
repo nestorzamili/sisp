@@ -377,7 +377,7 @@ export function InfrastructureDataForm({
                     {fields.map((field, index) => (
                       <div
                         key={field.id}
-                        className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50"
+                        className="border border-gray-200 rounded-lg p-4 space-y-4"
                       >
                         <div className="space-y-4">
                           {/* Nama Prasarana - Full width dengan tombol hapus */}

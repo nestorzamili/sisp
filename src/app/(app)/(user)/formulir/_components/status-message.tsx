@@ -45,7 +45,7 @@ export function StatusMessage({
           icon: XCircle,
           title: 'Data Ditolak',
           message:
-            'Data Anda telah ditolak oleh Dinas Pendidikan. Silakan perbaiki data sesuai catatan review.',
+            'Data Anda telah ditolak. Silakan perbaiki data sesuai catatan review.',
         };
       default:
         return {
@@ -78,7 +78,7 @@ export function StatusMessage({
         {/* Show review note for APPROVED or REJECTED status */}
         {(sekolahStatus === 'APPROVED' || sekolahStatus === 'REJECTED') && (
           <div
-            className={`mt-3 p-3 rounded-lg ${
+            className={`mt-1 p-1 rounded-lg ${
               sekolahStatus === 'APPROVED'
                 ? 'bg-green-100/50 dark:bg-green-900/20'
                 : 'bg-red-100/50 dark:bg-red-900/20'

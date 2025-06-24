@@ -545,7 +545,7 @@ export function AttachmentsForm({
                 Menyimpan...
               </>
             ) : (
-              'Selesai & Kirim Data'
+              'Lanjut ke Review'
             )}
           </Button>
         </div>

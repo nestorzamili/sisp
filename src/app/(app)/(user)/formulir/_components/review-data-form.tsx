@@ -25,7 +25,6 @@ import {
   AlertCircle,
   Download,
   ExternalLink,
-  Eye,
 } from 'lucide-react';
 import {
   getReviewDataAction,
@@ -168,7 +167,6 @@ export function ReviewDataForm({
       </Badge>
     </div>
   );
-
   const DataRow = ({
     label,
     value,
@@ -176,8 +174,11 @@ export function ReviewDataForm({
     label: string;
     value: string | number;
   }) => (
-    <div className="flex justify-between items-center py-2.5 border-b border-border/50 last:border-b-0">
-      <span className="text-sm font-medium text-muted-foreground">{label}</span>
+    <div className="flex items-center py-2">
+      <span className="text-sm font-medium text-muted-foreground w-40 flex-shrink-0">
+        {label}
+      </span>
+      <span className="text-sm font-medium text-muted-foreground mr-3">:</span>
       <span className="text-sm font-semibold text-foreground">{value}</span>
     </div>
   );
@@ -186,9 +187,6 @@ export function ReviewDataForm({
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-4">
-          <Eye className="w-8 h-8 text-blue-600" />
-        </div>
         <h2 className="text-3xl font-bold text-foreground">
           Review Data Formulir
         </h2>
@@ -196,18 +194,17 @@ export function ReviewDataForm({
           Periksa kembali semua data yang telah Anda isi sebelum mengirim untuk
           review. Pastikan semua informasi sudah benar dan lengkap.
         </p>
-      </div>
-
+      </div>{' '}
       {/* Step 1: School Information */}
       <Card className="shadow-sm border-0 bg-card/50">
-        <CardHeader className="pb-4">
+        <CardHeader>
           <SectionHeader
             icon={School}
             title="Informasi Sekolah"
             isComplete={isDataComplete(reviewData?.schoolInfo)}
           />
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-2">
           {reviewData?.schoolInfo ? (
             <div className="space-y-1">
               <DataRow
@@ -240,19 +237,19 @@ export function ReviewDataForm({
           )}
         </CardContent>
       </Card>
-
       {/* Steps 2 & 3: Teacher and Student Data - Side by Side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {' '}
         {/* Teacher Data */}
         <Card className="shadow-sm border-0 bg-card/50">
-          <CardHeader className="pb-4">
+          <CardHeader>
             <SectionHeader
               icon={Users}
               title="Data Guru"
               isComplete={isDataComplete(reviewData?.teacherData)}
             />
           </CardHeader>
-          <CardContent className="pt-0">
+          <CardContent className="pt-2">
             {reviewData?.teacherData ? (
               <div className="border rounded-lg overflow-hidden">
                 <Table>
@@ -330,18 +327,17 @@ export function ReviewDataForm({
               </div>
             )}
           </CardContent>
-        </Card>
-
+        </Card>{' '}
         {/* Student Data */}
         <Card className="shadow-sm border-0 bg-card/50">
-          <CardHeader className="pb-4">
+          <CardHeader>
             <SectionHeader
               icon={GraduationCap}
               title="Data Siswa"
               isComplete={isDataComplete(reviewData?.studentData)}
             />
           </CardHeader>
-          <CardContent className="pt-0">
+          <CardContent className="pt-2">
             {reviewData?.studentData ? (
               <div className="border rounded-lg overflow-hidden">
                 <Table>
@@ -424,18 +420,17 @@ export function ReviewDataForm({
             )}
           </CardContent>
         </Card>
-      </div>
-
+      </div>{' '}
       {/* Step 4: Facility Data */}
       <Card className="shadow-sm border-0 bg-card/50">
-        <CardHeader className="pb-4">
+        <CardHeader>
           <SectionHeader
             icon={Building2}
             title="Data Sarana"
             isComplete={isDataComplete(reviewData?.facilityData)}
           />
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-2">
           {reviewData?.facilityData ? (
             <div className="border rounded-lg overflow-hidden">
               <Table>
@@ -516,18 +511,17 @@ export function ReviewDataForm({
             </div>
           )}
         </CardContent>
-      </Card>
-
+      </Card>{' '}
       {/* Step 5: Infrastructure Data */}
       <Card className="shadow-sm border-0 bg-card/50">
-        <CardHeader className="pb-4">
+        <CardHeader>
           <SectionHeader
             icon={Wrench}
             title="Data Prasarana"
             isComplete={isDataComplete(reviewData?.infrastructureData)}
           />
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-2">
           {reviewData?.infrastructureData ? (
             <div className="space-y-6">
               {/* Main Infrastructure Table */}
@@ -680,18 +674,17 @@ export function ReviewDataForm({
             </div>
           )}
         </CardContent>
-      </Card>
-
+      </Card>{' '}
       {/* Step 6: Priority Needs */}
       <Card className="shadow-sm border-0 bg-card/50">
-        <CardHeader className="pb-4">
+        <CardHeader>
           <SectionHeader
             icon={Target}
             title="Kebutuhan Prioritas"
             isComplete={isDataComplete(reviewData?.priorityNeedsData)}
           />
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-2">
           {reviewData?.priorityNeedsData?.kebutuhanPrioritas ? (
             <div className="bg-muted/30 p-4 rounded-lg">
               <p className="text-sm leading-relaxed text-foreground">
@@ -705,18 +698,17 @@ export function ReviewDataForm({
             </div>
           )}
         </CardContent>
-      </Card>
-
+      </Card>{' '}
       {/* Step 7: Attachments */}
       <Card className="shadow-sm border-0 bg-card/50">
-        <CardHeader className="pb-4">
+        <CardHeader>
           <SectionHeader
             icon={FileText}
             title="Lampiran"
             isComplete={isDataComplete(reviewData?.attachmentsData)}
           />
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-2">
           {reviewData?.attachmentsData &&
           reviewData.attachmentsData.length > 0 ? (
             <div className="space-y-3">
@@ -777,7 +769,6 @@ export function ReviewDataForm({
           )}
         </CardContent>
       </Card>
-
       {/* Action Buttons */}
       <div className="flex justify-between">
         <Button
