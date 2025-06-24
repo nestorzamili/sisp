@@ -130,7 +130,6 @@ export function NotificationDropdown() {
             )}
           </Button>
         </DropdownMenuTrigger>
-
         <DropdownMenuContent
           className="w-80 rounded-xl shadow-lg border border-primary/10"
           align="end"
@@ -144,8 +143,8 @@ export function NotificationDropdown() {
                 <Badge variant="secondary" className="text-xs">
                   {stats.unread} baru
                 </Badge>
-              )}
-            </div>{' '}
+              )}{' '}
+            </div>
             {stats.unread > 0 && (
               <Button
                 variant="ghost"
@@ -245,7 +244,7 @@ export function NotificationDropdown() {
                                         <Eye className="w-3 h-3 mr-2" />
                                         Tandai dibaca
                                       </DropdownMenuItem>
-                                    )}{' '}
+                                    )}
                                     <DropdownMenuItem
                                       onClick={(e) => {
                                         e.preventDefault();
@@ -297,8 +296,8 @@ export function NotificationDropdown() {
               </div>
             </>
           )}
-        </DropdownMenuContent>
-      </DropdownMenu>{' '}
+        </DropdownMenuContent>{' '}
+      </DropdownMenu>
       <NotificationDialog
         notification={selectedNotification}
         open={dialogOpen}

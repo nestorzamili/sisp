@@ -627,7 +627,7 @@ export function ReviewDataForm({
                             </TableHead>
                             <TableHead className="text-center font-semibold">
                               Rusak
-                            </TableHead>{' '}
+                            </TableHead>
                             <TableHead className="text-center font-semibold">
                               Keterangan
                             </TableHead>
