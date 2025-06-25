@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -34,10 +34,6 @@ import {
 import { toast } from 'sonner';
 import { step7Schema, Step7Data } from '../_schema/attachments.schema';
 import { UploadResponse } from '@/types/lampiran';
-import {
-  getLampiranDataAction,
-  saveLampiranDataAction,
-} from '../_actions/lampiran-data.action';
 import Image from 'next/image';
 
 interface AttachmentsFormProps {
@@ -45,6 +41,7 @@ interface AttachmentsFormProps {
   onBack: () => void;
   disabled?: boolean;
   hideFormInfo?: boolean;
+  initialData?: Step7Data;
 }
 
 export function AttachmentsForm({
@@ -52,14 +49,14 @@ export function AttachmentsForm({
   onBack,
   disabled = false,
   hideFormInfo = false,
+  initialData,
 }: AttachmentsFormProps) {
   const [uploading, setUploading] = useState<{ [key: number]: boolean }>({});
-  const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<Step7Data>({
     resolver: zodResolver(step7Schema),
-    defaultValues: {
+    defaultValues: initialData || {
       lampiran: [],
     },
   });
@@ -69,44 +66,11 @@ export function AttachmentsForm({
     name: 'lampiran',
   });
 
-  // Load existing lampiran data
-  useEffect(() => {
-    async function loadLampiranData() {
-      try {
-        const result = await getLampiranDataAction();
-        if (result.success && result.data) {
-          const lampiranData = result.data.map((item) => ({
-            nama_dokumen: item.nama_dokumen,
-            url: item.url,
-            keterangan: item.keterangan || '',
-          }));
-          form.setValue('lampiran', lampiranData);
-        }
-      } catch (error) {
-        console.error('Error loading lampiran data:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadLampiranData();
-  }, [form]);
-
   // Handle form submission
   async function handleSubmit(values: Step7Data) {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-
-      const result = await saveLampiranDataAction(values);
-
-      if (result.success) {
-        toast.success('Data lampiran berhasil disimpan');
-        onSubmit(values);
-      } else {
-        toast.error(result.error || 'Gagal menyimpan data lampiran');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error('Terjadi kesalahan saat menyimpan data');
+      onSubmit(values);
     } finally {
       setIsSubmitting(false);
     }
@@ -228,15 +192,6 @@ export function AttachmentsForm({
       </div>
     );
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin" />
-        <span className="ml-2">Memuat data lampiran...</span>
-      </div>
-    );
-  }
 
   return (
     <Form {...form}>

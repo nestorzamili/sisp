@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+'use client';
+
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -12,21 +14,11 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-
-import {
-  Loader2,
-  CheckCircle2,
-  AlertCircle,
-  GraduationCap,
-} from 'lucide-react';
-import { toast } from 'sonner';
+import { CheckCircle2, GraduationCap } from 'lucide-react';
 import { step3Schema, Step3Data } from '../_schema/student-data.schema';
-import {
-  getStudentDataAction,
-  saveStudentDataAction,
-} from '../_actions/student-data.action';
 
 interface StudentDataFormProps {
+  initialData: Step3Data;
   onSubmit: (data: Step3Data) => void;
   onBack: () => void;
   disabled?: boolean;
@@ -34,74 +26,21 @@ interface StudentDataFormProps {
 }
 
 export function StudentDataForm({
+  initialData,
   onSubmit,
   onBack,
   disabled = false,
   hideCompletionStatus = false,
 }: StudentDataFormProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [hasExistingData, setHasExistingData] = useState(false);
   const form = useForm<Step3Data>({
     resolver: zodResolver(step3Schema),
-    defaultValues: {
-      siswaKelas7Laki: 0,
-      siswaKelas7Perempuan: 0,
-      siswaKelas8Laki: 0,
-      siswaKelas8Perempuan: 0,
-      siswaKelas9Laki: 0,
-      siswaKelas9Perempuan: 0,
-    },
+    defaultValues: initialData,
   });
 
-  // Load existing student data on component mount
-  useEffect(() => {
-    async function loadStudentData() {
-      try {
-        setIsLoading(true);
-        setLoadError(null);
-
-        const result = await getStudentDataAction();
-
-        if (result.success && result.data) {
-          form.reset(result.data); // Check if there's existing data (non-zero values)
-          const hasData = Object.values(result.data).some((value) => value > 0);
-          setHasExistingData(hasData);
-        } else {
-          setLoadError(result.error || 'Gagal memuat data siswa');
-        }
-      } catch (error) {
-        console.error('Error loading student data:', error);
-        setLoadError('Terjadi kesalahan saat memuat data');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadStudentData();
-  }, [form]);
-
-  // Handle form submission
-  async function handleSubmit(values: Step3Data) {
-    try {
-      setIsSubmitting(true);
-
-      const result = await saveStudentDataAction(values);
-
-      if (result.success) {
-        toast.success('Data siswa berhasil disimpan');
-        onSubmit(values);
-      } else {
-        toast.error(result.error || 'Gagal menyimpan data siswa');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error('Terjadi kesalahan saat menyimpan data');
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
+  // Check if there's existing data
+  const hasExistingData = Object.values(initialData).some(
+    (value) => Number(value) > 0,
+  );
 
   // Calculate completion status
   const getCompletionStatus = () => {
@@ -139,7 +78,6 @@ export function StudentDataForm({
         <h4 className="text-lg font-semibold text-foreground">{title}</h4>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {' '}
         <FormField
           control={form.control}
           name={lakiFieldName}
@@ -147,7 +85,7 @@ export function StudentDataForm({
             <FormItem className="space-y-2">
               <FormLabel className="text-sm font-medium text-foreground">
                 Laki-laki
-              </FormLabel>{' '}
+              </FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -156,7 +94,6 @@ export function StudentDataForm({
                   value={field.value || 0}
                   onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                   readOnly={disabled}
-                  disabled={isSubmitting}
                   className={disabled ? 'cursor-default' : ''}
                 />
               </FormControl>
@@ -180,7 +117,6 @@ export function StudentDataForm({
                   value={field.value || 0}
                   onChange={(e) => field.onChange(Number(e.target.value) || 0)}
                   readOnly={disabled}
-                  disabled={isSubmitting}
                   className={disabled ? 'cursor-default' : ''}
                 />
               </FormControl>
@@ -192,27 +128,6 @@ export function StudentDataForm({
     </div>
   );
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span className="text-sm text-muted-foreground">
-            Memuat data siswa...
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  if (loadError) {
-    return (
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>{loadError}</AlertDescription>
-      </Alert>
-    );
-  }
   return (
     <div className="space-y-6">
       {/* Form Header */}
@@ -224,7 +139,8 @@ export function StudentDataForm({
           Masukkan jumlah siswa berdasarkan tingkat kelas dan jenis kelamin di
           sekolah Anda
         </p>
-      </div>{' '}
+      </div>
+
       {/* Progress indicator */}
       {hasExistingData && !hideCompletionStatus && (
         <Alert className="border-green-200 bg-green-50">
@@ -235,10 +151,10 @@ export function StudentDataForm({
             {completionPercentage}%)
           </AlertDescription>
         </Alert>
-      )}{' '}
+      )}
+
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          {' '}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-5">
             {/* Kelas 7 */}
             <ClassSection
@@ -267,23 +183,16 @@ export function StudentDataForm({
               variant="outline"
               onClick={onBack}
               className="text-sm px-6 py-2"
-              disabled={isSubmitting}
+              disabled={disabled}
             >
               Kembali
             </Button>
             <Button
               type="submit"
               className="btn-primary text-sm px-6 py-2"
-              disabled={isSubmitting || disabled}
+              disabled={disabled}
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Menyimpan...
-                </>
-              ) : (
-                'Lanjut ke Data Sarana'
-              )}
+              Lanjut ke Data Sarana
             </Button>
           </div>
         </form>

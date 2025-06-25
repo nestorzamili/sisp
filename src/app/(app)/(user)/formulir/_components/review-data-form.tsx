@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Table,
   TableBody,
@@ -22,100 +21,27 @@ import {
   Target,
   FileText,
   CheckCircle,
-  AlertCircle,
-  Download,
-  ExternalLink,
+  Eye,
 } from 'lucide-react';
-import {
-  getReviewDataAction,
-  type ReviewData,
-} from '../_actions/review-data.action';
+import { type FormulirCompleteData } from '@/types/formulir.types';
 
 interface ReviewDataFormProps {
+  initialData: FormulirCompleteData;
   onSubmit: () => void;
   onBack: () => void;
   disabled?: boolean;
 }
 
 export function ReviewDataForm({
+  initialData,
   onSubmit,
   onBack,
   disabled = false,
 }: ReviewDataFormProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [reviewData, setReviewData] = useState<ReviewData | null>(null);
-  const [loadError, setLoadError] = useState<string | null>(null);
-
-  // Load review data on component mount
-  useEffect(() => {
-    async function loadReviewData() {
-      try {
-        setIsLoading(true);
-        setLoadError(null);
-
-        const result = await getReviewDataAction();
-
-        if (result.success && result.data) {
-          setReviewData(result.data);
-        } else {
-          setLoadError(result.error || 'Gagal memuat data review');
-        }
-      } catch (error) {
-        console.error('Error loading review data:', error);
-        setLoadError('Terjadi kesalahan saat memuat data');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadReviewData();
-  }, []);
-
-  // Handle final submission - trigger confirmation dialog
-  const handleSubmit = () => {
-    // Call onSubmit which will show confirmation dialog
-    onSubmit();
-  };
-
   // Helper functions
-  const getKecamatanName = (kecamatan: string) => {
-    // KECAMATAN_LIST adalah array string, langsung return kecamatan
-    return kecamatan;
-  };
-
   const formatNumber = (value: number | undefined | null) => {
     return value ? value.toLocaleString('id-ID') : '0';
   };
-
-  const isDataComplete = (data: unknown): boolean => {
-    if (!data || typeof data !== 'object' || data === null) return false;
-    return Object.keys(data).length > 0;
-  };
-
-  const getFileIcon = (fileName: string) => {
-    const extension = fileName.split('.').pop()?.toLowerCase();
-    return extension === 'pdf' ? FileText : Download;
-  };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Memuat data review...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (loadError) {
-    return (
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>{loadError}</AlertDescription>
-      </Alert>
-    );
-  }
 
   const SectionHeader = ({
     icon: Icon,
@@ -126,7 +52,7 @@ export function ReviewDataForm({
     title: string;
     isComplete: boolean;
   }) => (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-3">
         <div
           className={`p-2.5 rounded-lg ${
@@ -159,635 +85,401 @@ export function ReviewDataForm({
             Lengkap
           </div>
         ) : (
-          <div className="flex items-center gap-1">
-            <AlertCircle className="w-3 h-3" />
-            Belum Lengkap
-          </div>
+          'Belum lengkap'
         )}
       </Badge>
     </div>
   );
-  const DataRow = ({
-    label,
-    value,
-  }: {
-    label: string;
-    value: string | number;
-  }) => (
-    <div className="flex items-center py-2">
-      <span className="text-sm font-medium text-muted-foreground w-40 flex-shrink-0">
-        {label}
-      </span>
-      <span className="text-sm font-medium text-muted-foreground mr-3">:</span>
-      <span className="text-sm font-semibold text-foreground">{value}</span>
-    </div>
-  );
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold text-foreground">
+    <div className="space-y-6">
+      {/* Form Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-2xl font-bold text-foreground mb-2">
           Review Data Formulir
         </h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Periksa kembali semua data yang telah Anda isi sebelum mengirim untuk
-          review. Pastikan semua informasi sudah benar dan lengkap.
+        <p className="text-muted-foreground max-w-2xl mx-auto">
+          Periksa kembali semua data yang telah Anda masukkan sebelum mengirim
+          formulir untuk proses verifikasi
         </p>
-      </div>{' '}
-      {/* Step 1: School Information */}
-      <Card className="shadow-sm border-0 bg-card/50">
+      </div>
+
+      {/* Informasi Sekolah */}
+      <Card>
         <CardHeader>
           <SectionHeader
             icon={School}
             title="Informasi Sekolah"
-            isComplete={isDataComplete(reviewData?.schoolInfo)}
+            isComplete={!!initialData.sekolah.nama_sekolah}
           />
         </CardHeader>
-        <CardContent className="pt-2">
-          {reviewData?.schoolInfo ? (
-            <div className="space-y-1">
-              <DataRow
-                label="Nama Sekolah"
-                value={reviewData.schoolInfo.namaSekolah}
-              />
-              <DataRow label="NPSN" value={reviewData.schoolInfo.npsn} />
-              <DataRow
-                label="Nama Kepala Sekolah"
-                value={reviewData.schoolInfo.namaKepalaSekolah}
-              />
-              <DataRow
-                label="NIP Kepala Sekolah"
-                value={reviewData.schoolInfo.nipKepalaSekolah}
-              />
-              <DataRow
-                label="Alamat Sekolah"
-                value={reviewData.schoolInfo.alamatSekolah}
-              />
-              <DataRow
-                label="Kecamatan"
-                value={getKecamatanName(reviewData.schoolInfo.kecamatan)}
-              />
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-500">
+                Nama Sekolah
+              </label>
+              <p className="text-foreground">
+                {initialData.sekolah.nama_sekolah || '-'}
+              </p>
             </div>
-          ) : (
-            <div className="text-center py-8">
-              <AlertCircle className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground text-sm">Data belum diisi</p>
+            <div>
+              <label className="text-sm font-medium text-gray-500">NPSN</label>
+              <p className="text-foreground">
+                {initialData.sekolah.npsn || '-'}
+              </p>
             </div>
-          )}
+            <div>
+              <label className="text-sm font-medium text-gray-500">
+                Nama Kepala Sekolah
+              </label>
+              <p className="text-foreground">
+                {initialData.sekolah.nama_kepala_sekolah || '-'}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-500">
+                NIP Kepala Sekolah
+              </label>
+              <p className="text-foreground">
+                {initialData.sekolah.nip_kepala_sekolah || '-'}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-500">
+                Alamat Sekolah
+              </label>
+              <p className="text-foreground">
+                {initialData.sekolah.alamat_sekolah || '-'}
+              </p>
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-500">
+                Kecamatan
+              </label>
+              <p className="text-foreground">
+                {initialData.sekolah.kecamatan || '-'}
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
-      {/* Steps 2 & 3: Teacher and Student Data - Side by Side */}
+
+      {/* Data Guru dan Siswa - Side by Side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {' '}
-        {/* Teacher Data */}
-        <Card className="shadow-sm border-0 bg-card/50">
+        {/* Data Guru */}
+        <Card>
           <CardHeader>
             <SectionHeader
               icon={Users}
               title="Data Guru"
-              isComplete={isDataComplete(reviewData?.teacherData)}
+              isComplete={initialData.guru.length > 0}
             />
           </CardHeader>
-          <CardContent className="pt-2">
-            {reviewData?.teacherData ? (
-              <div className="border rounded-lg overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/50">
-                      <TableHead className="font-semibold">
-                        Jenis Guru
-                      </TableHead>
-                      <TableHead className="text-center font-semibold">
-                        Laki-laki
-                      </TableHead>
-                      <TableHead className="text-center font-semibold">
-                        Perempuan
-                      </TableHead>
-                      <TableHead className="text-center font-semibold">
-                        Total
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow className="hover:bg-muted/30">
-                      <TableCell className="font-medium">Guru PNS</TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(reviewData.teacherData.guruPnsLaki)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(reviewData.teacherData.guruPnsPerempuan)}
-                      </TableCell>
-                      <TableCell className="text-center font-semibold">
-                        {formatNumber(
-                          (reviewData.teacherData.guruPnsLaki || 0) +
-                            (reviewData.teacherData.guruPnsPerempuan || 0),
-                        )}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-muted/30">
-                      <TableCell className="font-medium">Guru PPPP</TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(reviewData.teacherData.guruPpppLaki)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(reviewData.teacherData.guruPpppPerempuan)}
-                      </TableCell>
-                      <TableCell className="text-center font-semibold">
-                        {formatNumber(
-                          (reviewData.teacherData.guruPpppLaki || 0) +
-                            (reviewData.teacherData.guruPpppPerempuan || 0),
-                        )}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-muted/30">
-                      <TableCell className="font-medium">Guru GTT</TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(reviewData.teacherData.guruGttLaki)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(reviewData.teacherData.guruGttPerempuan)}
-                      </TableCell>
-                      <TableCell className="text-center font-semibold">
-                        {formatNumber(
-                          (reviewData.teacherData.guruGttLaki || 0) +
-                            (reviewData.teacherData.guruGttPerempuan || 0),
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
+          <CardContent>
+            {initialData.guru.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Status Guru</TableHead>
+                    <TableHead className="text-right">Laki-laki</TableHead>
+                    <TableHead className="text-right">Perempuan</TableHead>
+                    <TableHead className="text-right">Total</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(() => {
+                    // Group data by status_guru
+                    const groupedData = initialData.guru.reduce(
+                      (acc, guru) => {
+                        if (!acc[guru.status_guru]) {
+                          acc[guru.status_guru] = { L: 0, P: 0 };
+                        }
+                        acc[guru.status_guru][guru.jenis_kelamin] = guru.jumlah;
+                        return acc;
+                      },
+                      {} as Record<string, { L: number; P: number }>,
+                    );
+
+                    return Object.entries(groupedData).map(([status, data]) => (
+                      <TableRow key={status}>
+                        <TableCell className="font-medium">{status}</TableCell>
+                        <TableCell className="text-right">
+                          {formatNumber(data.L)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {formatNumber(data.P)}
+                        </TableCell>
+                        <TableCell className="text-right font-medium">
+                          {formatNumber(data.L + data.P)}
+                        </TableCell>
+                      </TableRow>
+                    ));
+                  })()}
+                </TableBody>
+              </Table>
             ) : (
-              <div className="text-center py-8">
-                <Users className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                <p className="text-muted-foreground text-sm">
-                  Data belum diisi
-                </p>
-              </div>
+              <p className="text-muted-foreground">Belum ada data guru</p>
             )}
           </CardContent>
-        </Card>{' '}
-        {/* Student Data */}
-        <Card className="shadow-sm border-0 bg-card/50">
+        </Card>
+
+        {/* Data Siswa */}
+        <Card>
           <CardHeader>
             <SectionHeader
               icon={GraduationCap}
               title="Data Siswa"
-              isComplete={isDataComplete(reviewData?.studentData)}
+              isComplete={initialData.rombonganBelajar.length > 0}
             />
           </CardHeader>
-          <CardContent className="pt-2">
-            {reviewData?.studentData ? (
-              <div className="border rounded-lg overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/50">
-                      <TableHead className="font-semibold">Kelas</TableHead>
-                      <TableHead className="text-center font-semibold">
-                        Laki-laki
-                      </TableHead>
-                      <TableHead className="text-center font-semibold">
-                        Perempuan
-                      </TableHead>
-                      <TableHead className="text-center font-semibold">
-                        Total
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow className="hover:bg-muted/30">
-                      <TableCell className="font-medium">Kelas 7</TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(reviewData.studentData.siswaKelas7Laki)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(
-                          reviewData.studentData.siswaKelas7Perempuan,
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center font-semibold">
-                        {formatNumber(
-                          (reviewData.studentData.siswaKelas7Laki || 0) +
-                            (reviewData.studentData.siswaKelas7Perempuan || 0),
-                        )}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-muted/30">
-                      <TableCell className="font-medium">Kelas 8</TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(reviewData.studentData.siswaKelas8Laki)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(
-                          reviewData.studentData.siswaKelas8Perempuan,
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center font-semibold">
-                        {formatNumber(
-                          (reviewData.studentData.siswaKelas8Laki || 0) +
-                            (reviewData.studentData.siswaKelas8Perempuan || 0),
-                        )}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-muted/30">
-                      <TableCell className="font-medium">Kelas 9</TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(reviewData.studentData.siswaKelas9Laki)}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        {formatNumber(
-                          reviewData.studentData.siswaKelas9Perempuan,
-                        )}
-                      </TableCell>
-                      <TableCell className="text-center font-semibold">
-                        {formatNumber(
-                          (reviewData.studentData.siswaKelas9Laki || 0) +
-                            (reviewData.studentData.siswaKelas9Perempuan || 0),
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
+          <CardContent>
+            {initialData.rombonganBelajar.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Tingkatan Kelas</TableHead>
+                    <TableHead className="text-right">Laki-laki</TableHead>
+                    <TableHead className="text-right">Perempuan</TableHead>
+                    <TableHead className="text-right">Total</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {(() => {
+                    // Group data by tingkatan_kelas
+                    const groupedData = initialData.rombonganBelajar.reduce(
+                      (acc, rombel) => {
+                        if (!acc[rombel.tingkatan_kelas]) {
+                          acc[rombel.tingkatan_kelas] = { L: 0, P: 0 };
+                        }
+                        acc[rombel.tingkatan_kelas][rombel.jenis_kelamin] =
+                          rombel.jumlah_siswa;
+                        return acc;
+                      },
+                      {} as Record<string, { L: number; P: number }>,
+                    );
+
+                    // Sort by class level (7, 8, 9)
+                    return Object.entries(groupedData)
+                      .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                      .map(([kelas, data]) => (
+                        <TableRow key={kelas}>
+                          <TableCell className="font-medium">
+                            Kelas {kelas}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {formatNumber(data.L)}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {formatNumber(data.P)}
+                          </TableCell>
+                          <TableCell className="text-right font-medium">
+                            {formatNumber(data.L + data.P)}
+                          </TableCell>
+                        </TableRow>
+                      ));
+                  })()}
+                </TableBody>
+              </Table>
             ) : (
-              <div className="text-center py-8">
-                <GraduationCap className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                <p className="text-muted-foreground text-sm">
-                  Data belum diisi
-                </p>
-              </div>
+              <p className="text-muted-foreground">Belum ada data siswa</p>
             )}
           </CardContent>
         </Card>
-      </div>{' '}
-      {/* Step 4: Facility Data */}
-      <Card className="shadow-sm border-0 bg-card/50">
+      </div>
+
+      {/* Data Sarana */}
+      <Card>
         <CardHeader>
           <SectionHeader
             icon={Building2}
             title="Data Sarana"
-            isComplete={isDataComplete(reviewData?.facilityData)}
+            isComplete={initialData.sarana.length > 0}
           />
         </CardHeader>
-        <CardContent className="pt-2">
-          {reviewData?.facilityData ? (
-            <div className="border rounded-lg overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/50">
-                    <TableHead className="font-semibold">
-                      Jenis Sarana
-                    </TableHead>
-                    <TableHead className="text-center font-semibold">
-                      Total
-                    </TableHead>
-                    <TableHead className="text-center font-semibold">
-                      Baik
-                    </TableHead>
-                    <TableHead className="text-center font-semibold">
-                      Rusak
-                    </TableHead>
-                    <TableHead className="text-center font-semibold">
-                      Keterangan
-                    </TableHead>
+        <CardContent>
+          {initialData.sarana.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nama Sarana</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
+                  <TableHead className="text-right">Baik</TableHead>
+                  <TableHead className="text-right">Rusak</TableHead>
+                  <TableHead>Keterangan</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {initialData.sarana.map((sarana, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">
+                      {sarana.nama_sarana}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatNumber(sarana.jumlah_total)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatNumber(sarana.jumlah_kondisi_baik)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatNumber(sarana.jumlah_kondisi_rusak)}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {sarana.keterangan || '-'}
+                    </TableCell>
                   </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {[
-                    { key: 'ruangKelas', label: 'Ruang Kelas' },
-                    { key: 'perpustakaan', label: 'Perpustakaan' },
-                    {
-                      key: 'ruangKepalaSekolah',
-                      label: 'Ruang Kepala Sekolah',
-                    },
-                    { key: 'ruangGuru', label: 'Ruang Guru' },
-                    { key: 'aulaPertemuan', label: 'Aula Pertemuan' },
-                    { key: 'laboratoriumIpa', label: 'Laboratorium IPA' },
-                    { key: 'laboratoriumBahasa', label: 'Laboratorium Bahasa' },
-                    { key: 'laboratoriumTik', label: 'Laboratorium TIK' },
-                  ].map((facility, index) => {
-                    const facilityData = reviewData?.facilityData as Record<
-                      string,
-                      unknown
-                    >;
-                    const total =
-                      (facilityData?.[`${facility.key}Total`] as number) || 0;
-                    const baik =
-                      (facilityData?.[`${facility.key}Baik`] as number) || 0;
-                    const rusak =
-                      (facilityData?.[`${facility.key}Rusak`] as number) || 0;
-                    const keterangan =
-                      (facilityData?.[`${facility.key}Keterangan`] as string) ||
-                      '-';
-
-                    return (
-                      <TableRow key={index} className="hover:bg-muted/30">
-                        <TableCell className="font-medium">
-                          {facility.label}
-                        </TableCell>
-                        <TableCell className="text-center">
-                          {formatNumber(total)}
-                        </TableCell>
-                        <TableCell className="text-center text-green-600">
-                          {formatNumber(baik)}
-                        </TableCell>
-                        <TableCell className="text-center text-red-600">
-                          {formatNumber(rusak)}
-                        </TableCell>
-                        <TableCell className="text-center text-xs">
-                          {keterangan}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
+                ))}
+              </TableBody>
+            </Table>
           ) : (
-            <div className="text-center py-8">
-              <Building2 className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground text-sm">Data belum diisi</p>
-            </div>
+            <p className="text-muted-foreground">Belum ada data sarana</p>
           )}
         </CardContent>
-      </Card>{' '}
-      {/* Step 5: Infrastructure Data */}
-      <Card className="shadow-sm border-0 bg-card/50">
+      </Card>
+
+      {/* Data Prasarana */}
+      <Card>
         <CardHeader>
           <SectionHeader
             icon={Wrench}
             title="Data Prasarana"
-            isComplete={isDataComplete(reviewData?.infrastructureData)}
+            isComplete={initialData.prasarana.length > 0}
           />
         </CardHeader>
-        <CardContent className="pt-2">
-          {reviewData?.infrastructureData ? (
-            <div className="space-y-6">
-              {/* Main Infrastructure Table */}
-              <div className="border rounded-lg overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-muted/50">
-                      <TableHead className="font-semibold">
-                        Jenis Prasarana
-                      </TableHead>
-                      <TableHead className="text-center font-semibold">
-                        Total
-                      </TableHead>
-                      <TableHead className="text-center font-semibold">
-                        Baik
-                      </TableHead>
-                      <TableHead className="text-center font-semibold">
-                        Rusak
-                      </TableHead>
-                      <TableHead className="text-center font-semibold">
-                        Keterangan
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {[
-                      { key: 'mejaKursiSiswa', label: 'Meja & Kursi Siswa' },
-                      { key: 'komputer', label: 'Komputer' },
-                      { key: 'toiletSiswa', label: 'Toilet Siswa' },
-                      { key: 'toiletGuru', label: 'Toilet Guru' },
-                    ].map((infrastructure, index) => {
-                      const infrastructureData =
-                        reviewData?.infrastructureData as Record<
-                          string,
-                          unknown
-                        >;
-                      const total =
-                        (infrastructureData?.[
-                          `${infrastructure.key}Total`
-                        ] as number) || 0;
-                      const baik =
-                        (infrastructureData?.[
-                          `${infrastructure.key}Baik`
-                        ] as number) || 0;
-                      const rusak =
-                        (infrastructureData?.[
-                          `${infrastructure.key}Rusak`
-                        ] as number) || 0;
-                      const keterangan =
-                        (infrastructureData?.[
-                          `${infrastructure.key}Keterangan`
-                        ] as string) || '-';
-
-                      return (
-                        <TableRow key={index} className="hover:bg-muted/30">
-                          <TableCell className="font-medium">
-                            {infrastructure.label}
-                          </TableCell>
-                          <TableCell className="text-center">
-                            {formatNumber(total)}
-                          </TableCell>
-                          <TableCell className="text-center text-green-600">
-                            {formatNumber(baik)}
-                          </TableCell>
-                          <TableCell className="text-center text-red-600">
-                            {formatNumber(rusak)}
-                          </TableCell>
-                          <TableCell className="text-center text-xs">
-                            {keterangan}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-
-              {/* Prasarana Lainnya */}
-              {reviewData?.infrastructureData?.prasaranaLainnya &&
-                reviewData.infrastructureData.prasaranaLainnya.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold text-sm text-foreground mb-4 border-b border-border/50 pb-2">
-                      Prasarana Lainnya
-                    </h4>
-                    <div className="border rounded-lg overflow-hidden">
-                      <Table>
-                        <TableHeader>
-                          <TableRow className="bg-muted/50">
-                            <TableHead className="font-semibold">
-                              Nama Prasarana
-                            </TableHead>
-                            <TableHead className="text-center font-semibold">
-                              Total
-                            </TableHead>
-                            <TableHead className="text-center font-semibold">
-                              Baik
-                            </TableHead>
-                            <TableHead className="text-center font-semibold">
-                              Rusak
-                            </TableHead>
-                            <TableHead className="text-center font-semibold">
-                              Keterangan
-                            </TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {reviewData.infrastructureData.prasaranaLainnya.map(
-                            (
-                              item: {
-                                nama: string;
-                                jumlahTotal: number;
-                                jumlahBaik: number;
-                                jumlahRusak: number;
-                                keterangan?: string;
-                              },
-                              index: number,
-                            ) => (
-                              <TableRow
-                                key={index}
-                                className="hover:bg-muted/30"
-                              >
-                                <TableCell className="font-medium">
-                                  {item.nama}
-                                </TableCell>
-                                <TableCell className="text-center">
-                                  {formatNumber(item.jumlahTotal)}
-                                </TableCell>
-                                <TableCell className="text-center text-green-600">
-                                  {formatNumber(item.jumlahBaik)}
-                                </TableCell>
-                                <TableCell className="text-center text-red-600">
-                                  {formatNumber(item.jumlahRusak)}
-                                </TableCell>
-                                <TableCell className="text-center text-xs">
-                                  {item.keterangan || '-'}
-                                </TableCell>
-                              </TableRow>
-                            ),
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </div>
-                )}
-            </div>
+        <CardContent>
+          {initialData.prasarana.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nama Prasarana</TableHead>
+                  <TableHead className="text-right">Total</TableHead>
+                  <TableHead className="text-right">Baik</TableHead>
+                  <TableHead className="text-right">Rusak</TableHead>
+                  <TableHead>Keterangan</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {initialData.prasarana.map((prasarana, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">
+                      {prasarana.nama_prasarana}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatNumber(prasarana.jumlah_total)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatNumber(prasarana.jumlah_kondisi_baik)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {formatNumber(prasarana.jumlah_kondisi_rusak)}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {prasarana.keterangan || '-'}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           ) : (
-            <div className="text-center py-8">
-              <Wrench className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground text-sm">Data belum diisi</p>
-            </div>
+            <p className="text-muted-foreground">Belum ada data prasarana</p>
           )}
         </CardContent>
-      </Card>{' '}
-      {/* Step 6: Priority Needs */}
-      <Card className="shadow-sm border-0 bg-card/50">
+      </Card>
+
+      {/* Kebutuhan Prioritas */}
+      <Card>
         <CardHeader>
           <SectionHeader
             icon={Target}
             title="Kebutuhan Prioritas"
-            isComplete={isDataComplete(reviewData?.priorityNeedsData)}
+            isComplete={initialData.kebutuhanPrioritas.length > 0}
           />
         </CardHeader>
-        <CardContent className="pt-2">
-          {reviewData?.priorityNeedsData?.kebutuhanPrioritas ? (
-            <div className="bg-muted/30 p-4 rounded-lg">
-              <p className="text-sm leading-relaxed text-foreground">
-                {reviewData.priorityNeedsData.kebutuhanPrioritas}
-              </p>
+        <CardContent>
+          {initialData.kebutuhanPrioritas.length > 0 ? (
+            <div className="space-y-4">
+              {initialData.kebutuhanPrioritas.map((kebutuhan, index) => (
+                <div
+                  key={index}
+                  className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                >
+                  <p className="text-foreground">{kebutuhan.penjelasan}</p>
+                </div>
+              ))}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <Target className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground text-sm">Data belum diisi</p>
-            </div>
+            <p className="text-muted-foreground">
+              Belum ada data kebutuhan prioritas
+            </p>
           )}
         </CardContent>
-      </Card>{' '}
-      {/* Step 7: Attachments */}
-      <Card className="shadow-sm border-0 bg-card/50">
+      </Card>
+
+      {/* Lampiran */}
+      <Card>
         <CardHeader>
           <SectionHeader
             icon={FileText}
             title="Lampiran"
-            isComplete={isDataComplete(reviewData?.attachmentsData)}
+            isComplete={initialData.lampiran.length > 0}
           />
         </CardHeader>
-        <CardContent className="pt-2">
-          {reviewData?.attachmentsData &&
-          reviewData.attachmentsData.length > 0 ? (
+        <CardContent>
+          {initialData.lampiran.length > 0 ? (
             <div className="space-y-3">
-              {reviewData.attachmentsData.map(
-                (
-                  attachment: {
-                    id: string;
-                    nama_dokumen: string;
-                    url: string;
-                    keterangan: string;
-                  },
-                  index: number,
-                ) => {
-                  const FileIcon = getFileIcon(attachment.nama_dokumen);
-                  return (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-3 bg-muted/30 rounded-lg border border-border/50"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-primary/10 rounded-lg">
-                          <FileIcon className="w-4 h-4 text-primary" />
-                        </div>
-                        <div>
-                          <p className="font-medium text-sm text-foreground">
-                            {attachment.nama_dokumen}
-                          </p>
-                          {attachment.keterangan && (
-                            <p className="text-xs text-muted-foreground">
-                              {attachment.keterangan}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <Button variant="outline" size="sm" asChild>
-                        <a
-                          href={attachment.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                          Lihat
-                        </a>
-                      </Button>
+              {initialData.lampiran.map((lampiran, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <FileText className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="font-medium">{lampiran.nama_dokumen}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {lampiran.keterangan}
+                      </p>
                     </div>
-                  );
-                },
-              )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => window.open(lampiran.url, '_blank')}
+                      className="text-xs"
+                    >
+                      <Eye className="w-3 h-3 mr-1" />
+                      Lihat Data
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <FileText className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground text-sm">
-                Belum ada lampiran
-              </p>
-            </div>
+            <p className="text-muted-foreground">Belum ada lampiran</p>
           )}
         </CardContent>
       </Card>
+
       {/* Action Buttons */}
-      <div className="flex justify-between">
+      <div className="flex justify-between pt-6">
         <Button
           type="button"
           variant="outline"
           onClick={onBack}
+          className="text-sm px-6 py-2"
           disabled={disabled}
         >
           Kembali
         </Button>
-
         <Button
           type="button"
-          onClick={handleSubmit}
+          className="btn-primary text-sm px-6 py-2"
+          onClick={onSubmit}
           disabled={disabled}
-          className="min-w-32"
         >
-          <CheckCircle className="w-4 h-4 mr-2" />
-          Submit Data
+          Kirim untuk Verifikasi
         </Button>
       </div>
     </div>

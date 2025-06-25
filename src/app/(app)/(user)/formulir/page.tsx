@@ -16,109 +16,96 @@ import { StatusMessage } from './_components/status-message';
 import { ConfirmationDialog } from './_components/confirmation-dialog';
 import { SuccessDialog } from './_components/success-dialog';
 import { toast } from 'sonner';
-import { Step1Data } from '@/types/user-home.types';
+import {
+  FormulirStepStatus,
+  FormulirCompleteData,
+  FormulirPrasarana,
+} from '@/types/formulir.types';
+import { Step1Data } from './_schema/school-info.schema';
 import { Step2Data } from './_schema/teacher-data.schema';
 import { Step3Data } from './_schema/student-data.schema';
 import { Step4Data } from './_schema/facility-data.schema';
 import { Step5Data } from './_schema/infrastructure-data.schema';
 import { Step6Data } from './_schema/priority-needs.schema';
 import { Step7Data } from './_schema/attachments.schema';
-import { getDataCompletionStatusAction } from './_actions/data-completion.action';
-import { saveFacilityDataAction } from './_actions/facility-data.action';
-import { saveInfrastructureDataAction } from './_actions/infrastructure-data.action';
-import { savePriorityNeedsDataAction } from './_actions/priority-needs-data.action';
-import { saveLampiranDataAction } from './_actions/lampiran-data.action';
-import { updateSchoolInfoAction } from './_actions/school-info.action';
-import { saveTeacherDataAction } from './_actions/teacher-data.action';
-import { saveStudentDataAction } from './_actions/student-data.action';
+import {
+  getFormulirDataAction,
+  saveSekolahInfoAction,
+  saveGuruAction,
+  saveRombonganBelajarAction,
+  saveSaranaAction,
+  savePrasaranaAction,
+  saveKebutuhanPrioritasAction,
+  saveLampiranAction,
+  submitForReviewAction,
+  getFormulirStepStatusAction,
+} from './_actions/formulir.action';
 
 export default function FormulirPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [dataCompletionStatus, setDataCompletionStatus] = useState({
-    sekolahStatus: '',
-    reviewNote: null as string | null,
-    step1: false,
-    step2: false,
-    step3: false,
-    step4: false,
-    step5: false,
-    step6: false,
-    step7: false,
-    step8: false,
-  });
+  const [dataCompletionStatus, setDataCompletionStatus] =
+    useState<FormulirStepStatus>({
+      sekolahStatus: 'DRAFT',
+      reviewNote: null,
+      step1: false,
+      step2: false,
+      step3: false,
+      step4: false,
+      step5: false,
+      step6: false,
+      step7: false,
+      step8: false,
+    });
+  const [completeData, setCompleteData] = useState<FormulirCompleteData | null>(
+    null,
+  );
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Check if forms should be disabled based on school status
   const isFormDisabled =
     dataCompletionStatus.sekolahStatus === 'PENDING' ||
     dataCompletionStatus.sekolahStatus === 'APPROVED';
 
-  // Load data completion status on component mount
+  // Load formulir data and completion status on component mount
   useEffect(() => {
-    async function loadCompletionStatus() {
+    async function loadFormulirData() {
       try {
-        const result = await getDataCompletionStatusAction();
+        setIsLoading(true);
+        const result = await getFormulirDataAction();
 
         if (result.success && result.data) {
-          const safeData = {
-            sekolahStatus: result.data.sekolahStatus || '',
-            reviewNote:
-              (result.data as { reviewNote?: string | null })?.reviewNote ||
-              null,
-            step1: Boolean(result.data.step1),
-            step2: Boolean(result.data.step2),
-            step3: Boolean(result.data.step3),
-            step4: Boolean(result.data.step4),
-            step5: Boolean(result.data.step5),
-            step6: Boolean(result.data.step6),
-            step7: Boolean(result.data.step7),
-            step8: Boolean(result.data.step8),
-          };
+          setCompleteData(result.data.data);
+          setDataCompletionStatus(result.data.status);
 
-          setDataCompletionStatus(safeData);
-
-          const completed = Object.entries(safeData)
+          const completed = Object.entries(result.data.status)
             .filter(([key, isComplete]) => key.startsWith('step') && isComplete)
             .map(([step]) => parseInt(step.replace('step', '')));
 
           setCompletedSteps(completed);
         }
       } catch (error) {
-        console.error('Error loading completion status:', error);
+        console.error('Error loading formulir data:', error);
+        toast.error('Gagal memuat data formulir');
+      } finally {
+        setIsLoading(false);
       }
     }
-    loadCompletionStatus();
+    loadFormulirData();
   }, []);
+
   // Refresh completion status after form submissions
   const refreshCompletionStatus = async () => {
     try {
-      console.log('Refreshing completion status...');
-      const result = await getDataCompletionStatusAction();
+      const result = await getFormulirStepStatusAction();
 
       if (result.success && result.data) {
-        console.log('New status from server:', result.data.sekolahStatus);
+        setDataCompletionStatus(result.data);
 
-        const safeData = {
-          sekolahStatus: result.data.sekolahStatus || '',
-          reviewNote:
-            (result.data as { reviewNote?: string | null })?.reviewNote || null,
-          step1: Boolean(result.data.step1),
-          step2: Boolean(result.data.step2),
-          step3: Boolean(result.data.step3),
-          step4: Boolean(result.data.step4),
-          step5: Boolean(result.data.step5),
-          step6: Boolean(result.data.step6),
-          step7: Boolean(result.data.step7),
-          step8: Boolean(result.data.step8),
-        };
-
-        setDataCompletionStatus(safeData);
-        console.log('Updated dataCompletionStatus:', safeData);
-
-        const completed = Object.entries(safeData)
+        const completed = Object.entries(result.data)
           .filter(([key, isComplete]) => key.startsWith('step') && isComplete)
           .map(([step]) => parseInt(step.replace('step', '')));
 
@@ -130,7 +117,14 @@ export default function FormulirPage() {
   };
   const onStep1Submit = async (data: Step1Data) => {
     try {
-      const result = await updateSchoolInfoAction(data);
+      const result = await saveSekolahInfoAction({
+        nama_sekolah: data.namaSekolah,
+        npsn: data.npsn,
+        nama_kepala_sekolah: data.namaKepalaSekolah,
+        nip_kepala_sekolah: data.nipKepalaSekolah,
+        alamat_sekolah: data.alamatSekolah,
+        kecamatan: data.kecamatan,
+      });
       if (result.success) {
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 1), 1]);
         await refreshCompletionStatus();
@@ -147,7 +141,40 @@ export default function FormulirPage() {
 
   const onStep2Submit = async (data: Step2Data) => {
     try {
-      const result = await saveTeacherDataAction(data);
+      const guruData = [
+        {
+          status_guru: 'PNS' as const,
+          jenis_kelamin: 'L' as const,
+          jumlah: data.guruPnsLaki,
+        },
+        {
+          status_guru: 'PNS' as const,
+          jenis_kelamin: 'P' as const,
+          jumlah: data.guruPnsPerempuan,
+        },
+        {
+          status_guru: 'PPPK' as const,
+          jenis_kelamin: 'L' as const,
+          jumlah: data.guruPppkLaki,
+        },
+        {
+          status_guru: 'PPPK' as const,
+          jenis_kelamin: 'P' as const,
+          jumlah: data.guruPppkPerempuan,
+        },
+        {
+          status_guru: 'Honorer' as const,
+          jenis_kelamin: 'L' as const,
+          jumlah: data.guruHonorerLaki,
+        },
+        {
+          status_guru: 'Honorer' as const,
+          jenis_kelamin: 'P' as const,
+          jumlah: data.guruHonorerPerempuan,
+        },
+      ];
+
+      const result = await saveGuruAction({ dataGuru: guruData });
       if (result.success) {
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 2), 2]);
         await refreshCompletionStatus();
@@ -164,7 +191,42 @@ export default function FormulirPage() {
 
   const onStep3Submit = async (data: Step3Data) => {
     try {
-      const result = await saveStudentDataAction(data);
+      const rombonganBelajarData = [
+        {
+          tingkatan_kelas: '7',
+          jenis_kelamin: 'L' as const,
+          jumlah_siswa: data.siswaKelas7Laki,
+        },
+        {
+          tingkatan_kelas: '7',
+          jenis_kelamin: 'P' as const,
+          jumlah_siswa: data.siswaKelas7Perempuan,
+        },
+        {
+          tingkatan_kelas: '8',
+          jenis_kelamin: 'L' as const,
+          jumlah_siswa: data.siswaKelas8Laki,
+        },
+        {
+          tingkatan_kelas: '8',
+          jenis_kelamin: 'P' as const,
+          jumlah_siswa: data.siswaKelas8Perempuan,
+        },
+        {
+          tingkatan_kelas: '9',
+          jenis_kelamin: 'L' as const,
+          jumlah_siswa: data.siswaKelas9Laki,
+        },
+        {
+          tingkatan_kelas: '9',
+          jenis_kelamin: 'P' as const,
+          jumlah_siswa: data.siswaKelas9Perempuan,
+        },
+      ];
+
+      const result = await saveRombonganBelajarAction({
+        dataRombonganBelajar: rombonganBelajarData,
+      });
       if (result.success) {
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 3), 3]);
         await refreshCompletionStatus();
@@ -180,7 +242,74 @@ export default function FormulirPage() {
   };
   const onStep4Submit = async (data: Step4Data) => {
     try {
-      const result = await saveFacilityDataAction(data);
+      const saranaData = [
+        {
+          jenis_sarana: 'RuangKelas' as const,
+          nama_sarana: 'Ruang Kelas',
+          jumlah_total: data.ruangKelasTotal,
+          jumlah_kondisi_baik: data.ruangKelasBaik,
+          jumlah_kondisi_rusak: data.ruangKelasRusak,
+          keterangan: data.ruangKelasKeterangan,
+        },
+        {
+          jenis_sarana: 'Perpustakaan' as const,
+          nama_sarana: 'Perpustakaan',
+          jumlah_total: data.perpustakaanTotal,
+          jumlah_kondisi_baik: data.perpustakaanBaik,
+          jumlah_kondisi_rusak: data.perpustakaanRusak,
+          keterangan: data.perpustakaanKeterangan,
+        },
+        {
+          jenis_sarana: 'RuangKepalaSekolah' as const,
+          nama_sarana: 'Ruang Kepala Sekolah',
+          jumlah_total: data.ruangKepalaSekolahTotal,
+          jumlah_kondisi_baik: data.ruangKepalaSekolahBaik,
+          jumlah_kondisi_rusak: data.ruangKepalaSekolahRusak,
+          keterangan: data.ruangKepalaSekolahKeterangan,
+        },
+        {
+          jenis_sarana: 'RuangGuru' as const,
+          nama_sarana: 'Ruang Guru',
+          jumlah_total: data.ruangGuruTotal,
+          jumlah_kondisi_baik: data.ruangGuruBaik,
+          jumlah_kondisi_rusak: data.ruangGuruRusak,
+          keterangan: data.ruangGuruKeterangan,
+        },
+        {
+          jenis_sarana: 'AulaPertemuan' as const,
+          nama_sarana: 'Aula Pertemuan',
+          jumlah_total: data.aulaPertemuanTotal,
+          jumlah_kondisi_baik: data.aulaPertemuanBaik,
+          jumlah_kondisi_rusak: data.aulaPertemuanRusak,
+          keterangan: data.aulaPertemuanKeterangan,
+        },
+        {
+          jenis_sarana: 'LaboratoriumIPA' as const,
+          nama_sarana: 'Laboratorium IPA',
+          jumlah_total: data.laboratoriumIpaTotal,
+          jumlah_kondisi_baik: data.laboratoriumIpaBaik,
+          jumlah_kondisi_rusak: data.laboratoriumIpaRusak,
+          keterangan: data.laboratoriumIpaKeterangan,
+        },
+        {
+          jenis_sarana: 'LaboratoriumBahasa' as const,
+          nama_sarana: 'Laboratorium Bahasa',
+          jumlah_total: data.laboratoriumBahasaTotal,
+          jumlah_kondisi_baik: data.laboratoriumBahasaBaik,
+          jumlah_kondisi_rusak: data.laboratoriumBahasaRusak,
+          keterangan: data.laboratoriumBahasaKeterangan,
+        },
+        {
+          jenis_sarana: 'LaboratoriumTIK' as const,
+          nama_sarana: 'Laboratorium TIK',
+          jumlah_total: data.laboratoriumTikTotal,
+          jumlah_kondisi_baik: data.laboratoriumTikBaik,
+          jumlah_kondisi_rusak: data.laboratoriumTikRusak,
+          keterangan: data.laboratoriumTikKeterangan,
+        },
+      ];
+
+      const result = await saveSaranaAction({ dataSarana: saranaData });
       if (result.success) {
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 4), 4]);
         await refreshCompletionStatus();
@@ -196,7 +325,58 @@ export default function FormulirPage() {
   };
   const onStep5Submit = async (data: Step5Data) => {
     try {
-      const result = await saveInfrastructureDataAction(data);
+      const prasaranaData: FormulirPrasarana[] = [
+        {
+          jenis_prasarana: 'MejaKursiSiswa',
+          nama_prasarana: 'Meja dan Kursi Siswa',
+          jumlah_total: data.mejaKursiSiswaTotal,
+          jumlah_kondisi_baik: data.mejaKursiSiswaBaik,
+          jumlah_kondisi_rusak: data.mejaKursiSiswaRusak,
+          keterangan: data.mejaKursiSiswaKeterangan,
+        },
+        {
+          jenis_prasarana: 'Komputer',
+          nama_prasarana: 'Komputer',
+          jumlah_total: data.komputerTotal,
+          jumlah_kondisi_baik: data.komputerBaik,
+          jumlah_kondisi_rusak: data.komputerRusak,
+          keterangan: data.komputerKeterangan,
+        },
+        {
+          jenis_prasarana: 'JambanSiswa',
+          nama_prasarana: 'Toilet Siswa',
+          jumlah_total: data.toiletSiswaTotal,
+          jumlah_kondisi_baik: data.toiletSiswaBaik,
+          jumlah_kondisi_rusak: data.toiletSiswaRusak,
+          keterangan: data.toiletSiswaKeterangan,
+        },
+        {
+          jenis_prasarana: 'JambanGuru',
+          nama_prasarana: 'Toilet Guru',
+          jumlah_total: data.toiletGuruTotal,
+          jumlah_kondisi_baik: data.toiletGuruBaik,
+          jumlah_kondisi_rusak: data.toiletGuruRusak,
+          keterangan: data.toiletGuruKeterangan,
+        },
+      ];
+
+      // Add prasarana lainnya if exists
+      if (data.prasaranaLainnya) {
+        data.prasaranaLainnya.forEach((item) => {
+          prasaranaData.push({
+            jenis_prasarana: 'PrasaranaLainnya',
+            nama_prasarana: item.nama,
+            jumlah_total: item.jumlahTotal,
+            jumlah_kondisi_baik: item.jumlahBaik,
+            jumlah_kondisi_rusak: item.jumlahRusak,
+            keterangan: item.keterangan,
+          });
+        });
+      }
+
+      const result = await savePrasaranaAction({
+        dataPrasarana: prasaranaData,
+      });
       if (result.success) {
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 5), 5]);
         await refreshCompletionStatus();
@@ -212,7 +392,16 @@ export default function FormulirPage() {
   };
   const onStep6Submit = async (data: Step6Data) => {
     try {
-      const result = await savePriorityNeedsDataAction(data);
+      const kebutuhanPrioritasData = [
+        {
+          jenis: 'Sarana' as const,
+          penjelasan: data.kebutuhanPrioritas,
+        },
+      ];
+
+      const result = await saveKebutuhanPrioritasAction({
+        dataKebutuhanPrioritas: kebutuhanPrioritasData,
+      });
       if (result.success) {
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 6), 6]);
         await refreshCompletionStatus();
@@ -226,9 +415,12 @@ export default function FormulirPage() {
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
+
   const onStep7Submit = async (data: Step7Data) => {
     try {
-      const result = await saveLampiranDataAction(data);
+      const lampiranData = data.lampiran || [];
+
+      const result = await saveLampiranAction({ dataLampiran: lampiranData });
       if (result.success) {
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 7), 7]);
         await refreshCompletionStatus();
@@ -249,11 +441,7 @@ export default function FormulirPage() {
   const handleConfirmSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // Import the submit action
-      const { submitAllDataAction } = await import(
-        './_actions/review-data.action'
-      );
-      const result = await submitAllDataAction();
+      const result = await submitForReviewAction();
       if (result.success) {
         setCompletedSteps((prev) => [...prev.filter((s) => s !== 8), 8]);
 
@@ -302,71 +490,368 @@ export default function FormulirPage() {
           sekolahStatus={dataCompletionStatus.sekolahStatus}
           reviewNote={dataCompletionStatus.reviewNote}
         />
-        <Card className="bg-card rounded-xl shadow-sm border overflow-hidden p-6 md:p-8">
-          {' '}
-          {currentStep === 1 && (
-            <SchoolInfoForm
-              onSubmit={onStep1Submit}
-              disabled={isFormDisabled}
-              hideCompletionStatus={isFormDisabled}
-            />
-          )}{' '}
-          {currentStep === 2 && (
-            <TeacherDataForm
-              onSubmit={onStep2Submit}
-              onBack={() => setCurrentStep(1)}
-              disabled={isFormDisabled}
-              hideCompletionStatus={isFormDisabled}
-            />
-          )}
-          {currentStep === 3 && (
-            <StudentDataForm
-              onSubmit={onStep3Submit}
-              onBack={() => setCurrentStep(2)}
-              disabled={isFormDisabled}
-              hideCompletionStatus={isFormDisabled}
-            />
-          )}{' '}
-          {currentStep === 4 && (
-            <FacilityDataForm
-              onSubmit={onStep4Submit}
-              onBack={() => setCurrentStep(3)}
-              disabled={isFormDisabled}
-              hideCompletionStatus={isFormDisabled}
-            />
-          )}
-          {currentStep === 5 && (
-            <InfrastructureDataForm
-              onSubmit={onStep5Submit}
-              onBack={() => setCurrentStep(4)}
-              disabled={isFormDisabled}
-              hideCompletionStatus={isFormDisabled}
-            />
-          )}
-          {currentStep === 6 && (
-            <PriorityNeedsForm
-              onSubmit={onStep6Submit}
-              onBack={() => setCurrentStep(5)}
-              disabled={isFormDisabled}
-              hideCompletionStatus={isFormDisabled}
-            />
-          )}{' '}
-          {currentStep === 7 && (
-            <AttachmentsForm
-              onSubmit={onStep7Submit}
-              onBack={() => setCurrentStep(6)}
-              disabled={isFormDisabled}
-              hideFormInfo={isFormDisabled}
-            />
-          )}
-          {currentStep === 8 && (
-            <ReviewDataForm
-              onSubmit={onStep8Submit}
-              onBack={() => setCurrentStep(7)}
-              disabled={isFormDisabled}
-            />
-          )}
-        </Card>
+        {isLoading ? (
+          <Card className="bg-card rounded-xl shadow-sm border overflow-hidden p-6 md:p-8">
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Memuat data formulir...</p>
+              </div>
+            </div>
+          </Card>
+        ) : (
+          <Card className="bg-card rounded-xl shadow-sm border overflow-hidden p-6 md:p-8">
+            {' '}
+            {currentStep === 1 && (
+              <SchoolInfoForm
+                initialData={{
+                  namaSekolah: completeData?.sekolah.nama_sekolah || '',
+                  npsn: completeData?.sekolah.npsn || '',
+                  namaKepalaSekolah:
+                    completeData?.sekolah.nama_kepala_sekolah || '',
+                  nipKepalaSekolah:
+                    completeData?.sekolah.nip_kepala_sekolah || '',
+                  alamatSekolah: completeData?.sekolah.alamat_sekolah || '',
+                  kecamatan: completeData?.sekolah.kecamatan || '',
+                }}
+                onSubmit={onStep1Submit}
+                disabled={isFormDisabled}
+                hideCompletionStatus={isFormDisabled}
+              />
+            )}{' '}
+            {currentStep === 2 && (
+              <TeacherDataForm
+                initialData={{
+                  guruPnsLaki:
+                    completeData?.guru.find(
+                      (g) => g.status_guru === 'PNS' && g.jenis_kelamin === 'L',
+                    )?.jumlah || 0,
+                  guruPnsPerempuan:
+                    completeData?.guru.find(
+                      (g) => g.status_guru === 'PNS' && g.jenis_kelamin === 'P',
+                    )?.jumlah || 0,
+                  guruPppkLaki:
+                    completeData?.guru.find(
+                      (g) =>
+                        g.status_guru === 'PPPK' && g.jenis_kelamin === 'L',
+                    )?.jumlah || 0,
+                  guruPppkPerempuan:
+                    completeData?.guru.find(
+                      (g) =>
+                        g.status_guru === 'PPPK' && g.jenis_kelamin === 'P',
+                    )?.jumlah || 0,
+                  guruHonorerLaki:
+                    completeData?.guru.find(
+                      (g) =>
+                        g.status_guru === 'Honorer' && g.jenis_kelamin === 'L',
+                    )?.jumlah || 0,
+                  guruHonorerPerempuan:
+                    completeData?.guru.find(
+                      (g) =>
+                        g.status_guru === 'Honorer' && g.jenis_kelamin === 'P',
+                    )?.jumlah || 0,
+                }}
+                onSubmit={onStep2Submit}
+                onBack={() => setCurrentStep(1)}
+                disabled={isFormDisabled}
+                hideCompletionStatus={isFormDisabled}
+              />
+            )}
+            {currentStep === 3 && (
+              <StudentDataForm
+                initialData={{
+                  siswaKelas7Laki:
+                    completeData?.rombonganBelajar.find(
+                      (rb) =>
+                        rb.tingkatan_kelas === '7' && rb.jenis_kelamin === 'L',
+                    )?.jumlah_siswa || 0,
+                  siswaKelas7Perempuan:
+                    completeData?.rombonganBelajar.find(
+                      (rb) =>
+                        rb.tingkatan_kelas === '7' && rb.jenis_kelamin === 'P',
+                    )?.jumlah_siswa || 0,
+                  siswaKelas8Laki:
+                    completeData?.rombonganBelajar.find(
+                      (rb) =>
+                        rb.tingkatan_kelas === '8' && rb.jenis_kelamin === 'L',
+                    )?.jumlah_siswa || 0,
+                  siswaKelas8Perempuan:
+                    completeData?.rombonganBelajar.find(
+                      (rb) =>
+                        rb.tingkatan_kelas === '8' && rb.jenis_kelamin === 'P',
+                    )?.jumlah_siswa || 0,
+                  siswaKelas9Laki:
+                    completeData?.rombonganBelajar.find(
+                      (rb) =>
+                        rb.tingkatan_kelas === '9' && rb.jenis_kelamin === 'L',
+                    )?.jumlah_siswa || 0,
+                  siswaKelas9Perempuan:
+                    completeData?.rombonganBelajar.find(
+                      (rb) =>
+                        rb.tingkatan_kelas === '9' && rb.jenis_kelamin === 'P',
+                    )?.jumlah_siswa || 0,
+                }}
+                onSubmit={onStep3Submit}
+                onBack={() => setCurrentStep(2)}
+                disabled={isFormDisabled}
+                hideCompletionStatus={isFormDisabled}
+              />
+            )}{' '}
+            {currentStep === 4 && (
+              <FacilityDataForm
+                initialData={{
+                  ruangKelasTotal:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangKelas',
+                    )?.jumlah_total || 0,
+                  ruangKelasBaik:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangKelas',
+                    )?.jumlah_kondisi_baik || 0,
+                  ruangKelasRusak:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangKelas',
+                    )?.jumlah_kondisi_rusak || 0,
+                  ruangKelasKeterangan:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangKelas',
+                    )?.keterangan || '',
+                  laboratoriumIpaTotal:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumIPA',
+                    )?.jumlah_total || 0,
+                  laboratoriumIpaBaik:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumIPA',
+                    )?.jumlah_kondisi_baik || 0,
+                  laboratoriumIpaRusak:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumIPA',
+                    )?.jumlah_kondisi_rusak || 0,
+                  laboratoriumIpaKeterangan:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumIPA',
+                    )?.keterangan || '',
+                  perpustakaanTotal:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'Perpustakaan',
+                    )?.jumlah_total || 0,
+                  perpustakaanBaik:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'Perpustakaan',
+                    )?.jumlah_kondisi_baik || 0,
+                  perpustakaanRusak:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'Perpustakaan',
+                    )?.jumlah_kondisi_rusak || 0,
+                  perpustakaanKeterangan:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'Perpustakaan',
+                    )?.keterangan || '',
+                  laboratoriumBahasaTotal:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumBahasa',
+                    )?.jumlah_total || 0,
+                  laboratoriumBahasaBaik:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumBahasa',
+                    )?.jumlah_kondisi_baik || 0,
+                  laboratoriumBahasaRusak:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumBahasa',
+                    )?.jumlah_kondisi_rusak || 0,
+                  laboratoriumBahasaKeterangan:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumBahasa',
+                    )?.keterangan || '',
+                  laboratoriumTikTotal:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumTIK',
+                    )?.jumlah_total || 0,
+                  laboratoriumTikBaik:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumTIK',
+                    )?.jumlah_kondisi_baik || 0,
+                  laboratoriumTikRusak:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumTIK',
+                    )?.jumlah_kondisi_rusak || 0,
+                  laboratoriumTikKeterangan:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'LaboratoriumTIK',
+                    )?.keterangan || '',
+                  aulaPertemuanTotal:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'AulaPertemuan',
+                    )?.jumlah_total || 0,
+                  aulaPertemuanBaik:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'AulaPertemuan',
+                    )?.jumlah_kondisi_baik || 0,
+                  aulaPertemuanRusak:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'AulaPertemuan',
+                    )?.jumlah_kondisi_rusak || 0,
+                  aulaPertemuanKeterangan:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'AulaPertemuan',
+                    )?.keterangan || '',
+                  ruangGuruTotal:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangGuru',
+                    )?.jumlah_total || 0,
+                  ruangGuruBaik:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangGuru',
+                    )?.jumlah_kondisi_baik || 0,
+                  ruangGuruRusak:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangGuru',
+                    )?.jumlah_kondisi_rusak || 0,
+                  ruangGuruKeterangan:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangGuru',
+                    )?.keterangan || '',
+                  ruangKepalaSekolahTotal:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangKepalaSekolah',
+                    )?.jumlah_total || 0,
+                  ruangKepalaSekolahBaik:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangKepalaSekolah',
+                    )?.jumlah_kondisi_baik || 0,
+                  ruangKepalaSekolahRusak:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangKepalaSekolah',
+                    )?.jumlah_kondisi_rusak || 0,
+                  ruangKepalaSekolahKeterangan:
+                    completeData?.sarana.find(
+                      (s) => s.jenis_sarana === 'RuangKepalaSekolah',
+                    )?.keterangan || '',
+                }}
+                onSubmit={onStep4Submit}
+                onBack={() => setCurrentStep(3)}
+                disabled={isFormDisabled}
+                hideCompletionStatus={isFormDisabled}
+              />
+            )}
+            {currentStep === 5 && (
+              <InfrastructureDataForm
+                initialData={{
+                  mejaKursiSiswaTotal:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'MejaKursiSiswa',
+                    )?.jumlah_total || 0,
+                  mejaKursiSiswaBaik:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'MejaKursiSiswa',
+                    )?.jumlah_kondisi_baik || 0,
+                  mejaKursiSiswaRusak:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'MejaKursiSiswa',
+                    )?.jumlah_kondisi_rusak || 0,
+                  mejaKursiSiswaKeterangan:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'MejaKursiSiswa',
+                    )?.keterangan || '',
+                  komputerTotal:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'Komputer',
+                    )?.jumlah_total || 0,
+                  komputerBaik:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'Komputer',
+                    )?.jumlah_kondisi_baik || 0,
+                  komputerRusak:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'Komputer',
+                    )?.jumlah_kondisi_rusak || 0,
+                  komputerKeterangan:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'Komputer',
+                    )?.keterangan || '',
+                  toiletSiswaTotal:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'JambanSiswa',
+                    )?.jumlah_total || 0,
+                  toiletSiswaBaik:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'JambanSiswa',
+                    )?.jumlah_kondisi_baik || 0,
+                  toiletSiswaRusak:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'JambanSiswa',
+                    )?.jumlah_kondisi_rusak || 0,
+                  toiletSiswaKeterangan:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'JambanSiswa',
+                    )?.keterangan || '',
+                  toiletGuruTotal:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'JambanGuru',
+                    )?.jumlah_total || 0,
+                  toiletGuruBaik:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'JambanGuru',
+                    )?.jumlah_kondisi_baik || 0,
+                  toiletGuruRusak:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'JambanGuru',
+                    )?.jumlah_kondisi_rusak || 0,
+                  toiletGuruKeterangan:
+                    completeData?.prasarana.find(
+                      (p) => p.jenis_prasarana === 'JambanGuru',
+                    )?.keterangan || '',
+                  prasaranaLainnya:
+                    completeData?.prasarana
+                      .filter((p) => p.jenis_prasarana === 'PrasaranaLainnya')
+                      .map((p) => ({
+                        nama: p.nama_prasarana,
+                        jumlahTotal: p.jumlah_total,
+                        jumlahBaik: p.jumlah_kondisi_baik,
+                        jumlahRusak: p.jumlah_kondisi_rusak,
+                        keterangan: p.keterangan || '',
+                      })) || [],
+                }}
+                onSubmit={onStep5Submit}
+                onBack={() => setCurrentStep(4)}
+                disabled={isFormDisabled}
+                hideCompletionStatus={isFormDisabled}
+              />
+            )}
+            {currentStep === 6 && (
+              <PriorityNeedsForm
+                initialData={{
+                  kebutuhanPrioritas:
+                    completeData?.kebutuhanPrioritas?.[0]?.penjelasan || '',
+                }}
+                onSubmit={onStep6Submit}
+                onBack={() => setCurrentStep(5)}
+                disabled={isFormDisabled}
+                hideCompletionStatus={isFormDisabled}
+              />
+            )}{' '}
+            {currentStep === 7 && (
+              <AttachmentsForm
+                initialData={{
+                  lampiran: completeData?.lampiran || [],
+                }}
+                onSubmit={onStep7Submit}
+                onBack={() => setCurrentStep(6)}
+                disabled={isFormDisabled}
+                hideFormInfo={isFormDisabled}
+              />
+            )}
+            {currentStep === 8 && completeData && (
+              <ReviewDataForm
+                initialData={completeData}
+                onSubmit={onStep8Submit}
+                onBack={() => setCurrentStep(7)}
+                disabled={isFormDisabled}
+              />
+            )}
+          </Card>
+        )}
       </div>
       {/* Confirmation Dialog */}
       <ConfirmationDialog

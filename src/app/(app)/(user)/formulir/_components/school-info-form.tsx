@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -19,116 +19,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ChevronRight, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { toast } from 'sonner';
-import {
-  step1Schema,
-  Step1Data,
-  ExistingSchoolData,
-} from '../_schema/school-info.schema';
-import {
-  getSchoolInfoAction,
-  updateSchoolInfoAction,
-} from '../_actions/school-info.action';
+import { ChevronRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import { step1Schema, Step1Data } from '../_schema/school-info.schema';
 import { KECAMATAN_LIST } from '@/constants/kecamatan';
 
 interface SchoolInfoFormProps {
+  initialData: Step1Data;
   onSubmit: (data: Step1Data) => void;
   disabled?: boolean;
   hideCompletionStatus?: boolean;
 }
 
 export function SchoolInfoForm({
+  initialData,
   onSubmit,
   disabled = false,
   hideCompletionStatus = false,
 }: SchoolInfoFormProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [existingData, setExistingData] = useState<ExistingSchoolData | null>(
-    null,
-  );
-
   const form = useForm<Step1Data>({
     resolver: zodResolver(step1Schema),
-    defaultValues: {
-      namaSekolah: '',
-      npsn: '',
-      namaKepalaSekolah: '',
-      nipKepalaSekolah: '',
-      alamatSekolah: '',
-      kecamatan: '',
-    },
+    defaultValues: initialData,
   });
 
-  // Load existing school data on component mount
-  useEffect(() => {
-    async function loadSchoolData() {
-      try {
-        setIsLoading(true);
-        setLoadError(null);
-
-        const result = await getSchoolInfoAction();
-
-        if (result.success && result.data) {
-          setExistingData(result.data);
-
-          // Pre-populate form with existing data
-          form.reset({
-            namaSekolah: result.data.namaSekolah || '',
-            npsn: result.data.npsn || '',
-            namaKepalaSekolah: result.data.namaKepalaSekolah || '',
-            nipKepalaSekolah: result.data.nipKepalaSekolah || '',
-            alamatSekolah: result.data.alamatSekolah || '',
-            kecamatan: result.data.kecamatan || '',
-          });
-        } else {
-          setLoadError(result.error || 'Gagal memuat data sekolah');
-        }
-      } catch (error) {
-        console.error('Error loading school data:', error);
-        setLoadError('Terjadi kesalahan saat memuat data');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadSchoolData();
-  }, [form]);
-
-  // Handle form submission
-  async function handleSubmit(values: Step1Data) {
-    try {
-      setIsSubmitting(true);
-
-      const result = await updateSchoolInfoAction(values);
-
-      if (result.success) {
-        toast.success('Informasi sekolah berhasil diperbarui');
-        onSubmit(values);
-      } else {
-        toast.error(result.error || 'Gagal menyimpan informasi sekolah');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error('Terjadi kesalahan saat menyimpan data');
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
   // Check if field has existing data
-  const hasExistingData = (fieldName: keyof ExistingSchoolData): boolean => {
-    return existingData ? Boolean(existingData[fieldName]?.trim()) : false;
+  const hasExistingData = (fieldName: keyof Step1Data): boolean => {
+    return Boolean(initialData[fieldName]?.trim());
   };
 
   // Get completion status
   const getCompletionStatus = () => {
-    if (!existingData) return { completed: 0, total: 6 };
-
-    const fields: (keyof ExistingSchoolData)[] = [
+    const fields: (keyof Step1Data)[] = [
       'namaSekolah',
       'npsn',
       'namaKepalaSekolah',
@@ -145,32 +65,10 @@ export function SchoolInfoForm({
   const completionPercentage = Math.round(
     (completionStatus.completed / completionStatus.total) * 100,
   );
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="flex items-center space-x-2">
-          <Loader2 className="w-5 h-5 animate-spin" />
-          <span className="text-sm text-muted-foreground">
-            Memuat data sekolah...
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  if (loadError) {
-    return (
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>{loadError}</AlertDescription>
-      </Alert>
-    );
-  }
   return (
     <div className="space-y-6">
       {/* Completion Status */}
-      {existingData && !hideCompletionStatus && (
+      {!hideCompletionStatus && (
         <div
           className={`rounded-lg border p-4 ${
             completionPercentage === 100
@@ -200,7 +98,7 @@ export function SchoolInfoForm({
       )}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
@@ -218,7 +116,6 @@ export function SchoolInfoForm({
                       placeholder="Masukkan nama sekolah"
                       {...field}
                       readOnly={disabled}
-                      disabled={isSubmitting}
                       className={`${
                         hasExistingData('namaSekolah') ? 'border-green-200' : ''
                       } ${disabled ? 'cursor-default' : ''}`}
@@ -246,7 +143,6 @@ export function SchoolInfoForm({
                       maxLength={8}
                       {...field}
                       readOnly={disabled}
-                      disabled={isSubmitting}
                       className={`${
                         hasExistingData('npsn') ? 'border-green-200' : ''
                       } ${disabled ? 'cursor-default' : ''}`}
@@ -273,7 +169,6 @@ export function SchoolInfoForm({
                       placeholder="Masukkan nama kepala sekolah"
                       {...field}
                       readOnly={disabled}
-                      disabled={isSubmitting}
                       className={`${
                         hasExistingData('namaKepalaSekolah')
                           ? 'border-green-200'
@@ -303,7 +198,6 @@ export function SchoolInfoForm({
                       maxLength={18}
                       {...field}
                       readOnly={disabled}
-                      disabled={isSubmitting}
                       className={`${
                         hasExistingData('nipKepalaSekolah')
                           ? 'border-green-200'
@@ -330,7 +224,7 @@ export function SchoolInfoForm({
                   <Select
                     onValueChange={field.onChange}
                     value={field.value}
-                    disabled={isSubmitting || disabled}
+                    disabled={disabled}
                   >
                     <FormControl>
                       <SelectTrigger
@@ -371,7 +265,6 @@ export function SchoolInfoForm({
                     placeholder="Masukkan alamat lengkap sekolah"
                     {...field}
                     readOnly={disabled}
-                    disabled={isSubmitting}
                     className={`min-h-[100px] ${
                       hasExistingData('alamatSekolah') ? 'border-green-200' : ''
                     } ${disabled ? 'cursor-default' : ''}`}
@@ -386,19 +279,10 @@ export function SchoolInfoForm({
             <Button
               type="submit"
               className="btn-primary text-sm px-6 py-2"
-              disabled={isSubmitting || disabled}
+              disabled={disabled}
             >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Menyimpan...
-                </>
-              ) : (
-                <>
-                  Lanjut ke Data Guru
-                  <ChevronRight className="w-4 h-4 ml-2" />
-                </>
-              )}
+              Lanjut ke Data Guru
+              <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
         </form>

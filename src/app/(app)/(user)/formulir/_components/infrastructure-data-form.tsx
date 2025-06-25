@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -22,20 +22,15 @@ import {
   Trash2,
   Loader2,
   CheckCircle,
-  AlertCircle,
 } from 'lucide-react';
-import { toast } from 'sonner';
 import { step5Schema, Step5Data } from '../_schema/infrastructure-data.schema';
-import {
-  getInfrastructureDataAction,
-  saveInfrastructureDataAction,
-} from '../_actions/infrastructure-data.action';
 
 interface InfrastructureDataFormProps {
   onSubmit: (data: Step5Data) => void;
   onBack: () => void;
   disabled?: boolean;
   hideCompletionStatus?: boolean;
+  initialData?: Step5Data;
 }
 
 export function InfrastructureDataForm({
@@ -43,14 +38,12 @@ export function InfrastructureDataForm({
   onBack,
   disabled = false,
   hideCompletionStatus = false,
+  initialData,
 }: InfrastructureDataFormProps) {
-  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [hasExistingData, setHasExistingData] = useState(false);
   const form = useForm<Step5Data>({
     resolver: zodResolver(step5Schema),
-    defaultValues: {
+    defaultValues: initialData || {
       mejaKursiSiswaTotal: 0,
       mejaKursiSiswaBaik: 0,
       mejaKursiSiswaRusak: 0,
@@ -75,56 +68,11 @@ export function InfrastructureDataForm({
     name: 'prasaranaLainnya',
   });
 
-  // Load existing infrastructure data on component mount
-  useEffect(() => {
-    async function loadInfrastructureData() {
-      try {
-        setIsLoading(true);
-        setLoadError(null);
-
-        const result = await getInfrastructureDataAction();
-
-        if (result.success && result.data) {
-          form.reset(result.data);
-
-          // Check if there's existing data (non-zero values)
-          const hasData = Object.entries(result.data).some(([key, value]) => {
-            if (key === 'prasaranaLainnya') {
-              return Array.isArray(value) && value.length > 0;
-            }
-            return typeof value === 'string' && Number(value) > 0;
-          });
-          setHasExistingData(hasData);
-        } else {
-          setLoadError(result.error || 'Gagal memuat data prasarana');
-        }
-      } catch (error) {
-        console.error('Error loading infrastructure data:', error);
-        setLoadError('Terjadi kesalahan saat memuat data');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadInfrastructureData();
-  }, [form]);
-
   // Handle form submission
   async function handleSubmit(values: Step5Data) {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-
-      const result = await saveInfrastructureDataAction(values);
-
-      if (result.success) {
-        toast.success('Data prasarana berhasil disimpan');
-        onSubmit(values);
-      } else {
-        toast.error(result.error || 'Gagal menyimpan data prasarana');
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      toast.error('Terjadi kesalahan saat menyimpan data');
+      onSubmit(values);
     } finally {
       setIsSubmitting(false);
     }
@@ -286,30 +234,6 @@ export function InfrastructureDataForm({
     });
   };
 
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">
-            Memuat data prasarana...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state
-  if (loadError) {
-    return (
-      <Alert variant="destructive">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>{loadError}</AlertDescription>
-      </Alert>
-    );
-  }
-
   return (
     <div className="space-y-6">
       {' '}
@@ -325,7 +249,7 @@ export function InfrastructureDataForm({
         </p>
       </div>{' '}
       {/* Existing Data Alert */}
-      {hasExistingData && !hideCompletionStatus && (
+      {initialData && !hideCompletionStatus && (
         <Alert className="border-green-200 bg-green-50">
           <CheckCircle className="w-4 h-4 text-green-600" />
           <AlertDescription className="text-green-800">

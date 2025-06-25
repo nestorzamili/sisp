@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
@@ -23,21 +23,15 @@ import {
   User,
   Building,
   CheckCircle,
-  Loader2,
-  AlertCircle,
 } from 'lucide-react';
-import { toast } from 'sonner';
 import { step4Schema, Step4Data } from '../_schema/facility-data.schema';
-import {
-  getFacilityDataAction,
-  saveFacilityDataAction,
-} from '../_actions/facility-data.action';
 
 interface FacilityDataFormProps {
   onSubmit: (data: Step4Data) => void;
   onBack: () => void;
   disabled?: boolean;
   hideCompletionStatus?: boolean;
+  initialData?: Step4Data;
 }
 
 export function FacilityDataForm({
@@ -45,14 +39,12 @@ export function FacilityDataForm({
   onBack,
   disabled = false,
   hideCompletionStatus = false,
+  initialData,
 }: FacilityDataFormProps) {
-  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [hasExistingData, setHasExistingData] = useState(false);
   const form = useForm<Step4Data>({
     resolver: zodResolver(step4Schema),
-    defaultValues: {
+    defaultValues: initialData || {
       ruangKelasTotal: 0,
       ruangKelasBaik: 0,
       ruangKelasRusak: 0,
@@ -86,55 +78,13 @@ export function FacilityDataForm({
       laboratoriumTikRusak: 0,
       laboratoriumTikKeterangan: '',
     },
-  }); // Load existing facility data on component mount
-  useEffect(() => {
-    async function loadFacilityData() {
-      try {
-        setIsLoading(true);
-        setLoadError(null);
+  });
 
-        const result = await getFacilityDataAction();
-
-        if (result.success && result.data) {
-          form.reset(result.data);
-
-          // Check if there's existing data (non-zero values)
-          const hasData = Object.entries(result.data).some(([, value]) => {
-            if (typeof value === 'string') {
-              return value.trim() !== '';
-            }
-            return typeof value === 'number' && value > 0;
-          });
-          setHasExistingData(hasData);
-        } else {
-          setLoadError(result.error || 'Gagal memuat data sarana');
-        }
-      } catch (error) {
-        console.error('Error loading facility data:', error);
-        setLoadError('Terjadi kesalahan saat memuat data');
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadFacilityData();
-  }, [form]);
   // Handle form submission
   const handleSubmit = async (values: Step4Data) => {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-
-      const result = await saveFacilityDataAction(values);
-
-      if (result.success) {
-        toast.success('Data sarana berhasil disimpan');
-        onSubmit(values);
-      } else {
-        toast.error(result.error || 'Gagal menyimpan data sarana');
-      }
-    } catch (error) {
-      console.error('Error submitting facility data:', error);
-      toast.error('Terjadi kesalahan saat menyimpan data');
+      onSubmit(values);
     } finally {
       setIsSubmitting(false);
     }
@@ -262,35 +212,6 @@ export function FacilityDataForm({
       />
     </div>
   );
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="w-8 h-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Memuat data sarana...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state
-  if (loadError) {
-    return (
-      <div className="space-y-4">
-        <Alert variant="destructive">
-          <AlertCircle className="w-4 h-4" />
-          <AlertDescription>{loadError}</AlertDescription>
-        </Alert>
-        <div className="flex justify-between">
-          <Button variant="outline" onClick={onBack}>
-            Kembali
-          </Button>
-          <Button onClick={() => window.location.reload()}>Coba Lagi</Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -306,7 +227,7 @@ export function FacilityDataForm({
           </p>
         </div>{' '}
         {/* Existing Data Alert */}
-        {hasExistingData && !hideCompletionStatus && (
+        {initialData && !hideCompletionStatus && (
           <Alert className="border-green-200 bg-green-50">
             <CheckCircle className="w-4 h-4 text-green-600" />
             <AlertDescription className="text-green-800">
