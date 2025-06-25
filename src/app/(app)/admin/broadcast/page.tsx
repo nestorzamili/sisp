@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { BroadcastForm } from './_components/broadcast-form';
 import { BroadcastStats } from './_components/broadcast-stats';
 import { BroadcastHistory } from './_components/broadcast-history';
@@ -9,10 +9,6 @@ export default function BroadcastPage() {
   const [refreshKey, setRefreshKey] = useState(0);
   const historyRef = useRef<{ refresh: () => void } | null>(null);
   const statsRef = useRef<{ refresh: () => void } | null>(null);
-
-  useEffect(() => {
-    document.title = 'Broadcast Notification | SISP';
-  }, []);
 
   const handleBroadcastSuccess = () => {
     // Refresh history and stats

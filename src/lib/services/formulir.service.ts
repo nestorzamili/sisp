@@ -721,11 +721,11 @@ export class FormulirService {
         };
       }
 
-      if (sekolah.status !== 'DRAFT') {
+      if (sekolah.status !== 'DRAFT' && sekolah.status !== 'REJECTED') {
         return {
           success: false,
           error:
-            'Data tidak dapat disubmit karena sudah pernah disubmit sebelumnya',
+            'Data tidak dapat disubmit karena status sudah PENDING atau APPROVED',
         };
       }
 
