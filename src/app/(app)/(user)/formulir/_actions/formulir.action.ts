@@ -309,38 +309,6 @@ export async function submitForReviewAction(): Promise<FormulirServiceResponse> 
 }
 
 /**
- * Save all formulir data at once
- */
-export async function saveAllFormulirDataAction(
-  data: Partial<FormulirCompleteData>,
-): Promise<FormulirServiceResponse<FormulirCompleteData>> {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    if (!session?.user?.id) {
-      return {
-        success: false,
-        error: 'Unauthorized',
-      };
-    }
-
-    const result = await FormulirService.saveAllFormulirData(
-      session.user.id,
-      data,
-    );
-    return result;
-  } catch (error) {
-    console.error('Error saving all formulir data:', error);
-    return {
-      success: false,
-      error: 'Gagal menyimpan data formulir',
-    };
-  }
-}
-
-/**
  * Get step status only (for refreshing status after saves)
  */
 export async function getFormulirStepStatusAction(): Promise<

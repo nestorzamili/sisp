@@ -95,3 +95,29 @@ export async function getSekolahDetail(id: string) {
     };
   }
 }
+
+/**
+ * Generate sekolah report data for PDF export
+ */
+export async function generateSekolahReport(options?: {
+  kecamatan?: string[];
+}) {
+  try {
+    const { ReportService } = await import('@/lib/services/report.service');
+
+    const reportData = await ReportService.generateReport({
+      kecamatan: options?.kecamatan,
+    });
+
+    return {
+      success: true,
+      data: reportData,
+    };
+  } catch (error) {
+    console.error('Error generating sekolah report:', error);
+    return {
+      success: false,
+      error: 'Gagal menggenerate laporan data sekolah',
+    };
+  }
+}

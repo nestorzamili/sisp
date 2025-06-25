@@ -1,6 +1,7 @@
 'use client';
 
 import { SekolahTable } from './_components/sekolah-table';
+import { DownloadReportButton } from './_components/download-report-button';
 
 export default function SekolahPage() {
   return (
@@ -12,6 +13,9 @@ export default function SekolahPage() {
           <p className="text-muted-foreground">
             Kelola data sekolah yang terdaftar dalam sistem
           </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <DownloadReportButton />
         </div>
       </div>
 

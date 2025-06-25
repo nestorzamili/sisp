@@ -10,15 +10,16 @@ export default function GeneralError() {
     <div className="h-svh w-full">
       <div className="m-auto flex h-full w-full flex-col items-center justify-center gap-2">
         <h1 className="text-[7rem] font-bold leading-tight">500</h1>
-        <span className="font-medium">Oops! Something went wrong {`:')`}</span>
+        <span className="font-medium">Oops! Terjadi kesalahan {`:')`}</span>
         <p className="text-center text-muted-foreground">
-          We apologize for the inconvenience. <br /> Please try again later.
+          Mohon maaf atas ketidaknyamanannya. <br /> Silakan coba beberapa saat
+          lagi.
         </p>
         <div className="mt-6 flex gap-4">
           <Button variant="outline" onClick={() => router.back()}>
-            Go Back
+            Kembali
           </Button>
-          <Button onClick={() => router.push('/')}>Back to Home</Button>
+          <Button onClick={() => router.push('/')}>Ke Beranda</Button>
         </div>
       </div>
     </div>
