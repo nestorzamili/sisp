@@ -1,26 +1,26 @@
 import { z } from 'zod';
+import { FormulirCompleteData } from '@/types/formulir.types';
 
 export const step1Schema = z.object({
   namaSekolah: z.string().min(1, 'Nama sekolah harus diisi'),
-  npsn: z.string().min(8, 'NPSN harus 8 digit').max(8, 'NPSN harus 8 digit'),
+  npsn: z.string().min(1, 'NPSN harus diisi'),
   namaKepalaSekolah: z.string().min(1, 'Nama kepala sekolah harus diisi'),
-  nipKepalaSekolah: z
-    .string()
-    .min(18, 'NIP harus 18 digit')
-    .max(18, 'NIP harus 18 digit'),
+  nipKepalaSekolah: z.string().min(1, 'NIP kepala sekolah harus diisi'),
   alamatSekolah: z.string().min(1, 'Alamat sekolah harus diisi'),
-  kecamatan: z.string().min(1, 'Kecamatan harus dipilih'),
-});
-
-// Schema for existing data (allows empty strings for incomplete data)
-export const existingSchoolDataSchema = z.object({
-  namaSekolah: z.string(),
-  npsn: z.string(),
-  namaKepalaSekolah: z.string(),
-  nipKepalaSekolah: z.string(),
-  alamatSekolah: z.string(),
-  kecamatan: z.string(),
+  kecamatan: z.string().min(1, 'Kecamatan harus diisi'),
 });
 
 export type Step1Data = z.infer<typeof step1Schema>;
-export type ExistingSchoolData = z.infer<typeof existingSchoolDataSchema>;
+
+export function getStep1InitialData(
+  completeData: FormulirCompleteData | null,
+): Step1Data {
+  return {
+    namaSekolah: completeData?.sekolah.nama_sekolah || '',
+    npsn: completeData?.sekolah.npsn || '',
+    namaKepalaSekolah: completeData?.sekolah.nama_kepala_sekolah || '',
+    nipKepalaSekolah: completeData?.sekolah.nip_kepala_sekolah || '',
+    alamatSekolah: completeData?.sekolah.alamat_sekolah || '',
+    kecamatan: completeData?.sekolah.kecamatan || '',
+  };
+}

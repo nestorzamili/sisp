@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { FormulirCompleteData } from '@/types/formulir.types';
 
 export const step7Schema = z.object({
   lampiran: z
@@ -19,3 +20,11 @@ export const step7Schema = z.object({
 });
 
 export type Step7Data = z.infer<typeof step7Schema>;
+
+export function getStep7InitialData(
+  completeData: FormulirCompleteData | null,
+): Step7Data {
+  return {
+    lampiran: completeData?.lampiran || [],
+  };
+}

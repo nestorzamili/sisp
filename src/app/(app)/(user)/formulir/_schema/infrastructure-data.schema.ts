@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { FormulirCompleteData } from '@/types/formulir.types';
 
 export const step5Schema = z.object({
   // Meja dan Kursi Siswa
@@ -39,3 +40,76 @@ export const step5Schema = z.object({
 });
 
 export type Step5Data = z.infer<typeof step5Schema>;
+
+export function getStep5InitialData(
+  completeData: FormulirCompleteData | null,
+): Step5Data {
+  return {
+    mejaKursiSiswaTotal:
+      completeData?.prasarana.find(
+        (p) => p.jenis_prasarana === 'MejaKursiSiswa',
+      )?.jumlah_total || 0,
+    mejaKursiSiswaBaik:
+      completeData?.prasarana.find(
+        (p) => p.jenis_prasarana === 'MejaKursiSiswa',
+      )?.jumlah_kondisi_baik || 0,
+    mejaKursiSiswaRusak:
+      completeData?.prasarana.find(
+        (p) => p.jenis_prasarana === 'MejaKursiSiswa',
+      )?.jumlah_kondisi_rusak || 0,
+    mejaKursiSiswaKeterangan:
+      completeData?.prasarana.find(
+        (p) => p.jenis_prasarana === 'MejaKursiSiswa',
+      )?.keterangan || '',
+
+    komputerTotal:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'Komputer')
+        ?.jumlah_total || 0,
+    komputerBaik:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'Komputer')
+        ?.jumlah_kondisi_baik || 0,
+    komputerRusak:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'Komputer')
+        ?.jumlah_kondisi_rusak || 0,
+    komputerKeterangan:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'Komputer')
+        ?.keterangan || '',
+
+    toiletSiswaTotal:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'JambanSiswa')
+        ?.jumlah_total || 0,
+    toiletSiswaBaik:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'JambanSiswa')
+        ?.jumlah_kondisi_baik || 0,
+    toiletSiswaRusak:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'JambanSiswa')
+        ?.jumlah_kondisi_rusak || 0,
+    toiletSiswaKeterangan:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'JambanSiswa')
+        ?.keterangan || '',
+
+    toiletGuruTotal:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'JambanGuru')
+        ?.jumlah_total || 0,
+    toiletGuruBaik:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'JambanGuru')
+        ?.jumlah_kondisi_baik || 0,
+    toiletGuruRusak:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'JambanGuru')
+        ?.jumlah_kondisi_rusak || 0,
+    toiletGuruKeterangan:
+      completeData?.prasarana.find((p) => p.jenis_prasarana === 'JambanGuru')
+        ?.keterangan || '',
+
+    prasaranaLainnya:
+      completeData?.prasarana
+        .filter((p) => p.jenis_prasarana === 'PrasaranaLainnya')
+        .map((p) => ({
+          nama: p.nama_prasarana,
+          jumlahTotal: p.jumlah_total,
+          jumlahBaik: p.jumlah_kondisi_baik,
+          jumlahRusak: p.jumlah_kondisi_rusak,
+          keterangan: p.keterangan || '',
+        })) || [],
+  };
+}

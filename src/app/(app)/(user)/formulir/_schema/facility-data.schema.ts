@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { FormulirCompleteData } from '@/types/formulir.types';
 
 export const step4Schema = z.object({
   // Ruang Kelas - dengan jumlah
@@ -51,3 +52,71 @@ export const step4Schema = z.object({
 });
 
 export type Step4Data = z.infer<typeof step4Schema>;
+
+export function getStep4InitialData(
+  completeData: FormulirCompleteData | null,
+): Step4Data {
+  const sarana = completeData?.sarana || [];
+
+  // Helper function to find sarana by type and extract values
+  const findSarana = (jenis: string) => {
+    const item = sarana.find((s) => s.jenis_sarana === jenis);
+    return {
+      total: item?.jumlah_total || 0,
+      baik: item?.jumlah_kondisi_baik || 0,
+      rusak: item?.jumlah_kondisi_rusak || 0,
+      keterangan: item?.keterangan || '',
+    };
+  };
+
+  const ruangKelas = findSarana('RuangKelas');
+  const perpustakaan = findSarana('Perpustakaan');
+  const ruangKepalaSekolah = findSarana('RuangKepalaSekolah');
+  const ruangGuru = findSarana('RuangGuru');
+  const aulaPertemuan = findSarana('AulaPertemuan');
+  const laboratoriumIpa = findSarana('LaboratoriumIPA');
+  const laboratoriumBahasa = findSarana('LaboratoriumBahasa');
+  const laboratoriumTik = findSarana('LaboratoriumTIK');
+
+  return {
+    ruangKelasTotal: ruangKelas.total,
+    ruangKelasBaik: ruangKelas.baik,
+    ruangKelasRusak: ruangKelas.rusak,
+    ruangKelasKeterangan: ruangKelas.keterangan,
+
+    perpustakaanTotal: perpustakaan.total,
+    perpustakaanBaik: perpustakaan.baik,
+    perpustakaanRusak: perpustakaan.rusak,
+    perpustakaanKeterangan: perpustakaan.keterangan,
+
+    ruangKepalaSekolahTotal: ruangKepalaSekolah.total,
+    ruangKepalaSekolahBaik: ruangKepalaSekolah.baik,
+    ruangKepalaSekolahRusak: ruangKepalaSekolah.rusak,
+    ruangKepalaSekolahKeterangan: ruangKepalaSekolah.keterangan,
+
+    ruangGuruTotal: ruangGuru.total,
+    ruangGuruBaik: ruangGuru.baik,
+    ruangGuruRusak: ruangGuru.rusak,
+    ruangGuruKeterangan: ruangGuru.keterangan,
+
+    aulaPertemuanTotal: aulaPertemuan.total,
+    aulaPertemuanBaik: aulaPertemuan.baik,
+    aulaPertemuanRusak: aulaPertemuan.rusak,
+    aulaPertemuanKeterangan: aulaPertemuan.keterangan,
+
+    laboratoriumIpaTotal: laboratoriumIpa.total,
+    laboratoriumIpaBaik: laboratoriumIpa.baik,
+    laboratoriumIpaRusak: laboratoriumIpa.rusak,
+    laboratoriumIpaKeterangan: laboratoriumIpa.keterangan,
+
+    laboratoriumBahasaTotal: laboratoriumBahasa.total,
+    laboratoriumBahasaBaik: laboratoriumBahasa.baik,
+    laboratoriumBahasaRusak: laboratoriumBahasa.rusak,
+    laboratoriumBahasaKeterangan: laboratoriumBahasa.keterangan,
+
+    laboratoriumTikTotal: laboratoriumTik.total,
+    laboratoriumTikBaik: laboratoriumTik.baik,
+    laboratoriumTikRusak: laboratoriumTik.rusak,
+    laboratoriumTikKeterangan: laboratoriumTik.keterangan,
+  };
+}
