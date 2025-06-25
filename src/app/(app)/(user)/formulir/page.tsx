@@ -324,14 +324,30 @@ export default function FormulirPage() {
           reviewNote={dataCompletionStatus.reviewNote}
         />
         {isLoading ? (
-          <Card className="bg-card rounded-xl shadow-sm border overflow-hidden p-6 md:p-8">
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Memuat data formulir...</p>
+          <div className="min-h-[calc(100vh-400px)] flex items-center justify-center bg-background">
+            <div className="text-center p-8">
+              <div className="relative mb-8">
+                <div className="w-20 h-20 mx-auto relative">
+                  <div className="absolute inset-0 rounded-full border-2 border-primary/10"></div>
+                  <div
+                    className="absolute inset-2 rounded-full border-2 border-primary/20 animate-spin"
+                    style={{ animationDuration: '3s' }}
+                  ></div>
+                  <div
+                    className="absolute inset-4 rounded-full border-2 border-primary border-t-transparent animate-spin"
+                    style={{ animationDuration: '1s' }}
+                  ></div>
+                  <div className="absolute inset-6 rounded-full bg-primary animate-pulse"></div>
+                </div>
               </div>
+              <h3 className="text-xl font-semibold text-foreground mb-2">
+                Memuat Formulir
+              </h3>
+              <p className="text-muted-foreground">
+                Sedang mengambil data formulir Anda...
+              </p>
             </div>
-          </Card>
+          </div>
         ) : (
           <Card className="bg-card rounded-xl shadow-sm border overflow-hidden p-6 md:p-8">
             {' '}
