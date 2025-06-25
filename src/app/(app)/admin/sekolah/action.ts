@@ -95,34 +95,3 @@ export async function getSekolahDetail(id: string) {
     };
   }
 }
-
-/**
- * Get sekolah statistics for dashboard
- */
-export async function getSekolahStatistics(filters?: {
-  search?: string;
-  kecamatan?: string;
-  tahunAjaran?: string;
-}) {
-  try {
-    const result = await SekolahService.getStatistics(filters || {});
-
-    if (result.success && result.data) {
-      return {
-        success: true,
-        data: result.data,
-      };
-    }
-
-    return {
-      success: false,
-      error: result.error || 'Gagal mengambil statistik sekolah',
-    };
-  } catch (error) {
-    console.error('Error fetching sekolah statistics:', error);
-    return {
-      success: false,
-      error: 'Gagal mengambil statistik sekolah',
-    };
-  }
-}
