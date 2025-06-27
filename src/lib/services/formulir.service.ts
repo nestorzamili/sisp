@@ -247,10 +247,6 @@ export class FormulirService {
       const step8Complete =
         allPreviousStepsComplete && sekolah.status === 'PENDING';
 
-      logger.info(
-        { userId, sekolahId: sekolah.id },
-        'Berhasil mengambil status step formulir',
-      );
       return {
         success: true,
         data: {
