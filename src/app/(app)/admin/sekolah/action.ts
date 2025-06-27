@@ -114,10 +114,12 @@ export async function generateSekolahReport(options?: {
       data: reportData,
     };
   } catch (error) {
-    console.error('Error generating sekolah report:', error);
     return {
       success: false,
-      error: 'Gagal menggenerate laporan data sekolah',
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Gagal generate laporan data sekolah',
     };
   }
 }

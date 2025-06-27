@@ -60,6 +60,12 @@ export class ReportService {
       orderBy: [{ kecamatan: 'asc' }, { nama_sekolah: 'asc' }],
     });
 
+    if (!sekolahList || sekolahList.length === 0) {
+      throw new Error(
+        `Tidak ada data sekolah yang ditemukan untuk kecamatan ${kecamatan?.join(', ')}`,
+      );
+    }
+
     // Process each school data
     const processedSekolahList: ReportSekolahItem[] = sekolahList.map(
       (sekolah: SekolahWithRelations) => ({
