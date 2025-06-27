@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   tableHeaderCell: {
     color: WHITE,
-    fontSize: 9,
+    fontSize: 8,
     fontWeight: 'bold',
     textAlign: 'center',
     paddingVertical: 5,
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   tableHeaderCellNoBorder: {
     color: WHITE,
-    fontSize: 9,
+    fontSize: 8,
     fontWeight: 'bold',
     textAlign: 'center',
     paddingVertical: 5,
