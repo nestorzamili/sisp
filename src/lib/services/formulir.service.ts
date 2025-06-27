@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import logger from '@/lib/logger';
 import {
   FormulirCompleteData,
   FormulirServiceResponse,
@@ -40,6 +41,10 @@ export class FormulirService {
       });
 
       if (!sekolah) {
+        logger.info(
+          { userId },
+          'Sekolah tidak ditemukan pada getCompleteFormulirData',
+        );
         return {
           success: true,
           data: null,
@@ -119,12 +124,16 @@ export class FormulirService {
         ),
       };
 
+      logger.info(
+        { userId, sekolahId: sekolah.id },
+        'Berhasil mengambil data lengkap formulir',
+      );
       return {
         success: true,
         data: formData,
       };
     } catch (error) {
-      console.error('Error getting complete formulir data:', error);
+      logger.error({ err: error }, 'Error getting complete formulir data');
       return {
         success: false,
         error: 'Gagal mengambil data formulir',
@@ -152,6 +161,7 @@ export class FormulirService {
       });
 
       if (!sekolah) {
+        logger.info({ userId }, 'Sekolah tidak ditemukan pada getStepStatus');
         return {
           success: false,
           error: 'Data sekolah tidak ditemukan',
@@ -237,6 +247,10 @@ export class FormulirService {
       const step8Complete =
         allPreviousStepsComplete && sekolah.status === 'PENDING';
 
+      logger.info(
+        { userId, sekolahId: sekolah.id },
+        'Berhasil mengambil status step formulir',
+      );
       return {
         success: true,
         data: {
@@ -257,7 +271,7 @@ export class FormulirService {
         },
       };
     } catch (error) {
-      console.error('Error getting step status:', error);
+      logger.error({ err: error }, 'Error getting step status');
       return {
         success: false,
         error: 'Gagal memeriksa status kelengkapan data',
@@ -295,7 +309,10 @@ export class FormulirService {
           phone: data.phone,
         },
       });
-
+      logger.info(
+        { userId, sekolahId: sekolah.id },
+        'Berhasil menyimpan info sekolah',
+      );
       return {
         success: true,
         data: {
@@ -316,7 +333,7 @@ export class FormulirService {
         },
       };
     } catch (error) {
-      console.error('Error saving school info:', error);
+      logger.error({ err: error }, 'Error saving school info');
       return {
         success: false,
         error: 'Gagal menyimpan informasi sekolah',
@@ -337,6 +354,7 @@ export class FormulirService {
       });
 
       if (!sekolah) {
+        logger.info({ userId }, 'Sekolah tidak ditemukan pada saveGuruData');
         return {
           success: false,
           error: 'Data sekolah tidak ditemukan',
@@ -364,6 +382,10 @@ export class FormulirService {
         where: { sekolahId: sekolah.id },
       });
 
+      logger.info(
+        { userId, sekolahId: sekolah.id },
+        'Berhasil menyimpan data guru',
+      );
       return {
         success: true,
         data: createdData.map(
@@ -376,7 +398,7 @@ export class FormulirService {
         ),
       };
     } catch (error) {
-      console.error('Error saving guru data:', error);
+      logger.error({ err: error }, 'Error saving guru data');
       return {
         success: false,
         error: 'Gagal menyimpan data guru',
@@ -397,6 +419,10 @@ export class FormulirService {
       });
 
       if (!sekolah) {
+        logger.info(
+          { userId },
+          'Sekolah tidak ditemukan pada saveRombonganBelajarData',
+        );
         return {
           success: false,
           error: 'Data sekolah tidak ditemukan',
@@ -424,6 +450,10 @@ export class FormulirService {
         where: { sekolahId: sekolah.id },
       });
 
+      logger.info(
+        { userId, sekolahId: sekolah.id },
+        'Berhasil menyimpan data rombongan belajar',
+      );
       return {
         success: true,
         data: createdData.map(
@@ -436,7 +466,7 @@ export class FormulirService {
         ),
       };
     } catch (error) {
-      console.error('Error saving rombongan belajar data:', error);
+      logger.error({ err: error }, 'Error saving rombongan belajar data');
       return {
         success: false,
         error: 'Gagal menyimpan data siswa',
@@ -457,6 +487,7 @@ export class FormulirService {
       });
 
       if (!sekolah) {
+        logger.info({ userId }, 'Sekolah tidak ditemukan pada saveSaranaData');
         return {
           success: false,
           error: 'Data sekolah tidak ditemukan',
@@ -490,6 +521,10 @@ export class FormulirService {
         where: { sekolahId: sekolah.id },
       });
 
+      logger.info(
+        { userId, sekolahId: sekolah.id },
+        'Berhasil menyimpan data sarana',
+      );
       return {
         success: true,
         data: createdData.map(
@@ -505,7 +540,7 @@ export class FormulirService {
         ),
       };
     } catch (error) {
-      console.error('Error saving sarana data:', error);
+      logger.error({ err: error }, 'Error saving sarana data');
       return {
         success: false,
         error: 'Gagal menyimpan data sarana',
@@ -526,6 +561,10 @@ export class FormulirService {
       });
 
       if (!sekolah) {
+        logger.info(
+          { userId },
+          'Sekolah tidak ditemukan pada savePrasaranaData',
+        );
         return {
           success: false,
           error: 'Data sekolah tidak ditemukan',
@@ -559,6 +598,10 @@ export class FormulirService {
         where: { sekolahId: sekolah.id },
       });
 
+      logger.info(
+        { userId, sekolahId: sekolah.id },
+        'Berhasil menyimpan data prasarana',
+      );
       return {
         success: true,
         data: createdData.map(
@@ -575,7 +618,7 @@ export class FormulirService {
         ),
       };
     } catch (error) {
-      console.error('Error saving prasarana data:', error);
+      logger.error({ err: error }, 'Error saving prasarana data');
       return {
         success: false,
         error: 'Gagal menyimpan data prasarana',
@@ -596,6 +639,10 @@ export class FormulirService {
       });
 
       if (!sekolah) {
+        logger.info(
+          { userId },
+          'Sekolah tidak ditemukan pada saveKebutuhanPrioritasData',
+        );
         return {
           success: false,
           error: 'Data sekolah tidak ditemukan',
@@ -625,6 +672,10 @@ export class FormulirService {
         where: { sekolahId: sekolah.id },
       });
 
+      logger.info(
+        { userId, sekolahId: sekolah.id },
+        'Berhasil menyimpan data kebutuhan prioritas',
+      );
       return {
         success: true,
         data: createdData.map(
@@ -636,7 +687,7 @@ export class FormulirService {
         ),
       };
     } catch (error) {
-      console.error('Error saving kebutuhan prioritas data:', error);
+      logger.error({ err: error }, 'Error saving kebutuhan prioritas data');
       return {
         success: false,
         error: 'Gagal menyimpan data kebutuhan prioritas',
@@ -657,6 +708,10 @@ export class FormulirService {
       });
 
       if (!sekolah) {
+        logger.info(
+          { userId },
+          'Sekolah tidak ditemukan pada saveLampiranData',
+        );
         return {
           success: false,
           error: 'Data sekolah tidak ditemukan',
@@ -683,6 +738,10 @@ export class FormulirService {
         where: { sekolahId: sekolah.id },
       });
 
+      logger.info(
+        { userId, sekolahId: sekolah.id },
+        'Berhasil menyimpan data lampiran',
+      );
       return {
         success: true,
         data: createdData.map(
@@ -695,7 +754,7 @@ export class FormulirService {
         ),
       };
     } catch (error) {
-      console.error('Error saving lampiran data:', error);
+      logger.error({ err: error }, 'Error saving lampiran data');
       return {
         success: false,
         error: 'Gagal menyimpan data lampiran',
@@ -715,6 +774,7 @@ export class FormulirService {
       });
 
       if (!sekolah) {
+        logger.info({ userId }, 'Sekolah tidak ditemukan pada submitForReview');
         return {
           success: false,
           error: 'Data sekolah tidak ditemukan',
@@ -722,6 +782,10 @@ export class FormulirService {
       }
 
       if (sekolah.status !== 'DRAFT' && sekolah.status !== 'REJECTED') {
+        logger.warn(
+          { userId, sekolahId: sekolah.id, status: sekolah.status },
+          'Submit ditolak karena status tidak sesuai',
+        );
         return {
           success: false,
           error:
@@ -739,6 +803,10 @@ export class FormulirService {
         },
       });
 
+      logger.info(
+        { userId, sekolahId: updatedSekolah.id },
+        'Berhasil submit untuk review',
+      );
       return {
         success: true,
         data: {
@@ -759,7 +827,7 @@ export class FormulirService {
         },
       };
     } catch (error) {
-      console.error('Error submitting for review:', error);
+      logger.error({ err: error }, 'Error submitting for review');
       return {
         success: false,
         error: 'Gagal submit untuk review',

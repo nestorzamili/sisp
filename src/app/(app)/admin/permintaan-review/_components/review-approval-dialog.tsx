@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { ReviewData } from '@/types/review';
+import logger from '@/lib/logger';
 
 interface ReviewApprovalDialogProps {
   open: boolean;
@@ -40,7 +41,7 @@ export function ReviewApprovalDialog({
       onOpenChange(false);
       setNotes('');
     } catch (error) {
-      console.error('Error approving review:', error);
+      logger.error('Error approving review:', error);
     } finally {
       setIsLoading(false);
     }

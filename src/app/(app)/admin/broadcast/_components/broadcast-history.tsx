@@ -28,6 +28,8 @@ import { id } from 'date-fns/locale';
 import { Notification } from '@/types/notification.types';
 import { getBroadcastHistory } from '../action';
 
+import logger from '@/lib/logger';
+
 export function BroadcastHistory() {
   const [broadcasts, setBroadcasts] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,19 +38,19 @@ export function BroadcastHistory() {
     try {
       setLoading(true);
       setError(null);
-      console.log('Fetching broadcast history...');
+      logger.info('Fetching broadcast history...');
       const result = await getBroadcastHistory(20, 0);
-      console.log('Broadcast history result:', result);
+      logger.debug({ result }, 'Broadcast history result');
 
       if (result.success && result.data) {
         setBroadcasts(result.data);
-        console.log('Broadcasts set:', result.data.length, 'items');
+        logger.info(`Broadcasts set: ${result.data.length} items`);
       } else {
-        console.error('Failed to fetch broadcasts:', result.error);
+        logger.error({ err: result.error }, 'Failed to fetch broadcasts');
         setError(result.error || 'Gagal mengambil riwayat broadcast');
       }
     } catch (error) {
-      console.error('Error fetching broadcasts:', error);
+      logger.error({ err: error }, 'Error fetching broadcasts');
       setError('Terjadi kesalahan saat mengambil riwayat broadcast');
     } finally {
       setLoading(false);

@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { PendaftaranData } from '@/types/pendaftaran';
+import logger from '@/lib/logger';
 
 interface ApprovalDialogProps {
   open: boolean;
@@ -36,7 +37,7 @@ export function ApprovalDialog({
       await onConfirm(pendaftaran.id);
       onOpenChange(false);
     } catch (error) {
-      console.error('Error approving pendaftaran:', error);
+      logger.error('Error approving pendaftaran:', error);
     } finally {
       setIsLoading(false);
     }

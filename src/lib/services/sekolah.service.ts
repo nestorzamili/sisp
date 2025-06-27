@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import logger from '@/lib/logger';
 import { Prisma, ReviewStatus } from '@prisma/client';
 import {
   SekolahWithDetails,
@@ -164,6 +165,7 @@ export class SekolahService {
       });
 
       if (!sekolah) {
+        logger.info({ id }, 'Sekolah tidak ditemukan pada getSekolahById');
         return {
           success: false,
           error: 'Sekolah tidak ditemukan',
@@ -175,7 +177,7 @@ export class SekolahService {
         data: sekolah,
       };
     } catch (error) {
-      console.error('Error fetching sekolah by ID:', error);
+      logger.error({ err: error }, 'Error fetching sekolah by ID');
       return {
         success: false,
         error: 'Gagal mengambil data sekolah',
@@ -195,9 +197,12 @@ export class SekolahService {
       }
 
       const count = await prisma.sekolah.count({ where });
+      if (count > 0) {
+        logger.info({ npsn, excludeId }, 'NPSN sudah digunakan');
+      }
       return count > 0;
     } catch (error) {
-      console.error('Error checking NPSN existence:', error);
+      logger.error({ err: error }, 'Error checking NPSN existence');
       return false;
     }
   }
@@ -220,6 +225,10 @@ export class SekolahService {
       });
 
       if (!sekolah) {
+        logger.info(
+          { userId },
+          'User tidak terkait dengan sekolah pada getSekolahByUserId',
+        );
         return {
           success: false,
           error: 'User tidak terkait dengan sekolah',
@@ -231,7 +240,7 @@ export class SekolahService {
         data: sekolah,
       };
     } catch (error) {
-      console.error('Error fetching sekolah by user ID:', error);
+      logger.error({ err: error }, 'Error fetching sekolah by user ID');
       return {
         success: false,
         error: 'Gagal mengambil data sekolah user',
@@ -249,6 +258,10 @@ export class SekolahService {
       // Check if NPSN already exists
       const npsnExists = await SekolahService.checkNpsnExists(sekolahData.npsn);
       if (npsnExists) {
+        logger.info(
+          { npsn: sekolahData.npsn },
+          'NPSN sudah digunakan pada createSekolah',
+        );
         return {
           success: false,
           error: 'NPSN sudah digunakan oleh sekolah lain',
@@ -261,6 +274,10 @@ export class SekolahService {
       });
 
       if (existingSekolah) {
+        logger.info(
+          { userId: sekolahData.userId },
+          'User sudah memiliki sekolah pada createSekolah',
+        );
         return {
           success: false,
           error: 'User sudah memiliki sekolah',
@@ -280,13 +297,16 @@ export class SekolahService {
           },
         },
       });
-
+      logger.info(
+        { sekolahId: newSekolah.id, userId: sekolahData.userId },
+        'Sekolah berhasil dibuat',
+      );
       return {
         success: true,
         data: newSekolah,
       };
     } catch (error) {
-      console.error('Error creating sekolah:', error);
+      logger.error({ err: error }, 'Error creating sekolah');
       return {
         success: false,
         error: 'Gagal membuat data sekolah',

@@ -10,6 +10,7 @@ import { SiswaStats, StackedChartData } from '@/types/dashboard.types';
 import { useEffect, useState } from 'react';
 import { getSiswaDistribution } from '../action';
 import { Users } from 'lucide-react';
+import logger from '@/lib/logger';
 
 export function SiswaChart() {
   const [data, setData] = useState<SiswaStats[]>([]);
@@ -24,7 +25,7 @@ export function SiswaChart() {
           setData(result.data);
         }
       } catch (error) {
-        console.error('Error fetching siswa distribution:', error);
+        logger.error('Error fetching siswa distribution:', error);
       } finally {
         setIsLoading(false);
       }

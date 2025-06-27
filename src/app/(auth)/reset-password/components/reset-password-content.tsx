@@ -8,6 +8,7 @@ import { IconAlertCircle, IconKey } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
+import logger from '@/lib/logger';
 
 export default function ResetPasswordContent() {
   const searchParams = useSearchParams();
@@ -29,7 +30,7 @@ export default function ResetPasswordContent() {
         // Simple token validation (in a real app, you'd verify this with your backend)
         setTokenValid(token.length > 0);
       } catch (error) {
-        console.error('Error validating token:', error);
+        logger.error('Error validating token:', error);
         setTokenValid(false);
       } finally {
         setIsValidating(false);

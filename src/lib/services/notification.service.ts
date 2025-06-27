@@ -5,6 +5,7 @@ import {
   NotificationStats,
   Notification,
 } from '@/types/notification.types';
+import logger from '@/lib/logger';
 
 export class NotificationService {
   /**
@@ -371,6 +372,10 @@ export class NotificationService {
       }
 
       if (targetUsers.length === 0) {
+        logger.info(
+          { targetAudience },
+          'Tidak ada user ditemukan untuk target audience ini',
+        );
         return {
           success: false,
           error: 'No users found for the selected target audience',
@@ -388,19 +393,22 @@ export class NotificationService {
           });
           createdNotifications.push(notification);
         } catch (error) {
-          console.error(
-            `Failed to create notification for user ${userId}:`,
-            error,
+          logger.error(
+            { err: error, userId },
+            `Failed to create notification for user ${userId}`,
           );
         }
       }
-
+      logger.info(
+        { count: createdNotifications.length, targetAudience },
+        'Broadcast notification berhasil dikirim',
+      );
       return {
         success: true,
         count: createdNotifications.length,
       };
     } catch (error) {
-      console.error('Error broadcasting notification:', error);
+      logger.error({ err: error }, 'Error broadcasting notification');
       return {
         success: false,
         error: 'Failed to broadcast notification',
@@ -456,6 +464,15 @@ export class NotificationService {
 
       const totalNotifications = uniqueBroadcasts.length;
 
+      logger.info(
+        {
+          totalUsers,
+          approvedUsers: activeSchools,
+          adminUsers,
+          totalNotifications,
+        },
+        'Berhasil mengambil statistik broadcast',
+      );
       return {
         success: true,
         data: {
@@ -466,7 +483,7 @@ export class NotificationService {
         },
       };
     } catch (error) {
-      console.error('Error getting broadcast stats:', error);
+      logger.error({ err: error }, 'Error getting broadcast statistics');
       return {
         success: false,
         error: 'Failed to get broadcast statistics',
@@ -499,31 +516,22 @@ export class NotificationService {
         distinct: ['relatedId'],
       });
 
+      if (!notifications || notifications.length === 0) {
+        logger.info(
+          { limit, offset },
+          'Tidak ada data broadcast history ditemukan',
+        );
+      }
       return {
         success: true,
         data: notifications,
       };
     } catch (error) {
-      console.error('Error getting broadcast history:', error);
+      logger.error({ err: error }, 'Error getting broadcast history');
       return {
         success: false,
         error: 'Failed to get broadcast history',
       };
-    }
-  }
-  /**
-   * Helper function to get audience label
-   */
-  private getAudienceLabel(audience: string): string {
-    switch (audience) {
-      case 'ALL':
-        return 'Semua Pengguna (Admin + Sekolah)';
-      case 'ADMINS_ONLY':
-        return 'Admin Saja';
-      case 'USERS_ONLY':
-        return 'Sekolah Saja';
-      default:
-        return 'Target Tidak Diketahui';
     }
   }
 }

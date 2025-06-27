@@ -9,6 +9,7 @@ import {
   deleteNotification,
   getNotificationStats,
 } from '@/app/(app)/admin/broadcast/notification.action';
+import logger from '@/lib/logger';
 
 export function useNotifications(userId?: string) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -76,7 +77,7 @@ export function useNotifications(userId?: string) {
           !abortControllerRef.current.signal.aborted
         ) {
           setError('Terjadi kesalahan saat mengambil notifikasi');
-          console.error('Error fetching notifications:', err);
+          logger.error('Error fetching notifications:', err);
         }
       } finally {
         if (isPolling) {
@@ -121,7 +122,7 @@ export function useNotifications(userId?: string) {
         }));
       }
     } catch (err) {
-      console.error('Error marking notification as read:', err);
+      logger.error('Error marking notification as read:', err);
       // Revert optimistic update on error
       setNotifications((prev) =>
         prev.map((n) =>
@@ -157,7 +158,7 @@ export function useNotifications(userId?: string) {
         setStats((prev) => ({ ...prev, unread: currentUnreadCount }));
       }
     } catch (err) {
-      console.error('Error marking all notifications as read:', err);
+      logger.error('Error marking all notifications as read:', err);
       // Revert would require refetching data, so just refresh
       fetchNotifications(false);
     }
@@ -197,7 +198,7 @@ export function useNotifications(userId?: string) {
           }));
         }
       } catch (err) {
-        console.error('Error deleting notification:', err);
+        logger.error('Error deleting notification:', err);
         // Refresh to get accurate state
         fetchNotifications(false);
       }

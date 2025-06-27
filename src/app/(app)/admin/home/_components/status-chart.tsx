@@ -10,6 +10,7 @@ import { SekolahStats } from '@/types/dashboard.types';
 import { useEffect, useState } from 'react';
 import { getSekolahStatusDistribution } from '../action';
 import { School } from 'lucide-react';
+import logger from '@/lib/logger';
 
 export function StatusChart() {
   const [data, setData] = useState<SekolahStats[]>([]);
@@ -24,7 +25,7 @@ export function StatusChart() {
           setData(result.data);
         }
       } catch (error) {
-        console.error('Error fetching status distribution:', error);
+        logger.error('Error fetching status distribution:', error);
       } finally {
         setIsLoading(false);
       }

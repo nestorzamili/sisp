@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { PendaftaranData } from '@/types/pendaftaran';
+import logger from '@/lib/logger';
 
 interface RejectionDialogProps {
   open: boolean;
@@ -40,7 +41,7 @@ export function RejectionDialog({
       onOpenChange(false);
       setReason('');
     } catch (error) {
-      console.error('Error rejecting pendaftaran:', error);
+      logger.error('Error rejecting pendaftaran:', error);
     } finally {
       setIsLoading(false);
     }

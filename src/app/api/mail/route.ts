@@ -1,3 +1,4 @@
+import logger from '@/lib/logger';
 import { NextRequest } from 'next/server';
 import { Resend } from 'resend';
 
@@ -6,6 +7,11 @@ export async function POST(request: NextRequest) {
     const { to, subject, html, from } = await request.json();
 
     if (!to || !subject || !html) {
+      logger.warn('Missing required fields for sending email', {
+        to, 
+        subject: !!subject,
+        html: !!html,
+      });
       return Response.json(
         { error: 'Missing required fields: to, subject, html' },
         { status: 400 },
@@ -22,15 +28,15 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      console.error('Resend API error:', error);
+      logger.error({ err: error }, 'Resend API error');
       return Response.json({ error }, { status: 500 });
     }
 
-    console.log('Email sent successfully:', data?.id);
+    logger.info(`Email sent successfully to ${to} with ID: ${data?.id}`);
 
     return Response.json({ data });
   } catch (error) {
-    console.error('Failed to send email:', error);
+    logger.error({ err: error }, 'Failed to send email');
     return Response.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

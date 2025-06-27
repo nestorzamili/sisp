@@ -1,3 +1,4 @@
+import logger from '@/lib/logger';
 import prisma from '@/lib/prisma';
 import {
   PendaftaranData,
@@ -102,6 +103,10 @@ export class PendaftaranService {
 
       const totalPages = Math.ceil(totalCount / pageSize);
 
+      if (users.length === 0) {
+        logger.info({ params }, 'Tidak ada pendaftaran pending ditemukan');
+      }
+
       return {
         success: true,
         data: {
@@ -117,7 +122,7 @@ export class PendaftaranService {
         },
       };
     } catch (error) {
-      console.error('Error fetching pending registrations:', error);
+      logger.error({ err: error }, 'Error fetching pending registrations');
       return {
         success: false,
         error: 'Gagal mengambil data permintaan pendaftaran',
@@ -144,6 +149,7 @@ export class PendaftaranService {
       });
 
       if (!user) {
+        logger.info({ userId }, 'User tidak ditemukan pada approvePendaftaran');
         return {
           success: false,
           error: 'User tidak ditemukan',
@@ -151,6 +157,10 @@ export class PendaftaranService {
       }
 
       if (!user.Sekolah) {
+        logger.info(
+          { userId },
+          'Data sekolah tidak ditemukan pada approvePendaftaran',
+        );
         return {
           success: false,
           error: 'Data sekolah tidak ditemukan',
@@ -174,9 +184,9 @@ export class PendaftaranService {
           actionLabel: 'Masuk ke Dashboard',
         });
       } catch (notificationError) {
-        console.error(
-          'Failed to create approval notification:',
-          notificationError,
+        logger.error(
+          { err: notificationError },
+          'Failed to create approval notification',
         );
       }
 
@@ -194,12 +204,15 @@ export class PendaftaranService {
               loginUrl,
             );
           } else if (!isWhatsAppEnabled) {
-            console.log(
+            logger.info(
               'WhatsApp notifications are disabled. Skipping WhatsApp notification.',
             );
           }
         } catch (whatsappError) {
-          console.error('Failed to send WhatsApp notification:', whatsappError);
+          logger.error(
+            { err: whatsappError },
+            'Failed to send WhatsApp notification',
+          );
         }
         try {
           await sendVerificationEmail({
@@ -207,19 +220,20 @@ export class PendaftaranService {
             callbackURL: '/home',
           });
         } catch (emailError) {
-          console.error(
-            'Failed to send verification email via Better Auth:',
-            emailError,
+          logger.error(
+            { err: emailError },
+            'Failed to send verification email via Better Auth',
           );
         }
       });
 
+      logger.info({ userId }, 'Pendaftaran berhasil disetujui');
       return {
         success: true,
         data: true,
       };
     } catch (error) {
-      console.error('Error approving pendaftaran:', error);
+      logger.error({ err: error }, 'Error approving pendaftaran');
       return {
         success: false,
         error: 'Gagal menyetujui pendaftaran',
@@ -247,6 +261,7 @@ export class PendaftaranService {
       });
 
       if (!user) {
+        logger.info({ userId }, 'User tidak ditemukan pada rejectPendaftaran');
         return {
           success: false,
           error: 'User tidak ditemukan',
@@ -282,14 +297,14 @@ export class PendaftaranService {
                 reason,
               );
             } else if (!isWhatsAppEnabled) {
-              console.log(
+              logger.info(
                 'WhatsApp notifications are disabled. Skipping WhatsApp notification.',
               );
             }
           } catch (whatsappError) {
-            console.error(
-              'Failed to send WhatsApp notification:',
-              whatsappError,
+            logger.error(
+              { err: whatsappError },
+              'Failed to send WhatsApp notification',
             );
           }
           try {
@@ -303,17 +318,21 @@ export class PendaftaranService {
               html: emailHtml,
             });
           } catch (emailError) {
-            console.error('Failed to send email notification:', emailError);
+            logger.error(
+              { err: emailError },
+              'Failed to send email notification',
+            );
           }
         });
       }
 
+      logger.info({ userId }, 'Pendaftaran berhasil ditolak dan user dihapus');
       return {
         success: true,
         data: true,
       };
     } catch (error) {
-      console.error('Error rejecting pendaftaran:', error);
+      logger.error({ err: error }, 'Error rejecting pendaftaran');
       return {
         success: false,
         error: 'Gagal menolak pendaftaran',

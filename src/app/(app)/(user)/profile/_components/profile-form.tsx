@@ -17,6 +17,7 @@ import { changeEmail, updateUser, useSession } from '@/lib/auth-client';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { AvatarUpload } from './avatar-upload';
+import logger from '@/lib/logger';
 
 export default function ProfileForm() {
   const router = useRouter();
@@ -122,7 +123,7 @@ export default function ProfileForm() {
           },
         );
       } catch (error) {
-        console.error('Error changing email:', error);
+        logger.error({ err: error }, 'Error changing email');
         toast.error('Terjadi kesalahan yang tidak terduga.');
       }
     },
@@ -152,7 +153,7 @@ export default function ProfileForm() {
         toast.success('Foto profil berhasil diperbarui');
         router.refresh();
       } catch (error) {
-        console.error('Error updating image:', error);
+        logger.error({ err: error }, 'Error updating image');
         toast.error('Foto berhasil diupload tetapi gagal disimpan ke profil');
       }
     },
@@ -183,7 +184,7 @@ export default function ProfileForm() {
               image: data.image || null,
             });
           } catch (imageError) {
-            console.error('Error updating image:', imageError);
+            logger.error({ err: imageError }, 'Error updating image');
             toast.error(
               'Profil berhasil diperbarui tetapi ada masalah dengan foto profil.',
             );

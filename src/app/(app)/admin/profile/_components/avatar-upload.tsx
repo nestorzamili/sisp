@@ -19,6 +19,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import Image from 'next/image';
+import logger from '@/lib/logger';
 
 interface AvatarUploadProps {
   currentImage?: string | null;
@@ -121,7 +122,7 @@ export function AvatarUpload({
           toast.error(result.error || 'Gagal mengupload gambar');
         }
       } catch (error) {
-        console.error('Error uploading image:', error);
+        logger.error('Error uploading image:', error);
         toast.error('Gagal mengupload gambar');
       } finally {
         setIsUploading(false);

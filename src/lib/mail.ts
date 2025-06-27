@@ -1,3 +1,5 @@
+import logger from '@/lib/logger';
+
 export async function sendEmail({
   to,
   subject,
@@ -11,7 +13,7 @@ export async function sendEmail({
 }) {
   // Validate recipient email
   if (!to || typeof to !== 'string') {
-    console.error('Invalid recipient email address:', to);
+    logger.error('Invalid recipient email address:', to);
     throw new Error('Invalid recipient email address');
   }
 
@@ -37,7 +39,7 @@ export async function sendEmail({
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error('Failed to send email:', error);
+    logger.error('Failed to send email:', error);
     throw error;
   }
 }

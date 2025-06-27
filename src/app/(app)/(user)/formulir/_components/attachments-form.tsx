@@ -35,6 +35,7 @@ import { toast } from 'sonner';
 import { step7Schema, Step7Data } from '../_schema/attachments.schema';
 import { UploadResponse } from '@/types/lampiran';
 import Image from 'next/image';
+import logger from '@/lib/logger';
 
 interface AttachmentsFormProps {
   onSubmit: (data: Step7Data) => void;
@@ -124,7 +125,7 @@ export function AttachmentsForm({
         toast.error(result.error || 'Gagal mengupload file');
       }
     } catch (error) {
-      console.error('Upload error:', error);
+      logger.error({ err: error }, 'Error uploading file');
       toast.error('Terjadi kesalahan saat mengupload file');
     } finally {
       setUploading((prev) => ({ ...prev, [index]: false }));

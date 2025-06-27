@@ -1,3 +1,4 @@
+import logger from '@/lib/logger';
 import { WhatsAppTemplates } from '@/templates/whatsapp-templates';
 
 interface WhatsAppMessage {
@@ -23,14 +24,17 @@ export class WhatsAppService {
       .filter((num) => num.trim());
 
     if (!this.apiKey) {
+      logger.error('WHATSAPP_API_KEY environment variable is required');
       throw new Error('WHATSAPP_API_KEY environment variable is required');
     }
 
     if (!this.baseUrl) {
+      logger.error('WHATSAPP_API_URL environment variable is required');
       throw new Error('WHATSAPP_API_URL environment variable is required');
     }
 
     if (this.adminNumbers.length === 0) {
+      logger.error('WHATSAPP_ADMIN_NUMBERS environment variable is required');
       throw new Error(
         'WHATSAPP_ADMIN_NUMBERS environment variable is required',
       );
@@ -55,6 +59,10 @@ export class WhatsAppService {
       content: message,
     };
 
+    logger.info(
+      { schoolName, npsn, email, phone },
+      'Mengirim WhatsApp admin notification',
+    );
     const response = await fetch(this.baseUrl, {
       method: 'POST',
       headers: {
@@ -70,15 +78,12 @@ export class WhatsAppService {
         status: false,
         message: errorData.message || `HTTP error: ${response.status}`,
       };
-      console.log('WhatsApp admin notification:', result);
+      logger.error({ result }, 'WhatsApp admin notification failed');
       return result;
     }
 
     const result = await response.json();
-    console.log('WhatsApp admin notification:', {
-      status: result.status,
-      message: result.message,
-    });
+    logger.info({ result }, 'WhatsApp admin notification sent');
     return result;
   }
 
@@ -99,6 +104,10 @@ export class WhatsAppService {
       content: message,
     };
 
+    logger.info(
+      { schoolPhone, schoolName, npsn },
+      'Mengirim WhatsApp approval notification',
+    );
     const response = await fetch(this.baseUrl, {
       method: 'POST',
       headers: {
@@ -114,15 +123,12 @@ export class WhatsAppService {
         status: false,
         message: errorData.message || `HTTP error: ${response.status}`,
       };
-      console.log('WhatsApp approval notification:', result);
+      logger.error({ result }, 'WhatsApp approval notification failed');
       return result;
     }
 
     const result = await response.json();
-    console.log('WhatsApp approval notification:', {
-      status: result.status,
-      message: result.message,
-    });
+    logger.info({ result }, 'WhatsApp approval notification sent');
     return result;
   }
 
@@ -143,6 +149,10 @@ export class WhatsAppService {
       content: message,
     };
 
+    logger.info(
+      { schoolPhone, schoolName, npsn, reason },
+      'Mengirim WhatsApp rejection notification',
+    );
     const response = await fetch(this.baseUrl, {
       method: 'POST',
       headers: {
@@ -158,15 +168,12 @@ export class WhatsAppService {
         status: false,
         message: errorData.message || `HTTP error: ${response.status}`,
       };
-      console.log('WhatsApp rejection notification:', result);
+      logger.error({ result }, 'WhatsApp rejection notification failed');
       return result;
     }
 
     const result = await response.json();
-    console.log('WhatsApp rejection notification:', {
-      status: result.status,
-      message: result.message,
-    });
+    logger.info({ result }, 'WhatsApp rejection notification sent');
     return result;
   }
 }

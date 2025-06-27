@@ -3,6 +3,7 @@
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { notificationService } from '@/lib/services/notification.service';
+import logger from '@/lib/logger';
 
 export interface BroadcastNotificationData {
   title: string;
@@ -40,7 +41,7 @@ export async function broadcastNotification(data: BroadcastNotificationData) {
     // Delegate to service layer
     return await notificationService.broadcastNotification(data);
   } catch (error) {
-    console.error('Error in broadcast action:', error);
+    logger.error({ err: error }, 'Error in broadcast action');
     return {
       success: false,
       error: 'Gagal mengirim notifikasi broadcast',
@@ -67,7 +68,7 @@ export async function getBroadcastStats() {
     // Delegate to service layer
     return await notificationService.getBroadcastStats();
   } catch (error) {
-    console.error('Error in getBroadcastStats action:', error);
+    logger.error({ err: error }, 'Error in getBroadcastStats action');
     return {
       success: false,
       error: 'Gagal mengambil statistik broadcast',
@@ -97,7 +98,7 @@ export async function getBroadcastHistory(
     // Delegate to service layer
     return await notificationService.getBroadcastHistory(limit, offset);
   } catch (error) {
-    console.error('Error in getBroadcastHistory action:', error);
+    logger.error({ err: error }, 'Error in getBroadcastHistory action');
     return {
       success: false,
       error: 'Gagal mengambil riwayat broadcast',

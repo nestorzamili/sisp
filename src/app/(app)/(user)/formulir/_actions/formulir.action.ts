@@ -15,6 +15,7 @@ import {
   FormulirServiceResponse,
 } from '@/types/formulir.types';
 import { headers } from 'next/headers';
+import logger from '@/lib/logger';
 
 /**
  * Get complete formulir data and step status in one call
@@ -58,7 +59,7 @@ export async function getFormulirDataAction(): Promise<
       },
     };
   } catch (error) {
-    console.error('Error getting formulir data:', error);
+    logger.error({ err: error }, 'Error getting formulir data');
     return {
       success: false,
       error: 'Gagal mengambil data formulir',
@@ -87,7 +88,7 @@ export async function saveSekolahInfoAction(
     const result = await FormulirService.saveSekolahInfo(session.user.id, data);
     return result;
   } catch (error) {
-    console.error('Error saving school info:', error);
+    logger.error({ err: error }, 'Error saving school info');
     return {
       success: false,
       error: 'Gagal menyimpan informasi sekolah',
@@ -116,7 +117,7 @@ export async function saveGuruAction(
     const result = await FormulirService.saveGuruData(session.user.id, data);
     return result;
   } catch (error) {
-    console.error('Error saving teacher data:', error);
+    logger.error({ err: error }, 'Error saving teacher data');
     return {
       success: false,
       error: 'Gagal menyimpan data guru',
@@ -148,7 +149,7 @@ export async function saveRombonganBelajarAction(
     );
     return result;
   } catch (error) {
-    console.error('Error saving student data:', error);
+    logger.error({ err: error }, 'Error saving student data');
     return {
       success: false,
       error: 'Gagal menyimpan data siswa',
@@ -177,7 +178,7 @@ export async function saveSaranaAction(
     const result = await FormulirService.saveSaranaData(session.user.id, data);
     return result;
   } catch (error) {
-    console.error('Error saving facility data:', error);
+    logger.error({ err: error }, 'Error saving facility data');
     return {
       success: false,
       error: 'Gagal menyimpan data sarana',
@@ -209,7 +210,7 @@ export async function savePrasaranaAction(
     );
     return result;
   } catch (error) {
-    console.error('Error saving infrastructure data:', error);
+    logger.error({ err: error }, 'Error saving infrastructure data');
     return {
       success: false,
       error: 'Gagal menyimpan data prasarana',
@@ -241,7 +242,7 @@ export async function saveKebutuhanPrioritasAction(
     );
     return result;
   } catch (error) {
-    console.error('Error saving priority needs data:', error);
+    logger.error({ err: error }, 'Error saving priority needs data');
     return {
       success: false,
       error: 'Gagal menyimpan data kebutuhan prioritas',
@@ -273,7 +274,7 @@ export async function saveLampiranAction(
     );
     return result;
   } catch (error) {
-    console.error('Error saving attachment data:', error);
+    logger.error({ err: error }, 'Error saving attachment data');
     return {
       success: false,
       error: 'Gagal menyimpan data lampiran',
@@ -300,7 +301,7 @@ export async function submitForReviewAction(): Promise<FormulirServiceResponse> 
     const result = await FormulirService.submitForReview(session.user.id);
     return result;
   } catch (error) {
-    console.error('Error submitting for review:', error);
+    logger.error({ err: error }, 'Error submitting for review');
     return {
       success: false,
       error: 'Gagal submit untuk review',
@@ -329,7 +330,7 @@ export async function getFormulirStepStatusAction(): Promise<
     const result = await FormulirService.getStepStatus(session.user.id);
     return result;
   } catch (error) {
-    console.error('Error getting step status:', error);
+    logger.error({ err: error }, 'Error getting step status');
     return {
       success: false,
       error: 'Gagal memeriksa status kelengkapan data',

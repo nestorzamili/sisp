@@ -10,6 +10,7 @@ import { GuruStats, StackedGuruData } from '@/types/dashboard.types';
 import { useEffect, useState } from 'react';
 import { getGuruDistribution } from '../action';
 import { GraduationCap } from 'lucide-react';
+import logger from '@/lib/logger';
 
 export function GuruChart() {
   const [data, setData] = useState<GuruStats[]>([]);
@@ -24,7 +25,7 @@ export function GuruChart() {
           setData(result.data);
         }
       } catch (error) {
-        console.error('Error fetching guru distribution:', error);
+        logger.error('Error fetching guru distribution:', error);
       } finally {
         setIsLoading(false);
       }

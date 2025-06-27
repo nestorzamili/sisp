@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
+import logger from '@/lib/logger';
 import {
   ReportData,
   ReportSekolahItem,
@@ -61,6 +62,10 @@ export class ReportService {
     });
 
     if (!sekolahList || sekolahList.length === 0) {
+      logger.info(
+        { kecamatan },
+        'Tidak ada data sekolah ditemukan untuk report',
+      );
       throw new Error(
         `Tidak ada data sekolah yang ditemukan untuk kecamatan ${kecamatan?.join(', ')}`,
       );
@@ -88,7 +93,10 @@ export class ReportService {
 
     // Calculate summary statistics
     const summary = this.calculateSummary(processedSekolahList);
-
+    logger.info(
+      { kecamatan, sekolahCount: sekolahList.length },
+      'Berhasil generate report sekolah',
+    );
     return {
       summary,
       sekolahList: processedSekolahList,

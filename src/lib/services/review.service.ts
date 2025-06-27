@@ -7,6 +7,7 @@ import {
   ReviewPaginationResult,
 } from '@/types/review';
 import { notificationService } from './notification.service';
+import logger from '@/lib/logger';
 
 export class ReviewService {
   /**
@@ -96,6 +97,12 @@ export class ReviewService {
         skip,
         take: pageSize,
       });
+      if (!sekolah || sekolah.length === 0) {
+        logger.info(
+          { page, pageSize, search },
+          'Tidak ada data review request ditemukan',
+        );
+      }
       return {
         success: true,
         data: {
@@ -109,7 +116,7 @@ export class ReviewService {
         },
       };
     } catch (error) {
-      console.error('Error getting request reviews:', error);
+      logger.error({ err: error }, 'Error getting request reviews');
       return {
         success: false,
         error: 'Gagal mengambil data review yang tertunda',
@@ -134,6 +141,10 @@ export class ReviewService {
       });
 
       if (!sekolah) {
+        logger.info(
+          { sekolahId },
+          'Sekolah tidak ditemukan pada approveReview',
+        );
         return {
           success: false,
           error: 'Sekolah tidak ditemukan',
@@ -143,6 +154,10 @@ export class ReviewService {
         sekolah.status !== ReviewStatus.PENDING &&
         sekolah.status !== ReviewStatus.REJECTED
       ) {
+        logger.info(
+          { sekolahId, status: sekolah.status },
+          'Sekolah tidak dalam status pending/rejected pada approveReview',
+        );
         return {
           success: false,
           error: 'Sekolah tidak dalam status pending atau rejected review',
@@ -167,21 +182,24 @@ export class ReviewService {
           notes,
         );
       } catch (notificationError) {
-        console.error(
+        logger.error(
+          { err: notificationError },
           'Failed to create approval notification:',
-          notificationError,
         );
         // Don't fail the approval process if notification fails
       }
 
       // TODO: Send notification to user (email/WhatsApp)
       // You can implement notification sending here
-
+      logger.info(
+        { sekolahId, reviewedById },
+        'Review sekolah berhasil diapprove',
+      );
       return {
         success: true,
       };
     } catch (error) {
-      console.error('Error approving review:', error);
+      logger.error({ err: error }, 'Error approving review:');
       return {
         success: false,
         error: 'Gagal menyetujui review',
@@ -205,12 +223,20 @@ export class ReviewService {
       });
 
       if (!sekolah) {
+        logger.info(
+          { sekolahId },
+          'Sekolah tidak ditemukan pada requestRevision',
+        );
         return {
           success: false,
           error: 'Sekolah tidak ditemukan',
         };
       }
       if (sekolah.status !== ReviewStatus.PENDING) {
+        logger.info(
+          { sekolahId, status: sekolah.status },
+          'Sekolah tidak dalam status pending pada requestRevision',
+        );
         return {
           success: false,
           error:
@@ -236,21 +262,24 @@ export class ReviewService {
           reason,
         );
       } catch (notificationError) {
-        console.error(
+        logger.error(
+          { err: notificationError },
           'Failed to create revision notification:',
-          notificationError,
         );
         // Don't fail the revision process if notification fails
       }
 
       // TODO: Send notification to user about revision request
       // You can implement notification sending here
-
+      logger.info(
+        { sekolahId, reviewedById },
+        'Permintaan revisi sekolah berhasil',
+      );
       return {
         success: true,
       };
     } catch (error) {
-      console.error('Error requesting revision:', error);
+      logger.error({ err: error }, 'Error requesting revision:');
       return {
         success: false,
         error: 'Gagal mengirim permintaan revisi',
@@ -281,6 +310,10 @@ export class ReviewService {
       });
 
       if (!sekolah) {
+        logger.info(
+          { sekolahId },
+          'Sekolah tidak ditemukan pada submitForReview',
+        );
         return {
           success: false,
           error: 'Sekolah tidak ditemukan',
@@ -291,6 +324,10 @@ export class ReviewService {
         sekolah.status !== ReviewStatus.DRAFT &&
         sekolah.status !== ReviewStatus.REJECTED
       ) {
+        logger.info(
+          { sekolahId, status: sekolah.status },
+          'Sekolah tidak dalam status draft/rejected pada submitForReview',
+        );
         return {
           success: false,
           error:
@@ -305,14 +342,10 @@ export class ReviewService {
           status: ReviewStatus.PENDING,
           updatedAt: new Date(),
         },
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
+        select: {
+          id: true,
+          status: true,
+          updatedAt: true,
         },
       });
 
@@ -333,19 +366,20 @@ export class ReviewService {
           );
         }
       } catch (notificationError) {
-        console.error(
+        logger.error(
+          { err: notificationError },
           'Failed to create review request notification:',
-          notificationError,
         );
         // Don't fail the submission if notification fails
       }
 
+      logger.info({ sekolahId }, 'Sekolah berhasil disubmit untuk review');
       return {
         success: true,
         data: updatedSekolah,
       };
     } catch (error) {
-      console.error('Error submitting sekolah for review:', error);
+      logger.error({ err: error }, 'Error submitting sekolah for review:');
       return {
         success: false,
         error: 'Gagal submit data untuk review',

@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import { generateSekolahReport } from '../action';
 import { downloadSekolahReportPDF } from '@/lib/pdf-utils';
 import { KECAMATAN_LIST } from '@/constants/kecamatan';
+import logger from '@/lib/logger';
 
 export function DownloadReportButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,7 +54,7 @@ export function DownloadReportButton() {
         toast.error(result.error || 'Gagal mengunduh laporan');
       }
     } catch (error) {
-      console.error('Error downloading report:', error);
+      logger.error('Error downloading report:', error);
       toast.error('Terjadi kesalahan saat mengunduh laporan');
     } finally {
       setIsLoading(false);

@@ -20,6 +20,7 @@ import { IconAlertCircle } from '@tabler/icons-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
 import { resetPassword } from '@/lib/auth-client';
+import logger from '@/lib/logger';
 
 type ResetFormProps = HTMLAttributes<HTMLDivElement> & {
   token: string;
@@ -76,7 +77,7 @@ export function ResetForm({ className, token, ...props }: ResetFormProps) {
             router.push('/sign-in?message=password_reset_success');
           },
           onError: (ctx) => {
-            console.error('Error during password reset:', ctx.error);
+            logger.error('Error during password reset:', ctx.error);
             setFormState({
               status: 'error',
               message:
@@ -87,7 +88,7 @@ export function ResetForm({ className, token, ...props }: ResetFormProps) {
         },
       );
     } catch (error) {
-      console.error('Error during password reset:', error);
+      logger.error('Error during password reset:', error);
       setFormState({
         status: 'error',
         message: 'Terjadi kesalahan saat mengubah password. Silakan coba lagi.',

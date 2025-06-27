@@ -19,6 +19,7 @@ import { AlertCircle, CheckCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
 import { forgetPassword } from '@/lib/auth-client';
+import logger from '@/lib/logger';
 
 type ForgotFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -62,7 +63,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
             form.reset();
           },
           onError: (ctx) => {
-            console.error('Error during password reset:', ctx.error);
+            logger.error('Error during password reset:', ctx.error);
             setFormState({
               status: 'error',
               message:
@@ -73,7 +74,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
         },
       );
     } catch (error) {
-      console.error('Error during password reset:', error);
+      logger.error('Error during password reset:', error);
       setFormState({
         status: 'error',
         message:

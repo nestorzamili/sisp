@@ -9,6 +9,7 @@ import { sendEmail } from '@/lib/mail';
 import { VerificationEmailTemplate } from '@/templates/account-approved';
 import { ResetPasswordEmailTemplate } from '@/templates/password-reset-email';
 import { ChangeEmailVerificationTemplate } from '@/templates/change-email-verification';
+import logger from '@/lib/logger';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -19,11 +20,8 @@ export const auth = betterAuth({
   logger: {
     disabled: false,
     level: 'debug',
-    transport: {
-      type: 'console',
-      options: {
-        format: 'json',
-      },
+    log: (level, message, ...args) => {
+      logger[level]({ ...args }, message);
     },
   },
   plugins: [

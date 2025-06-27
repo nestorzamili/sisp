@@ -22,6 +22,7 @@ import { createSekolahAction } from '../action';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { XCircle } from 'lucide-react';
+import logger from '@/lib/logger';
 
 type SignUpFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -133,7 +134,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
 
       router.push('/sign-up?success=true');
     } catch (err) {
-      console.error('Registration error:', err);
+      logger.error('Registration error:', err);
       setError(
         'Terjadi kesalahan saat mendaftarkan sekolah. Silakan coba lagi.',
       );

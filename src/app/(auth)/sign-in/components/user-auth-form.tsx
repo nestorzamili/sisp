@@ -23,6 +23,7 @@ import { AuthLink } from '@/app/(auth)/_components/auth-footers';
 import { signIn } from '@/lib/auth-client';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { XCircle, CheckCircle } from 'lucide-react';
+import logger from '@/lib/logger';
 
 type UserAuthFormProps = HTMLAttributes<HTMLDivElement>;
 
@@ -90,7 +91,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         },
       );
     } catch (error) {
-      console.error('Login error:', error);
+      logger.error('Login error:', error);
       setError({
         message: 'Terjadi kesalahan saat masuk. Silakan coba lagi.',
       });

@@ -10,6 +10,7 @@ import { ReviewApprovalDialog } from '../_components/review-approval-dialog';
 import { ReviewRevisionDialog } from '../_components/review-revision-dialog';
 import { SekolahWithDetails } from '@/types/sekolah';
 import { getReviewDetail, approveReview, requestRevision } from '../action';
+import logger from '@/lib/logger';
 
 export default function ReviewDetailPage() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export default function ReviewDetailPage() {
           router.push('/admin/permintaan-review');
         }
       } catch (error) {
-        console.error('Error fetching review detail:', error);
+        logger.error('Error fetching review detail:', error);
         toast.error('Terjadi kesalahan saat mengambil detail review');
         router.push('/admin/permintaan-review');
       } finally {
@@ -71,7 +72,7 @@ export default function ReviewDetailPage() {
         toast.error(response.error || 'Gagal menyetujui review');
       }
     } catch (error) {
-      console.error('Error approving review:', error);
+      logger.error('Error approving review:', error);
       toast.error('Terjadi kesalahan saat menyetujui review');
     } finally {
       setIsActionLoading(false);
@@ -90,7 +91,7 @@ export default function ReviewDetailPage() {
         toast.error(response.error || 'Gagal mengirim permintaan revisi');
       }
     } catch (error) {
-      console.error('Error requesting revision:', error);
+      logger.error('Error requesting revision:', error);
       toast.error('Terjadi kesalahan saat mengirim permintaan revisi');
     } finally {
       setIsActionLoading(false);

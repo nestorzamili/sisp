@@ -8,6 +8,8 @@ import {
   SekolahWithDetails,
 } from '@/types/sekolah';
 
+import logger from '@/lib/logger';
+
 export async function createSekolahAction(
   data: CreateSekolahData,
 ): Promise<SekolahServiceResponse<SekolahWithDetails>> {
@@ -31,14 +33,14 @@ export async function createSekolahAction(
               phone || 'No. HP tidak tersedia',
             );
           } catch (whatsappError) {
-            console.error(
-              'Failed to send WhatsApp notification:',
-              whatsappError,
+            logger.error(
+              { err: whatsappError },
+              'Failed to send WhatsApp notification',
             );
           }
         });
       } else {
-        console.log(
+        logger.info(
           'WhatsApp notifications are disabled. Skipping notification.',
         );
       }
@@ -46,7 +48,7 @@ export async function createSekolahAction(
 
     return result;
   } catch (error) {
-    console.error('Error in createSekolahAction:', error);
+    logger.error({ err: error }, 'Error in createSekolahAction');
     return {
       success: false,
       error: 'Terjadi kesalahan saat membuat data sekolah',

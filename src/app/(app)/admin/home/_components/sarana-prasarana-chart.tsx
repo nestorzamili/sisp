@@ -10,6 +10,7 @@ import { SaranaStats, PrasaranaStats } from '@/types/dashboard.types';
 import { useEffect, useState } from 'react';
 import { getSaranaDistribution, getPrasaranaDistribution } from '../action';
 import { Monitor, Building } from 'lucide-react';
+import logger from '@/lib/logger';
 
 export function SaranaPrasaranaChart() {
   const [saranaData, setSaranaData] = useState<SaranaStats[]>([]);
@@ -32,7 +33,7 @@ export function SaranaPrasaranaChart() {
           setPrasaranaData(prasaranaResult.data);
         }
       } catch (error) {
-        console.error('Error fetching sarana/prasarana distribution:', error);
+        logger.error('Error fetching sarana/prasarana distribution:', error);
       } finally {
         setIsLoading(false);
       }

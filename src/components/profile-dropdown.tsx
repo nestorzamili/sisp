@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { useSession, signOut } from '@/lib/auth-client';
+import logger from '@/lib/logger';
 
 export function ProfileDropdown() {
   const router = useRouter();
@@ -37,7 +38,7 @@ export function ProfileDropdown() {
       });
     } catch (error) {
       toast.error('Gagal keluar. Silakan coba lagi.');
-      console.error('Logout error:', error);
+      logger.error('Logout error:', error);
     }
   };
 

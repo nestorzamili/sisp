@@ -9,6 +9,7 @@ import { SekolahDetailCard } from './_components/sekolah-detail-card';
 import { SekolahWithDetails } from '@/types/sekolah';
 import { getSekolahDetail } from '../action';
 import { downloadSekolahPDF } from '@/lib/pdf-utils';
+import logger from '@/lib/logger';
 
 export default function SekolahDetailPage() {
   const router = useRouter();
@@ -28,7 +29,7 @@ export default function SekolahDetailPage() {
       await downloadSekolahPDF(data);
       toast.success('PDF berhasil diunduh');
     } catch (error) {
-      console.error('Error downloading PDF:', error);
+      logger.error('Error downloading PDF:', error);
       toast.error('Gagal mengunduh PDF');
     } finally {
       setIsDownloading(false);
@@ -48,7 +49,7 @@ export default function SekolahDetailPage() {
           router.push('/admin/sekolah');
         }
       } catch (error) {
-        console.error('Error fetching sekolah detail:', error);
+        logger.error('Error fetching sekolah detail:', error);
         toast.error('Terjadi kesalahan saat mengambil detail sekolah');
         router.push('/admin/sekolah');
       } finally {

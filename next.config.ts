@@ -20,10 +20,7 @@ const nextConfig: NextConfig = {
       '@radix-ui/react-icons',
     ],
   },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
-  serverExternalPackages: ['@node-rs/argon2'],
+  serverExternalPackages: ['@node-rs/argon2', 'pino', 'pino-pretty'],
   output: 'standalone',
   compress: true,
   poweredByHeader: false,

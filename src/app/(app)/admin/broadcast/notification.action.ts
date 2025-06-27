@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { notificationService } from '@/lib/services/notification.service';
 import { Notification, NotificationStats } from '@/types/notification.types';
+import logger from '@/lib/logger';
 
 export async function getUserNotifications(limit: number = 20) {
   try {
@@ -30,7 +31,7 @@ export async function getUserNotifications(limit: number = 20) {
       data: notifications,
     };
   } catch (error) {
-    console.error('Error fetching user notifications:', error);
+    logger.error('Error fetching user notifications:', error);
     return {
       success: false,
       error: 'Gagal mengambil notifikasi',
@@ -62,7 +63,7 @@ export async function getNotificationStats() {
       data: stats,
     };
   } catch (error) {
-    console.error('Error fetching notification stats:', error);
+    logger.error('Error fetching notification stats:', error);
     return {
       success: false,
       error: 'Gagal mengambil statistik notifikasi',
@@ -91,7 +92,7 @@ export async function markNotificationAsRead(notificationId: string) {
       message: 'Notifikasi berhasil ditandai sebagai dibaca',
     };
   } catch (error) {
-    console.error('Error marking notification as read:', error);
+    logger.error('Error marking notification as read:', error);
     return {
       success: false,
       error: 'Gagal menandai notifikasi sebagai dibaca',
@@ -119,7 +120,7 @@ export async function markAllNotificationsAsRead() {
       message: 'Semua notifikasi berhasil ditandai sebagai dibaca',
     };
   } catch (error) {
-    console.error('Error marking all notifications as read:', error);
+    logger.error('Error marking all notifications as read:', error);
     return {
       success: false,
       error: 'Gagal menandai semua notifikasi sebagai dibaca',
@@ -147,7 +148,7 @@ export async function deleteNotification(notificationId: string) {
       message: 'Notifikasi berhasil dihapus',
     };
   } catch (error) {
-    console.error('Error deleting notification:', error);
+    logger.error('Error deleting notification:', error);
     return {
       success: false,
       error: 'Gagal menghapus notifikasi',

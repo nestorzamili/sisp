@@ -3,13 +3,14 @@ import { SekolahPDF } from '@/templates/school-report';
 import { SekolahReportPDF } from '@/templates/summary-report';
 import { SekolahWithDetails } from '@/types/sekolah';
 import { ReportData } from '@/types/report.types';
+import logger from '@/lib/logger';
 
 export const generateSekolahPDF = async (data: SekolahWithDetails) => {
   try {
     const blob = await pdf(<SekolahPDF data={data} />).toBlob();
     return blob;
   } catch (error) {
-    console.error('Error generating PDF:', error);
+    logger.error({ err: error }, 'Error generating PDF');
     throw new Error('Gagal membuat PDF');
   }
 };
@@ -26,7 +27,7 @@ export const downloadSekolahPDF = async (data: SekolahWithDetails) => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   } catch (error) {
-    console.error('Error downloading PDF:', error);
+    logger.error({ err: error }, 'Error downloading PDF');
     throw error;
   }
 };
@@ -36,7 +37,7 @@ export const generateSekolahReportPDF = async (data: ReportData) => {
     const blob = await pdf(<SekolahReportPDF data={data} />).toBlob();
     return blob;
   } catch (error) {
-    console.error('Error generating report PDF:', error);
+    logger.error({ err: error }, 'Error generating report PDF');
     throw new Error('Gagal membuat PDF laporan');
   }
 };
@@ -59,7 +60,7 @@ export const downloadSekolahReportPDF = async (data: ReportData) => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   } catch (error) {
-    console.error('Error downloading report PDF:', error);
+    logger.error({ err: error }, 'Error downloading report PDF');
     throw error;
   }
 };

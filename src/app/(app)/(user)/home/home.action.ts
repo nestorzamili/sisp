@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { SekolahService } from '@/lib/services/sekolah.service';
 import { HomeDataResponse } from '@/types/home.types';
+import logger from '@/lib/logger';
 
 export async function getUserSekolahDataAction(): Promise<HomeDataResponse> {
   try {
@@ -50,7 +51,7 @@ export async function getUserSekolahDataAction(): Promise<HomeDataResponse> {
       },
     };
   } catch (error) {
-    console.error('Error getting user sekolah data:', error);
+    logger.error({ err: error }, 'Error getting user sekolah data');
     return {
       success: false,
       error: 'Terjadi kesalahan saat mengambil data',

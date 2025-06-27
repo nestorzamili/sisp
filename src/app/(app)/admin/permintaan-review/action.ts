@@ -5,6 +5,7 @@ import { headers } from 'next/headers';
 import { ReviewData } from '@/types/review';
 import { ReviewService } from '@/lib/services/review.service';
 import { SekolahService } from '@/lib/services/sekolah.service';
+import logger from '@/lib/logger';
 
 /**
  * Get all request reviews with pagination and filtering
@@ -43,7 +44,7 @@ export async function getAllRequestReviews(options?: {
       totalRows: 0,
     };
   } catch (error) {
-    console.error('Error fetching request reviews:', error);
+    logger.error('Error fetching request reviews:', error);
     return {
       success: false,
       error: 'Gagal mengambil data permintaan review',
@@ -95,7 +96,7 @@ export async function approveReview(sekolahId: string, notes?: string) {
       error: result.error || 'Gagal menyetujui review',
     };
   } catch (error) {
-    console.error('Error approving review:', error);
+    logger.error('Error approving review:', error);
     return {
       success: false,
       error: 'Gagal menyetujui review',
@@ -152,7 +153,7 @@ export async function requestRevision(sekolahId: string, reason: string) {
       error: result.error || 'Gagal mengirim permintaan revisi',
     };
   } catch (error) {
-    console.error('Error requesting revision:', error);
+    logger.error('Error requesting revision:', error);
     return {
       success: false,
       error: 'Gagal mengirim permintaan revisi',
@@ -193,7 +194,7 @@ export async function getReviewDetail(sekolahId: string) {
       error: result.error || 'Gagal mengambil detail data sekolah',
     };
   } catch (error) {
-    console.error('Error fetching review detail:', error);
+    logger.error('Error fetching review detail:', error);
     return {
       success: false,
       error: 'Gagal mengambil detail data sekolah',

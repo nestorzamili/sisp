@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { ReviewData } from '@/types/review';
+import logger from '@/lib/logger';
 
 interface ReviewRevisionDialogProps {
   open: boolean;
@@ -40,7 +41,7 @@ export function ReviewRevisionDialog({
       onOpenChange(false);
       setReason('');
     } catch (error) {
-      console.error('Error requesting revision:', error);
+      logger.error('Error requesting revision:', error);
     } finally {
       setIsLoading(false);
     }

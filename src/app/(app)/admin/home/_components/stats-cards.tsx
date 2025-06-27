@@ -4,6 +4,7 @@ import { DashboardStats } from '@/types/dashboard.types';
 import { Users, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { getDashboardStats } from '../action';
+import logger from '@/lib/logger';
 
 export function StatsCards() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -17,7 +18,7 @@ export function StatsCards() {
           setStats(result.data);
         }
       } catch (error) {
-        console.error('Error fetching dashboard stats:', error);
+        logger.error('Error fetching dashboard stats:', error);
       } finally {
         setIsLoading(false);
       }

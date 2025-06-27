@@ -10,6 +10,7 @@ import { AlertCircle, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { UserHomeData } from '@/types/home.types';
+import logger from '@/lib/logger';
 
 export default function HomePage() {
   const [data, setData] = useState<UserHomeData | null>(null);
@@ -28,7 +29,7 @@ export default function HomePage() {
           setError(result.error || 'Terjadi kesalahan saat memuat data');
         }
       } catch (err) {
-        console.error('Error loading home data:', err);
+        logger.error({ err }, 'Error loading user sekolah data');
         setError('Terjadi kesalahan yang tidak terduga');
       } finally {
         setLoading(false);

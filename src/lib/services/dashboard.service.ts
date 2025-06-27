@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import logger from '@/lib/logger';
 import {
   DashboardStats,
   SekolahStats,
@@ -54,7 +55,7 @@ export class DashboardService {
         sekolahMenungguReview,
       };
     } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
+      logger.error({ err: error }, 'Error fetching dashboard stats');
       throw new Error('Failed to fetch dashboard statistics');
     }
   }
@@ -77,7 +78,10 @@ export class DashboardService {
         count: item._count.id,
       }));
     } catch (error) {
-      console.error('Error fetching sekolah status distribution:', error);
+      logger.error(
+        { err: error },
+        'Error fetching sekolah status distribution',
+      );
       throw new Error('Failed to fetch sekolah status distribution');
     }
   }
@@ -109,7 +113,7 @@ export class DashboardService {
         jumlah: item._sum.jumlah_total || 0,
       }));
     } catch (error) {
-      console.error('Error fetching sarana distribution:', error);
+      logger.error({ err: error }, 'Error fetching sarana distribution');
       throw new Error('Failed to fetch sarana distribution');
     }
   }
@@ -141,7 +145,7 @@ export class DashboardService {
         jumlah: item._sum.jumlah_total || 0,
       }));
     } catch (error) {
-      console.error('Error fetching prasarana distribution:', error);
+      logger.error({ err: error }, 'Error fetching prasarana distribution');
       throw new Error('Failed to fetch prasarana distribution');
     }
   }
@@ -168,7 +172,7 @@ export class DashboardService {
         jumlah: item._sum.jumlah || 0,
       }));
     } catch (error) {
-      console.error('Error fetching guru distribution:', error);
+      logger.error({ err: error }, 'Error fetching guru distribution');
       throw new Error('Failed to fetch guru distribution');
     }
   }
@@ -198,7 +202,7 @@ export class DashboardService {
         jumlah: item._sum.jumlah_siswa || 0,
       }));
     } catch (error) {
-      console.error('Error fetching siswa distribution:', error);
+      logger.error({ err: error }, 'Error fetching siswa distribution');
       throw new Error('Failed to fetch siswa distribution');
     }
   }
@@ -238,7 +242,7 @@ export class DashboardService {
         userEmail: sekolah.user.email,
       }));
     } catch (error) {
-      console.error('Error fetching recent sekolah:', error);
+      logger.error({ err: error }, 'Error fetching recent sekolah');
       throw new Error('Failed to fetch recent sekolah');
     }
   }
@@ -279,7 +283,7 @@ export class DashboardService {
         userEmail: sekolah.user.email,
       }));
     } catch (error) {
-      console.error('Error fetching pending reviews:', error);
+      logger.error({ err: error }, 'Error fetching pending reviews');
       throw new Error('Failed to fetch pending reviews');
     }
   }

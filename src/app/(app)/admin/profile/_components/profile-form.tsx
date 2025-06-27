@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
 import { AvatarUpload } from './avatar-upload';
+import logger from '@/lib/logger';
 
 export default function ProfileForm() {
   const router = useRouter();
@@ -130,7 +131,7 @@ export default function ProfileForm() {
           },
         );
       } catch (error) {
-        console.error('Error changing email:', error);
+        logger.error('Error changing email:', error);
         toast.error('Terjadi kesalahan yang tidak terduga.');
       }
     },
@@ -160,7 +161,7 @@ export default function ProfileForm() {
         toast.success('Foto profil berhasil diperbarui');
         router.refresh();
       } catch (error) {
-        console.error('Error updating image:', error);
+        logger.error('Error updating image:', error);
         toast.error('Foto berhasil diupload tetapi gagal disimpan ke profil');
       }
     },
@@ -191,7 +192,7 @@ export default function ProfileForm() {
               image: data.image || null,
             });
           } catch (imageError) {
-            console.error('Error updating image:', imageError);
+            logger.error('Error updating image:', imageError);
             toast.error(
               'Profil berhasil diperbarui tetapi ada masalah dengan foto profil.',
             );

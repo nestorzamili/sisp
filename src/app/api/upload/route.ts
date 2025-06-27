@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { NextRequest } from 'next/server';
+import logger from '@/lib/logger';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
       format: uploadResult.format,
     });
   } catch (error: unknown) {
-    console.error('Upload error:', error);
+    logger.error('Upload error:', error);
     const errorMessage =
       error instanceof Error ? error.message : 'Upload failed';
     return Response.json({ error: errorMessage }, { status: 500 });

@@ -1,6 +1,7 @@
 'use server';
 
 import { DashboardService } from '@/lib/services/dashboard.service';
+import logger from '@/lib/logger';
 
 /**
  * Get dashboard statistics
@@ -13,7 +14,7 @@ export async function getDashboardStats() {
       data: stats,
     };
   } catch (error) {
-    console.error('Error fetching dashboard stats:', error);
+    logger.error({ err: error }, 'Error fetching dashboard stats');
     return {
       success: false,
       error: 'Gagal mengambil statistik dashboard',
@@ -38,7 +39,7 @@ export async function getSekolahStatusDistribution() {
       data,
     };
   } catch (error) {
-    console.error('Error fetching sekolah status distribution:', error);
+    logger.error({ err: error }, 'Error fetching sekolah status distribution');
     return {
       success: false,
       error: 'Gagal mengambil distribusi status sekolah',
@@ -58,7 +59,7 @@ export async function getSaranaDistribution() {
       data,
     };
   } catch (error) {
-    console.error('Error fetching sarana distribution:', error);
+    logger.error({ err: error }, 'Error fetching sarana distribution');
     return {
       success: false,
       error: 'Gagal mengambil distribusi sarana',
@@ -78,7 +79,7 @@ export async function getPrasaranaDistribution() {
       data,
     };
   } catch (error) {
-    console.error('Error fetching prasarana distribution:', error);
+    logger.error({ err: error }, 'Error fetching prasarana distribution');
     return {
       success: false,
       error: 'Gagal mengambil distribusi prasarana',
@@ -98,7 +99,7 @@ export async function getGuruDistribution() {
       data,
     };
   } catch (error) {
-    console.error('Error fetching guru distribution:', error);
+    logger.error({ err: error }, 'Error fetching guru distribution');
     return {
       success: false,
       error: 'Gagal mengambil distribusi guru',
@@ -118,7 +119,7 @@ export async function getSiswaDistribution() {
       data,
     };
   } catch (error) {
-    console.error('Error fetching siswa distribution:', error);
+    logger.error({ err: error }, 'Error fetching siswa distribution');
     return {
       success: false,
       error: 'Gagal mengambil distribusi siswa',
@@ -138,7 +139,7 @@ export async function getRecentSekolah(limit: number = 5) {
       data,
     };
   } catch (error) {
-    console.error('Error fetching recent sekolah:', error);
+    logger.error({ err: error }, 'Error fetching recent sekolah');
     return {
       success: false,
       error: 'Gagal mengambil data sekolah terbaru',
@@ -158,7 +159,7 @@ export async function getPendingReviews(limit: number = 10) {
       data,
     };
   } catch (error) {
-    console.error('Error fetching pending reviews:', error);
+    logger.error({ err: error }, 'Error fetching pending reviews');
     return {
       success: false,
       error: 'Gagal mengambil data review pending',
