@@ -218,34 +218,15 @@ const formatGender = (gender: string) => {
   return gender === 'L' ? 'Laki-laki' : gender === 'P' ? 'Perempuan' : gender;
 };
 
-const convertToRoman = (num: string) => {
-  const arabicToRoman: Record<string, string> = {
-    '1': 'I',
-    '2': 'II',
-    '3': 'III',
-    '4': 'IV',
-    '5': 'V',
-    '6': 'VI',
-    '7': 'VII',
-    '8': 'VIII',
-    '9': 'IX',
-    '10': 'X',
-    '11': 'XI',
-    '12': 'XII',
-  };
-  return arabicToRoman[num] || num;
-};
-
 const isImageFile = (url: string) => {
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
   return imageExtensions.some((ext) => url.toLowerCase().endsWith(ext));
 };
 
-const chunkArray = <T,>(array: T[], size: number): T[][] => {
-  return Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
+const chunkArray = <T,>(array: T[], size: number): T[][] =>
+  Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
     array.slice(i * size, i * size + size),
   );
-};
 
 // Types for grouped data
 type GroupedFacilityData = Record<
@@ -554,7 +535,7 @@ export const SekolahPDF = ({ data }: SekolahPDFProps) => {
             renderTable(
               ['Kelas', 'Laki-laki', 'Perempuan'],
               Object.entries(groupedRombel).map(([tingkatan, genderData]) => ({
-                kelas: `Kelas ${convertToRoman(tingkatan)}`,
+                kelas: `Kelas ${tingkatan}`,
                 'Laki-laki':
                   (genderData as Record<string, number>)['Laki-laki'] || 0,
                 Perempuan:
