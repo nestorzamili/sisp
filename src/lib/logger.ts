@@ -1,7 +1,19 @@
 import pino from 'pino';
 
 const isProd = process.env.NODE_ENV === 'production';
-const logFile = './app.log';
+
+function getIDTimestamp() {
+  return new Date().toLocaleString('id-ID', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Jakarta',
+  });
+}
 
 const pinoOptions: pino.LoggerOptions = isProd
   ? {
@@ -9,7 +21,7 @@ const pinoOptions: pino.LoggerOptions = isProd
       formatters: {
         level: (label) => ({ level: label }),
       },
-      timestamp: () => `,"timestamp":"${new Date().toISOString()}"`,
+      timestamp: () => `,"timestamp":"${getIDTimestamp()}"`,
       messageKey: 'message',
       base: undefined,
     }
@@ -25,8 +37,6 @@ const pinoOptions: pino.LoggerOptions = isProd
       },
     };
 
-const logger = isProd
-  ? pino(pinoOptions, pino.destination(logFile))
-  : pino(pinoOptions);
+const logger = pino(pinoOptions);
 
 export default logger;
