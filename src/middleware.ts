@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSessionCookie } from 'better-auth/cookies';
+import logger from './lib/logger';
 
 const PUBLIC_ROUTES = new Set([
   '/',
@@ -18,13 +19,23 @@ const AUTH_PATHS = new Set([
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const method = request.method;
 
-  // Skip middleware for static files and special routes
+  const ip =
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-forwarded-for') ||
+    request.headers.get('x-real-ip') ||
+    request.headers.get('x-client-ip') ||
+    'unknown';
+
   if (pathname === '/robots.txt' || pathname === '/sitemap.xml') {
+    logger.debug(
+      { method, pathname, ip, skip: true },
+      'Skip static/special route',
+    );
     return NextResponse.next();
   }
 
-  // Check if route is public
   const isPublicRoute =
     PUBLIC_ROUTES.has(pathname) ||
     Array.from(AUTH_PATHS).some((authPath) =>
@@ -34,13 +45,21 @@ export async function middleware(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
 
   if (!sessionCookie) {
+    logger.info(
+      { method, pathname, ip, authenticated: false },
+      isPublicRoute ? 'Public route access' : 'Redirect to sign-in',
+    );
     if (isPublicRoute) {
       return NextResponse.next();
     }
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
-  // Add pathname to headers so it can be accessed in layouts
+  logger.debug(
+    { method, pathname, ip, authenticated: true },
+    'Authenticated request',
+  );
+
   const response = NextResponse.next();
   response.headers.set('x-pathname', pathname);
 
