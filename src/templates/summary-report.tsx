@@ -101,10 +101,10 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   pdfLogo: {
-    width: 65,
-    height: 60,
+    width: 67,
+    height: 62,
     position: 'absolute',
-    left: 0,
+    left: 180,
   },
   pdfHeaderText: {
     flex: 1,
