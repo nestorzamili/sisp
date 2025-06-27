@@ -1,5 +1,45 @@
 # Changelog
 
+## [1.5.0](https://github.com/nestorzamili/sisp/compare/v1.4.1...v1.5.0) (2025-06-27)
+
+
+### Features
+
+* add broadcast notification system with history and stats components ([7e5593d](https://github.com/nestorzamili/sisp/commit/7e5593d962e28e8137eec56417082b1abb4c29df))
+* Add school report and summary report templates with detailed data processing ([bd36208](https://github.com/nestorzamili/sisp/commit/bd3620868e8d6a9f0b3d4a3e24dc772afd1d0ac8))
+* **logger:** add pino for logging ([988a657](https://github.com/nestorzamili/sisp/commit/988a657cbeb9d3ce9395b49d7d979c391a124c32))
+
+
+### Bug Fixes
+
+* **auth:** enhance logger configuration for better debugging ([acb0460](https://github.com/nestorzamili/sisp/commit/acb0460da573aa52d07d6ab1077fb2fe29bd17de))
+* **auth:** implement new authentication layout and middleware logic ([cb1da85](https://github.com/nestorzamili/sisp/commit/cb1da853105459906fd9653e98c9a8f9c986e131))
+* **landing:** remove route /landing ([0c7f02f](https://github.com/nestorzamili/sisp/commit/0c7f02fb8de15442dc0286751a827b48e98e4f69))
+* **report:** improve error handling for empty sekolah data in report generation ([c5f88a2](https://github.com/nestorzamili/sisp/commit/c5f88a2610f52956a5e6fd0fb7d8fc82e9e9c3d2))
+* **robots:** add '/cdn-cgi/' to disallowed paths for all user agents ([676421e](https://github.com/nestorzamili/sisp/commit/676421e55f37df21c3efc3ebb1977e31db4a19b9))
+* **summary-report:** adjust font size for table header cells to improve readability ([54df8ae](https://github.com/nestorzamili/sisp/commit/54df8ae81f85b03e5f586be9a704efd661d6156f))
+* **summary-report:** adjust pdfLogo dimensions and position for better layout ([b2e7469](https://github.com/nestorzamili/sisp/commit/b2e746998385f8e288b4d30f32cf2dd5a42aff26))
+* **template:** update email verification template text for clarity ([fb7f984](https://github.com/nestorzamili/sisp/commit/fb7f9843d0e835219190a75feb302230d6268906))
+
+
+### Code Refactoring
+
+* **auth:** streamline authentication layout and session handling ([7b2f008](https://github.com/nestorzamili/sisp/commit/7b2f0089741e7f22366e9756767b0b8da9ee71c2))
+* **broadcast:** remove unused useEffect and update submission error message logic ([86424c7](https://github.com/nestorzamili/sisp/commit/86424c752680d6d946a77e142600892a7d02f973))
+* **formulir:** enhance initial data functions for form steps ([dcbaf3a](https://github.com/nestorzamili/sisp/commit/dcbaf3acaf21aa360dda4e8170cc8bc654e96b51))
+* **formulir:** implement data transformation functions for form submissions ([8a2c550](https://github.com/nestorzamili/sisp/commit/8a2c550603608f2a2197af96c44a9d8758dcd821))
+* **formulir:** Implement formulir actions and service for school data management ([bf10eb2](https://github.com/nestorzamili/sisp/commit/bf10eb201ec9281460a85542e7cf532aebd40127))
+* **formulir:** improve loading state UI for form submissions ([5aeb16b](https://github.com/nestorzamili/sisp/commit/5aeb16bbb082402fb712e1f5c49c42be10d9c130))
+* **notification:** optimize broadcast notification handling and statistics ([833df56](https://github.com/nestorzamili/sisp/commit/833df56fd6ab50cd4a0be2b64d22a3cc49b65b61))
+* **notifications:** clean up whitespace in notification dropdown component ([b20c95d](https://github.com/nestorzamili/sisp/commit/b20c95d278b10561442bc4de93c81f8678eb0385))
+* **notifications:** enhance notification fetching and state management ([ca6d6f3](https://github.com/nestorzamili/sisp/commit/ca6d6f3fda6574f781c527ded5a372eb75c31196))
+* **notifications:** remove unused markAsRead prop and related logic ([85ea377](https://github.com/nestorzamili/sisp/commit/85ea3773133f59e33978da1a5d21b1a54b4e3ea6))
+* remove unused methods and consolidate review data handling ([f9a1dd3](https://github.com/nestorzamili/sisp/commit/f9a1dd34a42b8c12d91c4c3e2e535995b1732ac9))
+* **school-report:** remove unused convertToRoman function and simplify chunkArray implementation ([43765b7](https://github.com/nestorzamili/sisp/commit/43765b7fa76669f6dcc5d1670e9147d781683d4a))
+* **sekolah:** remove unused sekolah statistics and guru types ([0774845](https://github.com/nestorzamili/sisp/commit/07748452d68e26a751084700fe4e52fdf698deb6))
+* **summary-report:** streamline styles and modularize table components for improved readability ([9c90518](https://github.com/nestorzamili/sisp/commit/9c90518206998fc7cae4b2034ff33471c690ffc6))
+* update button text and improve styling in multiple components ([949988e](https://github.com/nestorzamili/sisp/commit/949988e9462656f703584a5e2e9e170ee45cd77f))
+
 ## [1.4.1](https://github.com/nestorzamili/sisp/compare/v1.4.0...v1.4.1) (2025-06-21)
 
 
