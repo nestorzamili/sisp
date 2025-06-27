@@ -14,6 +14,7 @@ export default function robots(): MetadataRoute.Robots {
           '/private/*',
           '/_next/*',
           '/temp/*',
+          '/cdn-cgi/',
         ],
       },
       {
