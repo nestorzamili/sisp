@@ -10,7 +10,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=flat-square&logo=Prisma&logoColor=white)](https://prisma.io/)
 
-[🌐 Live Demo](https://sisp.blastify.tech)
+[🌐 Live Web](https://sisp.blastify.tech)
 
 </div>
 
@@ -72,6 +72,4 @@ Platform digital untuk pendataan, pengelolaan, dan monitoring sarana prasarana S
 
 <div align="center">
 
-**Dibuat dengan ❤️ untuk kemajuan pendidikan di Kabupaten Nias Selatan**
-
-*Copyright © 2025 Dinas Pendidikan Kabupaten Nias Selatan*
+*Dibuat dengan ❤️ untuk kemajuan pendidikan di Kabupaten Nias Selatan*
