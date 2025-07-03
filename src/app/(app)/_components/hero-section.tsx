@@ -51,7 +51,7 @@ const HeroSection: React.FC = () => {
               Sistem Informasi
             </span>
             <span className="block bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent font-bold">
-              Sarana & Prasarana
+              {' Sarana & Prasarana '}
             </span>
             <span className="block text-3xl md:text-4xl lg:text-5xl text-muted-foreground font-medium">
               SMP Nias Selatan

@@ -7,7 +7,6 @@ export const metadata: Metadata = {
   title: 'Masuk',
   description:
     'Masuk ke akun SISP Anda untuk mengakses sistem informasi sarana prasarana sekolah',
-  robots: 'noindex, nofollow',
 };
 
 export default function SignInPage() {

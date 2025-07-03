@@ -6,7 +6,6 @@ export const metadata: Metadata = {
   title: 'Lupa Password',
   description:
     'Reset password akun SISP Anda dengan memasukkan alamat email yang terdaftar',
-  robots: 'noindex, nofollow',
 };
 
 export default function ForgotPasswordPage() {

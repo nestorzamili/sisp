@@ -7,7 +7,6 @@ export const metadata: Metadata = {
   title: 'Daftar Sekolah',
   description:
     'Daftarkan sekolah Anda ke dalam Sistem Informasi Sarana Prasarana (SISP) Kabupaten Nias Selatan',
-  robots: 'noindex, nofollow',
 };
 
 interface SignUpPageProps {

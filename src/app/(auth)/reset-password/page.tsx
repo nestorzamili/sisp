@@ -6,7 +6,6 @@ import ResetPasswordContent from './components/reset-password-content';
 export const metadata: Metadata = {
   title: 'Reset Password',
   description: 'Buat password baru yang kuat untuk akun SISP Anda',
-  robots: 'noindex, nofollow',
 };
 
 export default function ResetPasswordPage() {
