@@ -6,30 +6,18 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         disallow: [
-          '/admin/*',
-          '/api/*',
-          '/dashboard/*',
-          '/(user)/*',
-          '/reset-password/*',
-          '/private/*',
-          '/_next/*',
-          '/temp/*',
+          '/admin/',
+          '/api/',
+          '/dashboard/',
+          '/user/',
+          '/reset-password/',
+          '/private/',
+          '/_next/',
+          '/temp/',
           '/cdn-cgi/',
-        ],
-      },
-      {
-        userAgent: 'Googlebot',
-        disallow: [
-          '/admin/*',
-          '/api/*',
-          '/dashboard/*',
-          '/(user)/*',
-          '/reset-password/*',
-          '/private/*',
         ],
       },
     ],
     sitemap: 'https://sisp.blastify.tech/sitemap.xml',
-    host: 'https://sisp.blastify.tech',
   };
 }
