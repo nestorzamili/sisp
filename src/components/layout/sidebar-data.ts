@@ -1,9 +1,10 @@
 import {
-  IconChecklist,
   IconHelp,
   IconLayoutDashboard,
   IconSchool,
-  IconSpeakerphone,
+  IconUserPlus,
+  IconFileCheck,
+  IconBroadcast,
 } from '@tabler/icons-react';
 import { type SidebarData } from './types';
 
@@ -27,22 +28,22 @@ export const sidebarData: SidebarData = {
         {
           title: 'Permintaan Pendaftaran',
           url: '/admin/permintaan-pendaftaran',
-          icon: IconChecklist,
+          icon: IconUserPlus,
         },
         {
           title: 'Permintaan Review',
           url: '/admin/permintaan-review',
-          icon: IconChecklist,
+          icon: IconFileCheck,
         },
         {
           title: 'Sekolah',
           url: '/admin/sekolah',
           icon: IconSchool,
-        }, // broadcast notifications
+        },
         {
           title: 'Broadcast Notifications',
           url: '/admin/broadcast',
-          icon: IconSpeakerphone,
+          icon: IconBroadcast,
         },
       ],
     },
