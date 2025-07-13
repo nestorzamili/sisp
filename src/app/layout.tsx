@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     default: 'SISP SMP Nias Selatan',
   },
   description:
-    'Sistem Informasi Sarana dan Prasarana (SISP) SMP Di Kabupaten Nias Selatan. Platform digital untuk pendataan, pengelolaan, dan monitoring sarana prasarana sekolah menengah pertama.',
+    'Sistem Informasi Sarana dan Prasarana (SISP) SMP Di Kabupaten Nias Selatan.',
   keywords: [
     'SISP',
     'Nias Selatan',
