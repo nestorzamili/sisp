@@ -81,7 +81,7 @@ const Header: React.FC = () => {
         }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={transition}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
       >
         <div className="container mx-auto max-w-7xl px-6">
           <div className="flex items-center justify-between">

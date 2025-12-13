@@ -1,29 +1,46 @@
 import React from 'react';
+import dynamic from 'next/dynamic';
 import Header from './_components/header';
 import HeroSection from './_components/hero-section';
-import Footer from './_components/footer';
-import Features from './_components/features';
-import Facilities from './_components/facilities';
-import Statistics from './_components/statistics';
-import CallToAction from './_components/call-to-action';
-import ProcessFlow from './_components/process-flow';
-import Benefits from './_components/benefits';
+
+const Benefits = dynamic(() => import('./_components/benefits'), {
+  ssr: true,
+});
+const Features = dynamic(() => import('./_components/features'), {
+  ssr: true,
+});
+const Facilities = dynamic(() => import('./_components/facilities'), {
+  ssr: true,
+});
+const ProcessFlow = dynamic(() => import('./_components/process-flow'), {
+  ssr: true,
+});
+const Statistics = dynamic(() => import('./_components/statistics'), {
+  ssr: true,
+});
+const CallToAction = dynamic(() => import('./_components/call-to-action'), {
+  ssr: true,
+});
+const Footer = dynamic(() => import('./_components/footer'), {
+  ssr: true,
+});
 
 const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background font-sans">
       <Header />
-      <HeroSection />
-      <Benefits />
-      <Features />
-      <Facilities />
-      <ProcessFlow />
-      <Statistics />
-      <CallToAction />
+      <main>
+        <HeroSection />
+        <Benefits />
+        <Features />
+        <Facilities />
+        <ProcessFlow />
+        <Statistics />
+        <CallToAction />
+      </main>
       <Footer />
     </div>
   );
 };
 
 export default LandingPage;
-

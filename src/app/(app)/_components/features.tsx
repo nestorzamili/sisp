@@ -188,12 +188,7 @@ const Features: React.FC = () => {
         </motion.div>
 
         {/* Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex justify-center mb-12"
-        >
+        <div className="flex justify-center mb-12">
           <div className="inline-flex p-1.5 rounded-2xl bg-muted/50 border border-border/50">
             {featureTabs.map((tab) => (
               <button
@@ -212,7 +207,7 @@ const Features: React.FC = () => {
                   <motion.div
                     layoutId="activeFeatureTab"
                     className={`absolute inset-0 bg-linear-to-r ${tab.gradient} rounded-xl`}
-                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                    transition={{ type: 'tween', duration: 0.3 }}
                   />
                 )}
                 <tab.icon
@@ -224,26 +219,20 @@ const Features: React.FC = () => {
               </button>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Features Grid with Animation */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            {activeTabData.features.map((feature, index) => (
-              <motion.div
-                key={feature.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="group"
-              >
+            {activeTabData.features.map((feature) => (
+              <div key={feature.id} className="group">
                 <div className="h-full p-6 rounded-2xl border border-border/50 bg-background/50 backdrop-blur-sm hover:bg-background/80 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 relative overflow-hidden">
                   {/* Hover Gradient */}
                   <div
@@ -266,7 +255,7 @@ const Features: React.FC = () => {
                     </p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </motion.div>
         </AnimatePresence>
