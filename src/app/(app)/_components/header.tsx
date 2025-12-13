@@ -13,7 +13,6 @@ import {
   useScroll,
   useMotionValueEvent,
 } from 'framer-motion';
-import { transition } from '@/lib/animations';
 
 const navItems = [
   { id: 'home', label: 'Beranda' },
