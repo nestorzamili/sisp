@@ -1,18 +1,21 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { LogIn, Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ModeToggle } from '@/components/theme-switch';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
+import { transition } from '@/lib/animations';
 
 const navItems = [
   { id: 'home', label: 'Beranda' },
+  { id: 'benefits', label: 'Keuntungan' },
   { id: 'features', label: 'Fitur' },
-  { id: 'facilities', label: 'Data yang Dikumpulkan' },
-  { id: 'process', label: 'Proses Pendataan' },
+  { id: 'facilities', label: 'Data' },
+  { id: 'process', label: 'Proses' },
   { id: 'statistics', label: 'Statistik' },
   { id: 'contact', label: 'Kontak' },
 ];
@@ -22,8 +25,34 @@ const Header: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
+  const { scrollY } = useScroll();
 
-  const handleNavClick = useCallback((id: string) => {
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setIsScrolled(latest > 50);
+  });
+
+  // Scroll Spy Logic
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navItems.map(item => document.getElementById(item.id));
+      // Use viewport center to determine active section
+      const scrollPosition = window.scrollY + (window.innerHeight / 2);
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveTab(navItems[i].id);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check on mount
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleNavClick = (id: string) => {
     setActiveTab(id);
     setMobileMenuOpen(false);
 
@@ -35,229 +64,131 @@ const Header: React.FC = () => {
         behavior: 'smooth',
       });
     }
-  }, []);
+  };
 
-  const handleLogoClick = useCallback(() => {
-    router.push('/');
-  }, [router]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setIsScrolled(scrollPosition > 50);
-
-      // Update active section
-      const sections = navItems
-        .map((item) => ({
-          id: item.id,
-          element: document.getElementById(item.id),
-        }))
-        .filter((section) => section.element);
-
-      const scrollOffset = scrollPosition + 120;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-
-      // Check if we're at the bottom of the page (within 50px)
-      if (scrollPosition + windowHeight >= documentHeight - 50) {
-        setActiveTab('contact');
-        return;
-      }
-
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        if (section.element && section.element.offsetTop <= scrollOffset) {
-          setActiveTab(section.id);
-          break;
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
   return (
     <>
-      {/* Mobile menu backdrop */}
-      {mobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden animate-[fadeIn_0.2s_ease-out]"
-          onClick={() => setMobileMenuOpen(false)}
-        />
-      )}
-
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 opacity-0 animate-[slideDown_0.6s_ease-out_forwards] ${
-          isScrolled
-            ? 'bg-background/95 backdrop-blur-xl shadow-xl border-b border-border/50'
-            : 'bg-background/60 backdrop-blur-md'
-        }`}
+      <motion.header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+          ? 'bg-background/80 backdrop-blur-lg border-b border-border/50 py-3 shadow-sm'
+          : 'bg-transparent py-5'
+          }`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={transition}
       >
-        <div className="container mx-auto max-w-[1440px] px-6">
-          <div
-            className={`flex items-center justify-between transition-all duration-300 ${
-              isScrolled ? 'py-3' : 'py-4'
-            }`}
-          >
+        <div className="container mx-auto max-w-7xl px-6">
+          <div className="flex items-center justify-between">
             {/* Logo */}
-            <div
-              className="flex items-center cursor-pointer group opacity-0 animate-[slideInLeft_0.6s_ease-out_0.1s_forwards] hover:scale-105 transition-transform duration-150"
-              onClick={handleLogoClick}
+            <motion.div
+              className="flex items-center cursor-pointer gap-3"
+              onClick={() => router.push('/')}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <div className="relative mr-3 rounded-lg">
+              <div className="relative rounded-xl overflow-hidden shadow-sm">
                 <Image
                   src="/logo-nias-selatan.png"
                   alt="Logo Nias Selatan"
-                  width={isScrolled ? 40 : 44}
-                  height={isScrolled ? 40 : 44}
-                  className="object-cover transition-all duration-150 rounded-lg"
+                  width={44}
+                  height={44}
+                  className="object-cover"
                   priority
                 />
               </div>
               <div className="flex flex-col">
-                <span
-                  className={`font-bold text-primary-brand tracking-tight transition-all duration-150 ${
-                    isScrolled ? 'text-lg' : 'text-xl'
-                  }`}
-                >
+                <span className="font-bold text-lg tracking-tight text-foreground leading-none">
                   Dinas Pendidikan
                 </span>
-                <span
-                  className={`text-secondary-brand font-medium leading-tight transition-all duration-150 ${
-                    isScrolled ? 'text-[10px]' : 'text-xs'
-                  }`}
-                >
-                  Bidang Sarana dan Prasarana SMP
+                <span className="text-xs text-muted-foreground font-medium">
+                  Bidang Sarana & Prasarana
                 </span>
               </div>
-            </div>{' '}
+            </motion.div>
+
             {/* Desktop Navigation */}
-            <nav
-              className="hidden lg:flex items-center space-x-1"
-              role="navigation"
-              aria-label="Menu navigasi utama"
-            >
-              {' '}
-              {navItems.map((item, index) => (
+            <nav className="hidden lg:flex items-center gap-1 p-1 rounded-full bg-background/50 border border-border/40 backdrop-blur-sm">
+              {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`relative px-4 py-2 rounded-lg font-medium transition-all duration-150 hover:scale-105 opacity-0 animate-[fadeInUp_0.4s_ease-out_forwards] ${
-                    activeTab === item.id
-                      ? 'text-primary bg-primary/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                  }`}
-                  style={{ animationDelay: `${0.2 + index * 0.05}s` }}
-                  aria-label={`Navigasi ke bagian ${item.label}`}
-                  aria-current={activeTab === item.id ? 'page' : undefined}
+                  className={`
+                    relative px-4 py-2 rounded-full text-sm font-medium transition-colors
+                    ${activeTab === item.id ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}
+                  `}
                 >
-                  <span className="relative z-10 text-sm">{item.label}</span>
+                  {activeTab === item.id && (
+                    <motion.div
+                      layoutId="activeTab"
+                      className="absolute inset-0 bg-secondary rounded-full"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    />
+                  )}
+                  <span className="relative z-10">{item.label}</span>
                 </button>
               ))}
             </nav>
-            {/* Desktop Auth Buttons */}
-            <div className="hidden lg:flex items-center space-x-3 opacity-0 animate-[slideInRight_0.6s_ease-out_0.3s_forwards]">
-              <div className="transition-transform duration-150 hover:scale-105">
-                <ModeToggle />
-              </div>{' '}
-              <Link href="/sign-up" aria-label="Daftar akun baru untuk sekolah">
-                <Button
-                  variant="outline"
-                  className="border-primary/20 hover:border-primary hover:bg-primary/5 transition-all duration-150 hover:scale-105 hover:shadow-md"
-                >
-                  Daftar
-                </Button>
-              </Link>{' '}
-              <Link
-                href="/sign-in"
-                aria-label="Masuk ke sistem untuk sekolah yang sudah terdaftar"
-              >
-                <Button className="bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-150 hover:scale-105">
-                  <LogIn className="mr-2 h-4 w-4" />
+
+            {/* Desktop Actions */}
+            <div className="hidden lg:flex items-center gap-3">
+              <ModeToggle />
+              <div className="h-6 w-px bg-border/50" />
+              <Link href="/sign-in">
+                <Button variant="ghost" className="rounded-full">
                   Masuk
                 </Button>
               </Link>
-            </div>{' '}
-            {/* Mobile Menu Button */}
-            <button
-              className="lg:hidden p-2 rounded-xl hover:bg-muted/50 transition-all duration-150 hover:scale-105"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={
-                mobileMenuOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'
-              }
-              aria-expanded={mobileMenuOpen}
-            >
-              <div className="transition-transform duration-150">
-                {mobileMenuOpen ? (
-                  <X className="text-foreground" size={24} />
-                ) : (
-                  <Menu className="text-foreground" size={24} />
-                )}
-              </div>
-            </button>
-          </div>{' '}
-          {/* Mobile Menu */}
-          <div
-            className={`lg:hidden transition-all duration-300 overflow-hidden ${
-              mobileMenuOpen ? 'max-h-[35rem] opacity-100' : 'max-h-0 opacity-0'
-            }`}
-          >
-            {' '}
-            <div className="pb-6 pt-4 bg-background/95 backdrop-blur-xl rounded-xl mt-2 border border-border/50 shadow-xl">
-              <nav
-                className="flex flex-col space-y-1 mt-2 px-4"
-                role="navigation"
-                aria-label="Menu navigasi mobile"
-              >
-                {' '}
-                {navItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleNavClick(item.id)}
-                    className={`text-left px-4 py-3 rounded-lg font-medium transition-all duration-150 hover:translate-x-1 ${
-                      activeTab === item.id
-                        ? 'text-primary bg-primary/10 border-l-4 border-primary'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                    }`}
-                    aria-label={`Navigasi ke bagian ${item.label}`}
-                    aria-current={activeTab === item.id ? 'page' : undefined}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </nav>
+              <Link href="/sign-up">
+                <Button className="rounded-full px-6 shadow-lg shadow-primary/20">
+                  Daftar
+                </Button>
+              </Link>
+            </div>
 
-              <div className="flex flex-col space-y-3 mt-5 pt-4 px-4 border-t border-border/50">
-                <div className="flex justify-center mb-1">
-                  <ModeToggle />
-                </div>{' '}
-                <Link
-                  href="/sign-up"
-                  aria-label="Daftar akun baru untuk sekolah - Mobile"
+            {/* Mobile Menu Toggle */}
+            <button
+              className="lg:hidden p-2 text-foreground"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
+        </div>
+      </motion.header>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="fixed top-[70px] left-0 right-0 bg-background/95 backdrop-blur-xl border-b border-border z-40 lg:hidden overflow-hidden"
+          >
+            <div className="p-6 flex flex-col gap-4">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  className={`text-left text-lg font-medium p-2 rounded-lg ${activeTab === item.id ? 'bg-secondary text-primary' : 'text-muted-foreground'
+                    }`}
                 >
-                  <Button
-                    variant="outline"
-                    className="w-full h-11 transition-all duration-150 hover:scale-[1.02] hover:shadow-md"
-                  >
-                    Daftar
-                  </Button>
-                </Link>{' '}
-                <Link
-                  href="/sign-in"
-                  aria-label="Masuk ke sistem untuk sekolah yang sudah terdaftar - Mobile"
-                >
-                  <Button className="w-full h-11 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 transition-all duration-150 hover:scale-[1.02] hover:shadow-lg">
-                    <LogIn className="mr-2 h-4 w-4" />
-                    Masuk
-                  </Button>
+                  {item.label}
+                </button>
+              ))}
+              <div className="h-px bg-border my-2" />
+              <div className="flex gap-4">
+                <Link href="/sign-in" className="flex-1">
+                  <Button variant="outline" className="w-full">Masuk</Button>
+                </Link>
+                <Link href="/sign-up" className="flex-1">
+                  <Button className="w-full">Daftar</Button>
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-      </header>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

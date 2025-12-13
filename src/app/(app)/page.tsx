@@ -7,12 +7,14 @@ import Facilities from './_components/facilities';
 import Statistics from './_components/statistics';
 import CallToAction from './_components/call-to-action';
 import ProcessFlow from './_components/process-flow';
+import Benefits from './_components/benefits';
 
 const LandingPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background font-sans">
       <Header />
       <HeroSection />
+      <Benefits />
       <Features />
       <Facilities />
       <ProcessFlow />
@@ -24,3 +26,4 @@ const LandingPage: React.FC = () => {
 };
 
 export default LandingPage;
+
