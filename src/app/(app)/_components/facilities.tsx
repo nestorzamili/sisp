@@ -1,11 +1,20 @@
 'use client';
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
 import {
-  Building2, Wrench, GraduationCap, User, Users,
-  Building, FlaskConical, Laptop, Languages, BookOpen,
-  DoorOpen, UserCheck, LucideIcon
+  Building2,
+  Wrench,
+  GraduationCap,
+  User,
+  Users,
+  Building,
+  FlaskConical,
+  Laptop,
+  Languages,
+  BookOpen,
+  DoorOpen,
+  UserCheck,
+  LucideIcon,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer } from '@/lib/animations';
@@ -52,7 +61,10 @@ const categoriesData: CategoryData[] = [
 
 const Facilities: React.FC = () => {
   return (
-    <section id="facilities" className="py-24 bg-background/50 relative overflow-hidden">
+    <section
+      id="facilities"
+      className="py-24 bg-background/50 relative overflow-hidden"
+    >
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
         <motion.div
           initial="initial"
@@ -61,13 +73,19 @@ const Facilities: React.FC = () => {
           variants={staggerContainer}
           className="text-center mb-16"
         >
-          <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
+          <motion.h2
+            variants={fadeUp}
+            className="text-3xl md:text-5xl font-bold mb-6 tracking-tight"
+          >
             Ruang Lingkup <br className="md:hidden" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-blue-600">
               Pendataan
             </span>
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <motion.p
+            variants={fadeUp}
+            className="text-lg text-muted-foreground max-w-2xl mx-auto"
+          >
             Cakupan data yang detail memastikan analisis kebutuhan yang presisi.
           </motion.p>
         </motion.div>
@@ -92,11 +110,16 @@ const Facilities: React.FC = () => {
                   </div>
 
                   <h3 className="text-2xl font-bold mb-3">{category.title}</h3>
-                  <p className="text-muted-foreground mb-8">{category.description}</p>
+                  <p className="text-muted-foreground mb-8">
+                    {category.description}
+                  </p>
 
                   <div className="grid grid-cols-2 gap-4">
                     {category.items.map((item, j) => (
-                      <div key={j} className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50 border border-border/50 text-sm font-medium hover:bg-white hover:shadow-sm transition-all">
+                      <div
+                        key={j}
+                        className="flex items-center gap-3 p-3 rounded-xl bg-secondary/50 border border-border/50 text-sm font-medium hover:bg-white hover:shadow-sm transition-all"
+                      >
                         <item.icon className="w-4 h-4 text-primary/70" />
                         {item.name}
                       </div>

@@ -16,7 +16,6 @@ import {
   Landmark,
   LucideIcon,
 } from 'lucide-react';
-import Image from 'next/image';
 
 interface Feature {
   id: number;
@@ -46,25 +45,29 @@ const featureTabs: FeatureTab[] = [
         id: 1,
         icon: BarChart,
         title: 'Dashboard Analytics',
-        description: 'Visualisasi data real-time seluruh sekolah dalam satu dashboard terpusat.',
+        description:
+          'Visualisasi data real-time seluruh sekolah dalam satu dashboard terpusat.',
       },
       {
         id: 2,
         icon: TrendingUp,
         title: 'Sistem Prioritas Otomatis',
-        description: 'Algoritma cerdas menentukan urutan kebutuhan berdasarkan tingkat kerusakan.',
+        description:
+          'Algoritma cerdas menentukan urutan kebutuhan berdasarkan tingkat kerusakan.',
       },
       {
         id: 3,
         icon: FolderOpen,
         title: 'Manajemen Dokumen',
-        description: 'Arsip digital terpusat untuk semua laporan dan dokumentasi pendidikan.',
+        description:
+          'Arsip digital terpusat untuk semua laporan dan dokumentasi pendidikan.',
       },
       {
         id: 4,
         icon: ShieldCheck,
         title: 'Keamanan Data',
-        description: 'Enkripsi berlapis menjamin kerahasiaan data pendidikan daerah.',
+        description:
+          'Enkripsi berlapis menjamin kerahasiaan data pendidikan daerah.',
       },
     ],
   },
@@ -79,19 +82,22 @@ const featureTabs: FeatureTab[] = [
         id: 1,
         icon: ClipboardList,
         title: 'Form Input Intuitif',
-        description: 'Formulir sederhana untuk operator sekolah dengan panduan langkah demi langkah.',
+        description:
+          'Formulir sederhana untuk operator sekolah dengan panduan langkah demi langkah.',
       },
       {
         id: 2,
         icon: Building2,
         title: 'Inventaris Digital',
-        description: 'Pencatatan aset lengkap mulai dari gedung hingga perabot kelas.',
+        description:
+          'Pencatatan aset lengkap mulai dari gedung hingga perabot kelas.',
       },
       {
         id: 3,
         icon: Bell,
         title: 'Notifikasi Status',
-        description: 'Pemberitahuan otomatis untuk setiap update status verifikasi data.',
+        description:
+          'Pemberitahuan otomatis untuk setiap update status verifikasi data.',
       },
       {
         id: 4,
@@ -112,13 +118,15 @@ const featureTabs: FeatureTab[] = [
         id: 1,
         icon: BarChart,
         title: 'Data Terbuka',
-        description: 'Akses informasi kondisi fasilitas sekolah untuk transparansi publik.',
+        description:
+          'Akses informasi kondisi fasilitas sekolah untuk transparansi publik.',
       },
       {
         id: 2,
         icon: TrendingUp,
         title: 'Statistik Pendidikan',
-        description: 'Visualisasi perkembangan infrastruktur pendidikan daerah.',
+        description:
+          'Visualisasi perkembangan infrastruktur pendidikan daerah.',
       },
       {
         id: 3,
@@ -138,10 +146,13 @@ const featureTabs: FeatureTab[] = [
 
 const Features: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dinas');
-  const activeTabData = featureTabs.find(tab => tab.id === activeTab)!;
+  const activeTabData = featureTabs.find((tab) => tab.id === activeTab)!;
 
   return (
-    <section id="features" className="py-24 bg-background relative overflow-hidden">
+    <section
+      id="features"
+      className="py-24 bg-background relative overflow-hidden"
+    >
       {/* Subtle Background */}
       <div className="absolute inset-0 pointer-events-none opacity-40">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
@@ -157,15 +168,22 @@ const Features: React.FC = () => {
           variants={staggerContainer}
           className="max-w-3xl mx-auto text-center mb-12"
         >
-          <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
+          <motion.h2
+            variants={fadeUp}
+            className="text-3xl md:text-5xl font-bold mb-6 tracking-tight"
+          >
             Fitur untuk{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-blue-600">
               Setiap Kebutuhan
             </span>
           </motion.h2>
 
-          <motion.p variants={fadeUp} className="text-lg text-muted-foreground leading-relaxed">
-            Platform yang dirancang khusus untuk memenuhi kebutuhan setiap stakeholder pendidikan.
+          <motion.p
+            variants={fadeUp}
+            className="text-lg text-muted-foreground leading-relaxed"
+          >
+            Platform yang dirancang khusus untuk memenuhi kebutuhan setiap
+            stakeholder pendidikan.
           </motion.p>
         </motion.div>
 
@@ -183,21 +201,26 @@ const Features: React.FC = () => {
                 onClick={() => setActiveTab(tab.id)}
                 className={`
                   relative flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all duration-300
-                  ${activeTab === tab.id
-                    ? 'text-white shadow-lg'
-                    : 'text-muted-foreground hover:text-foreground'
+                  ${
+                    activeTab === tab.id
+                      ? 'text-white shadow-lg'
+                      : 'text-muted-foreground hover:text-foreground'
                   }
                 `}
               >
                 {activeTab === tab.id && (
                   <motion.div
                     layoutId="activeFeatureTab"
-                    className={`absolute inset-0 bg-gradient-to-r ${tab.gradient} rounded-xl`}
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    className={`absolute inset-0 bg-linear-to-r ${tab.gradient} rounded-xl`}
+                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                   />
                 )}
-                <tab.icon className={`w-4 h-4 relative z-10 ${activeTab === tab.id ? 'text-white' : ''}`} />
-                <span className="relative z-10 hidden sm:inline">{tab.label}</span>
+                <tab.icon
+                  className={`w-4 h-4 relative z-10 ${activeTab === tab.id ? 'text-white' : ''}`}
+                />
+                <span className="relative z-10 hidden sm:inline">
+                  {tab.label}
+                </span>
               </button>
             ))}
           </div>
@@ -223,10 +246,14 @@ const Features: React.FC = () => {
               >
                 <div className="h-full p-6 rounded-2xl border border-border/50 bg-background/50 backdrop-blur-sm hover:bg-background/80 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 relative overflow-hidden">
                   {/* Hover Gradient */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${activeTabData.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                  <div
+                    className={`absolute inset-0 bg-linear-to-br ${activeTabData.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}
+                  />
 
                   <div className="relative z-10">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${activeTabData.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                    <div
+                      className={`w-12 h-12 rounded-xl bg-linear-to-br ${activeTabData.gradient} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300 shadow-lg`}
+                    >
                       <feature.icon className="w-6 h-6 text-white" />
                     </div>
 

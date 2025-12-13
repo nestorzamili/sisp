@@ -2,12 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { LogIn, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ModeToggle } from '@/components/theme-switch';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from 'framer-motion';
 import { transition } from '@/lib/animations';
 
 const navItems = [
@@ -27,16 +32,16 @@ const Header: React.FC = () => {
   const router = useRouter();
   const { scrollY } = useScroll();
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  useMotionValueEvent(scrollY, 'change', (latest) => {
     setIsScrolled(latest > 50);
   });
 
   // Scroll Spy Logic
   useEffect(() => {
     const handleScroll = () => {
-      const sections = navItems.map(item => document.getElementById(item.id));
+      const sections = navItems.map((item) => document.getElementById(item.id));
       // Use viewport center to determine active section
-      const scrollPosition = window.scrollY + (window.innerHeight / 2);
+      const scrollPosition = window.scrollY + window.innerHeight / 2;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i];
@@ -69,10 +74,11 @@ const Header: React.FC = () => {
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-          ? 'bg-background/80 backdrop-blur-lg border-b border-border/50 py-3 shadow-sm'
-          : 'bg-transparent py-5'
-          }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-background/80 backdrop-blur-lg border-b border-border/50 py-3 shadow-sm'
+            : 'bg-transparent py-5'
+        }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={transition}
@@ -121,7 +127,11 @@ const Header: React.FC = () => {
                     <motion.div
                       layoutId="activeTab"
                       className="absolute inset-0 bg-secondary rounded-full"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      transition={{
+                        type: 'spring',
+                        bounce: 0.2,
+                        duration: 0.6,
+                      }}
                     />
                   )}
                   <span className="relative z-10">{item.label}</span>
@@ -170,8 +180,11 @@ const Header: React.FC = () => {
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`text-left text-lg font-medium p-2 rounded-lg ${activeTab === item.id ? 'bg-secondary text-primary' : 'text-muted-foreground'
-                    }`}
+                  className={`text-left text-lg font-medium p-2 rounded-lg ${
+                    activeTab === item.id
+                      ? 'bg-secondary text-primary'
+                      : 'text-muted-foreground'
+                  }`}
                 >
                   {item.label}
                 </button>
@@ -179,7 +192,9 @@ const Header: React.FC = () => {
               <div className="h-px bg-border my-2" />
               <div className="flex gap-4">
                 <Link href="/sign-in" className="flex-1">
-                  <Button variant="outline" className="w-full">Masuk</Button>
+                  <Button variant="outline" className="w-full">
+                    Masuk
+                  </Button>
                 </Link>
                 <Link href="/sign-up" className="flex-1">
                   <Button className="w-full">Daftar</Button>

@@ -8,31 +8,31 @@ import { motion } from 'framer-motion';
 import { fadeUp, staggerContainer } from '@/lib/animations';
 
 const CallToAction: React.FC = () => {
-  const benefits = [
-    'Dashboard monitoring real-time',
-    'Laporan komprehensif otomatis',
-    'Dukungan teknis penuh',
-  ];
-
   return (
     <section id="contact" className="relative py-24 lg:py-32 overflow-hidden">
-      {/* Gradient Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary via-blue-600 to-blue-700" />
+      <div className="absolute inset-0 bg-linear-to-br from-primary via-blue-600 to-blue-700" />
 
-      {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Grid Pattern */}
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
 
-        {/* Animated Orbs */}
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear", type: "tween" }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: 'linear',
+            type: 'tween',
+          }}
           className="absolute -top-[30%] -right-[10%] w-[800px] h-[800px] bg-blue-400/30 rounded-full blur-3xl"
         />
         <motion.div
           animate={{ scale: [1, 1.3, 1], x: [0, -50, 0] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", type: "tween" }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: 'easeInOut',
+            type: 'tween',
+          }}
           className="absolute -bottom-[30%] -left-[10%] w-[600px] h-[600px] bg-purple-500/20 rounded-full blur-3xl"
         />
       </div>
@@ -49,9 +49,8 @@ const CallToAction: React.FC = () => {
             variants={fadeUp}
             className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 tracking-tight leading-tight text-white"
           >
-            Siap Tingkatkan Kualitas{' '}
-            <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-300 via-yellow-200 to-orange-300">
+            Siap Tingkatkan Kualitas <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-orange-300 via-yellow-200 to-orange-300">
               Pendidikan Nias Selatan?
             </span>
           </motion.h2>
@@ -60,12 +59,15 @@ const CallToAction: React.FC = () => {
             variants={fadeUp}
             className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed"
           >
-            Bergabunglah dalam transformasi digital pendidikan. Kelola dan monitor
-            sarana prasarana sekolah Anda dengan mudah, akurat, dan transparan.
+            Bergabunglah dalam transformasi digital pendidikan. Kelola dan
+            monitor sarana prasarana sekolah Anda dengan mudah, akurat, dan
+            transparan.
           </motion.p>
 
-          {/* CTA Buttons */}
-          <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center">
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+          >
             <Link href="/sign-up">
               <Button
                 size="lg"
