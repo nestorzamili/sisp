@@ -25,7 +25,7 @@ export function GuruChart() {
           setData(result.data);
         }
       } catch (error) {
-        logger.error('Error fetching guru distribution:', error);
+        logger.error(error, 'Error fetching guru distribution:');
       } finally {
         setIsLoading(false);
       }
@@ -136,7 +136,7 @@ export function GuruChart() {
                   formatter={(value, name) => [
                     `${value} Guru `,
                     chartConfig[name as keyof typeof chartConfig]?.label ||
-                      name,
+                    name,
                   ]}
                 />
               }

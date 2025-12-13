@@ -37,7 +37,7 @@ export function ApprovalDialog({
       await onConfirm(pendaftaran.id);
       onOpenChange(false);
     } catch (error) {
-      logger.error('Error approving pendaftaran:', error);
+      logger.error(error as Error, 'Error approving pendaftaran:');
     } finally {
       setIsLoading(false);
     }

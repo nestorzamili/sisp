@@ -30,7 +30,7 @@ export default function ResetPasswordContent() {
         // Simple token validation (in a real app, you'd verify this with your backend)
         setTokenValid(token.length > 0);
       } catch (error) {
-        logger.error('Error validating token:', error);
+        logger.error(error as Error, 'Error validating token:');
         setTokenValid(false);
       } finally {
         setIsValidating(false);

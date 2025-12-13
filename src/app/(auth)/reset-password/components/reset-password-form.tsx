@@ -76,8 +76,8 @@ export function ResetForm({ className, token, ...props }: ResetFormProps) {
             form.reset();
             router.push('/sign-in?message=password_reset_success');
           },
-          onError: (ctx) => {
-            logger.error('Error during password reset:', ctx.error);
+          onError: (ctx: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+            logger.error(ctx.error, 'Error during password reset:');
             setFormState({
               status: 'error',
               message:
@@ -88,7 +88,7 @@ export function ResetForm({ className, token, ...props }: ResetFormProps) {
         },
       );
     } catch (error) {
-      logger.error('Error during password reset:', error);
+      logger.error(error, 'Error during password reset:');
       setFormState({
         status: 'error',
         message: 'Terjadi kesalahan saat mengubah password. Silakan coba lagi.',

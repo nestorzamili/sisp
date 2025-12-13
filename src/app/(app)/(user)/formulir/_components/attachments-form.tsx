@@ -125,7 +125,7 @@ export function AttachmentsForm({
         toast.error(result.error || 'Gagal mengupload file');
       }
     } catch (error) {
-      logger.error({ err: error }, 'Error uploading file');
+      logger.error(error, 'Error uploading file');
       toast.error('Terjadi kesalahan saat mengupload file');
     } finally {
       setUploading((prev) => ({ ...prev, [index]: false }));
@@ -301,7 +301,7 @@ export function AttachmentsForm({
                             </DialogHeader>
                             <div className="mt-4">
                               <FilePreview
-                                url={form.watch(`lampiran.${index}.url`)}
+                                url={form.watch(`lampiran.${index}.url`) || ''}
                                 fileName={
                                   form.watch(
                                     `lampiran.${index}.nama_dokumen`,

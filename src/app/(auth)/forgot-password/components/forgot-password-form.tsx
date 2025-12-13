@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { AlertCircle, CheckCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AuthLink } from '@/app/(auth)/_components/auth-footers';
-import { forgetPassword } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth-client';
 import logger from '@/lib/logger';
 
 type ForgotFormProps = HTMLAttributes<HTMLDivElement>;
@@ -48,7 +48,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
     setFormState({ status: 'idle', message: '' });
 
     try {
-      await forgetPassword(
+      await authClient.requestPasswordReset(
         {
           email: data.email,
           redirectTo: '/reset-password',
@@ -62,8 +62,8 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
             });
             form.reset();
           },
-          onError: (ctx) => {
-            logger.error('Error during password reset:', ctx.error);
+          onError: (ctx: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+            logger.error(ctx.error, 'Error during password reset:');
             setFormState({
               status: 'error',
               message:
@@ -74,7 +74,7 @@ export function ForgotForm({ className, ...props }: ForgotFormProps) {
         },
       );
     } catch (error) {
-      logger.error('Error during password reset:', error);
+      logger.error(error, 'Error during password reset:');
       setFormState({
         status: 'error',
         message:

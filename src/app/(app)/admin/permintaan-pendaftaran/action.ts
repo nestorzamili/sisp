@@ -44,7 +44,7 @@ export async function getAllPendingRegistrations(options?: {
       totalRows: 0,
     };
   } catch (error) {
-    logger.error('Error fetching pending registrations:', error);
+    logger.error(error, 'Error fetching pending registrations:');
     return {
       success: false,
       error: 'Gagal mengambil data permintaan pendaftaran',
@@ -80,7 +80,7 @@ export async function approvePendaftaran(userId: string) {
       error: result.error || 'Gagal menyetujui pendaftaran',
     };
   } catch (error) {
-    logger.error('Error approving pendaftaran:', error);
+    logger.error(error, 'Error approving pendaftaran:');
     return {
       success: false,
       error: 'Gagal menyetujui pendaftaran',
@@ -124,7 +124,7 @@ export async function rejectPendaftaran(userId: string, reason: string) {
       error: result.error || 'Gagal menolak pendaftaran',
     };
   } catch (error) {
-    logger.error('Error rejecting pendaftaran:', error);
+    logger.error(error, 'Error rejecting pendaftaran:');
     return {
       success: false,
       error: 'Gagal menolak pendaftaran',

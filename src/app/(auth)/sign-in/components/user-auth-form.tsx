@@ -77,7 +77,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           callbackURL: '/home',
         },
         {
-          onError: (ctx) => {
+          onError: (ctx: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
             if (ctx.error.status === 401) {
               setError({
                 message: 'Email atau password Anda tidak valid.',
@@ -91,7 +91,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         },
       );
     } catch (error) {
-      logger.error('Login error:', error);
+      logger.error(error, 'Login error:');
       setError({
         message: 'Terjadi kesalahan saat masuk. Silakan coba lagi.',
       });

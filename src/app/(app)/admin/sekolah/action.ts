@@ -53,7 +53,7 @@ export async function getAllSekolahWithCount(options?: {
       totalRows: result.pagination.totalCount,
     };
   } catch (error) {
-    logger.error('Error fetching sekolah:', error);
+    logger.error(error, 'Error fetching sekolah:');
     return {
       success: false,
       error: 'Gagal mengambil data sekolah',
@@ -89,7 +89,7 @@ export async function getSekolahDetail(id: string) {
       error: result.error || 'Sekolah tidak ditemukan',
     };
   } catch (error) {
-    logger.error('Error fetching sekolah detail:', error);
+    logger.error(error, 'Error fetching sekolah detail:');
     return {
       success: false,
       error: 'Gagal mengambil detail sekolah',

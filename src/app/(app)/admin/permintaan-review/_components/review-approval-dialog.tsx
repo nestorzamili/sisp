@@ -41,7 +41,7 @@ export function ReviewApprovalDialog({
       onOpenChange(false);
       setNotes('');
     } catch (error) {
-      logger.error('Error approving review:', error);
+      logger.error(error as Error, 'Error approving review:');
     } finally {
       setIsLoading(false);
     }

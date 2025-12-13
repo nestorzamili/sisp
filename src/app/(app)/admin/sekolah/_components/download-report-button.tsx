@@ -54,7 +54,7 @@ export function DownloadReportButton() {
         toast.error(result.error || 'Gagal mengunduh laporan');
       }
     } catch (error) {
-      logger.error('Error downloading report:', error);
+      logger.error(error, 'Error downloading report:');
       toast.error('Terjadi kesalahan saat mengunduh laporan');
     } finally {
       setIsLoading(false);

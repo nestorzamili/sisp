@@ -134,7 +134,7 @@ export function SignUpForm({ className, ...props }: SignUpFormProps) {
 
       router.push('/sign-up?success=true');
     } catch (err) {
-      logger.error('Registration error:', err);
+      logger.error(err, 'Registration error:');
       setError(
         'Terjadi kesalahan saat mendaftarkan sekolah. Silakan coba lagi.',
       );

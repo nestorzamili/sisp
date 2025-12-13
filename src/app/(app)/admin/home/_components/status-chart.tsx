@@ -25,7 +25,7 @@ export function StatusChart() {
           setData(result.data);
         }
       } catch (error) {
-        logger.error('Error fetching status distribution:', error);
+        logger.error(error, 'Error fetching status distribution:');
       } finally {
         setIsLoading(false);
       }

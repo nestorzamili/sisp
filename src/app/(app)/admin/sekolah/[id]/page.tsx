@@ -29,7 +29,7 @@ export default function SekolahDetailPage() {
       await downloadSekolahPDF(data);
       toast.success('PDF berhasil diunduh');
     } catch (error) {
-      logger.error('Error downloading PDF:', error);
+      logger.error(error as Error, 'Error downloading PDF:');
       toast.error('Gagal mengunduh PDF');
     } finally {
       setIsDownloading(false);
@@ -49,7 +49,7 @@ export default function SekolahDetailPage() {
           router.push('/admin/sekolah');
         }
       } catch (error) {
-        logger.error('Error fetching sekolah detail:', error);
+        logger.error(error as Error, 'Error fetching sekolah detail:');
         toast.error('Terjadi kesalahan saat mengambil detail sekolah');
         router.push('/admin/sekolah');
       } finally {

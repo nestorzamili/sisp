@@ -77,7 +77,7 @@ export function useNotifications(userId?: string) {
           !abortControllerRef.current.signal.aborted
         ) {
           setError('Terjadi kesalahan saat mengambil notifikasi');
-          logger.error('Error fetching notifications:', err);
+          logger.error(err, 'Error fetching notifications:');
         }
       } finally {
         if (isPolling) {
@@ -122,7 +122,7 @@ export function useNotifications(userId?: string) {
         }));
       }
     } catch (err) {
-      logger.error('Error marking notification as read:', err);
+      logger.error(err, 'Error marking notification as read:');
       // Revert optimistic update on error
       setNotifications((prev) =>
         prev.map((n) =>
@@ -156,9 +156,10 @@ export function useNotifications(userId?: string) {
           prev.map((n) => ({ ...n, isRead: false, readAt: null })),
         );
         setStats((prev) => ({ ...prev, unread: currentUnreadCount }));
+        setStats((prev) => ({ ...prev, unread: currentUnreadCount }));
       }
     } catch (err) {
-      logger.error('Error marking all notifications as read:', err);
+      logger.error(err, 'Error marking all notifications as read:');
       // Revert would require refetching data, so just refresh
       fetchNotifications(false);
     }
@@ -198,7 +199,7 @@ export function useNotifications(userId?: string) {
           }));
         }
       } catch (err) {
-        logger.error('Error deleting notification:', err);
+        logger.error(err, 'Error deleting notification:');
         // Refresh to get accurate state
         fetchNotifications(false);
       }

@@ -106,7 +106,7 @@ export default function ProfileForm() {
               );
               router.refresh();
             },
-            onError: (ctx) => {
+            onError: (ctx: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
               const errorMessage = ctx.error?.message || '';
               if (
                 errorMessage.includes('Email already exists') ||
@@ -144,9 +144,9 @@ export default function ProfileForm() {
         setUserProfile((prev) =>
           prev
             ? {
-                ...prev,
-                image: imageUrl,
-              }
+              ...prev,
+              image: imageUrl,
+            }
             : null,
         );
 

@@ -41,7 +41,7 @@ export function ReviewRevisionDialog({
       onOpenChange(false);
       setReason('');
     } catch (error) {
-      logger.error('Error requesting revision:', error);
+      logger.error(error as Error, 'Error requesting revision:');
     } finally {
       setIsLoading(false);
     }

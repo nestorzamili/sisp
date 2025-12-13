@@ -41,7 +41,7 @@ export function RejectionDialog({
       onOpenChange(false);
       setReason('');
     } catch (error) {
-      logger.error('Error rejecting pendaftaran:', error);
+      logger.error(error as Error, 'Error rejecting pendaftaran:');
     } finally {
       setIsLoading(false);
     }

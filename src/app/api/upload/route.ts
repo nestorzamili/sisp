@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       format: uploadResult.format,
     });
   } catch (error: unknown) {
-    logger.error('Upload error:', error);
+    logger.error(error, 'Upload error:');
     const errorMessage =
       error instanceof Error ? error.message : 'Upload failed';
     return Response.json({ error: errorMessage }, { status: 500 });

@@ -38,7 +38,7 @@ export function ProfileDropdown() {
       });
     } catch (error) {
       toast.error('Gagal keluar. Silakan coba lagi.');
-      logger.error('Logout error:', error);
+      logger.error(error, 'Logout error:');
     }
   };
 
@@ -61,10 +61,10 @@ export function ProfileDropdown() {
   const user = session.user;
   const userInitials = user.name
     ? user.name
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .toUpperCase()
+      .split(' ')
+      .map((n: string) => n[0])
+      .join('')
+      .toUpperCase()
     : user.email.substring(0, 2).toUpperCase();
 
   const userImage = user.image || undefined;

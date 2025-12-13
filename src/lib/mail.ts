@@ -13,7 +13,7 @@ export async function sendEmail({
 }) {
   // Validate recipient email
   if (!to || typeof to !== 'string') {
-    logger.error('Invalid recipient email address:', to);
+    logger.error('Invalid recipient email address:');
     throw new Error('Invalid recipient email address');
   }
 
@@ -39,7 +39,7 @@ export async function sendEmail({
     const result = await response.json();
     return result;
   } catch (error) {
-    logger.error('Failed to send email:', error);
+    logger.error(error, 'Failed to send email:');
     throw error;
   }
 }

@@ -38,7 +38,7 @@ export default function ReviewDetailPage() {
           router.push('/admin/permintaan-review');
         }
       } catch (error) {
-        logger.error('Error fetching review detail:', error);
+        logger.error(error as Error, 'Error fetching review detail:');
         toast.error('Terjadi kesalahan saat mengambil detail review');
         router.push('/admin/permintaan-review');
       } finally {
@@ -72,7 +72,7 @@ export default function ReviewDetailPage() {
         toast.error(response.error || 'Gagal menyetujui review');
       }
     } catch (error) {
-      logger.error('Error approving review:', error);
+      logger.error(error as Error, 'Error approving review:');
       toast.error('Terjadi kesalahan saat menyetujui review');
     } finally {
       setIsActionLoading(false);
@@ -91,7 +91,7 @@ export default function ReviewDetailPage() {
         toast.error(response.error || 'Gagal mengirim permintaan revisi');
       }
     } catch (error) {
-      logger.error('Error requesting revision:', error);
+      logger.error(error as Error, 'Error requesting revision:');
       toast.error('Terjadi kesalahan saat mengirim permintaan revisi');
     } finally {
       setIsActionLoading(false);
@@ -101,22 +101,22 @@ export default function ReviewDetailPage() {
   // Convert ReviewData to match expected props (simplified for now)
   const reviewData = data
     ? {
-        id: data.id,
-        nama_sekolah: data.nama_sekolah,
-        npsn: data.npsn,
-        nama_kepala_sekolah: data.nama_kepala_sekolah,
-        alamat_sekolah: data.alamat_sekolah,
-        kecamatan: data.kecamatan,
-        phone: data.phone,
-        status: data.status,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-        reviewedAt: data.reviewedAt,
-        reviewedById: data.reviewedById,
-        reviewNotes: data.reviewNotes,
-        user: data.user || { id: '', name: '', email: '' },
-        reviewedBy: data.reviewedBy,
-      }
+      id: data.id,
+      nama_sekolah: data.nama_sekolah,
+      npsn: data.npsn,
+      nama_kepala_sekolah: data.nama_kepala_sekolah,
+      alamat_sekolah: data.alamat_sekolah,
+      kecamatan: data.kecamatan,
+      phone: data.phone,
+      status: data.status,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+      reviewedAt: data.reviewedAt,
+      reviewedById: data.reviewedById,
+      reviewNotes: data.reviewNotes,
+      user: data.user || { id: '', name: '', email: '' },
+      reviewedBy: data.reviewedBy,
+    }
     : null;
 
   if (isLoading) {

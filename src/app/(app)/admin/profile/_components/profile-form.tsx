@@ -114,7 +114,7 @@ export default function ProfileForm() {
               );
               router.refresh();
             },
-            onError: (ctx) => {
+            onError: (ctx: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
               const errorMessage = ctx.error?.message || '';
               if (
                 errorMessage.includes('Email already exists') ||
@@ -131,7 +131,7 @@ export default function ProfileForm() {
           },
         );
       } catch (error) {
-        logger.error('Error changing email:', error);
+        logger.error(error, 'Error changing email:');
         toast.error('Terjadi kesalahan yang tidak terduga.');
       }
     },
@@ -152,16 +152,16 @@ export default function ProfileForm() {
         setUserProfile((prev) =>
           prev
             ? {
-                ...prev,
-                image: imageUrl,
-              }
+              ...prev,
+              image: imageUrl,
+            }
             : null,
         );
 
         toast.success('Foto profil berhasil diperbarui');
         router.refresh();
       } catch (error) {
-        logger.error('Error updating image:', error);
+        logger.error(error, 'Error updating image:');
         toast.error('Foto berhasil diupload tetapi gagal disimpan ke profil');
       }
     },
@@ -192,7 +192,7 @@ export default function ProfileForm() {
               image: data.image || null,
             });
           } catch (imageError) {
-            logger.error('Error updating image:', imageError);
+            logger.error(imageError, 'Error updating image:');
             toast.error(
               'Profil berhasil diperbarui tetapi ada masalah dengan foto profil.',
             );

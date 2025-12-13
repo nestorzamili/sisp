@@ -7,11 +7,14 @@ export async function POST(request: NextRequest) {
     const { to, subject, html, from } = await request.json();
 
     if (!to || !subject || !html) {
-      logger.warn('Missing required fields for sending email', {
-        to, 
-        subject: !!subject,
-        html: !!html,
-      });
+      logger.warn(
+        {
+          to,
+          subject: !!subject,
+          html: !!html,
+        },
+        'Missing required fields for sending email',
+      );
       return Response.json(
         { error: 'Missing required fields: to, subject, html' },
         { status: 400 },

@@ -18,7 +18,7 @@ export function StatsCards() {
           setStats(result.data);
         }
       } catch (error) {
-        logger.error('Error fetching dashboard stats:', error);
+        logger.error(error, 'Error fetching dashboard stats:');
       } finally {
         setIsLoading(false);
       }
@@ -133,11 +133,10 @@ export function StatsCards() {
         return (
           <Card
             key={index}
-            className={`group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-l-4 ${
-              card.priority === 'high'
+            className={`group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] border-l-4 ${card.priority === 'high'
                 ? 'border-l-red-500 hover:border-l-red-600'
                 : 'border-l-transparent hover:border-l-blue-400'
-            }`}
+              }`}
           >
             {/* Background Pattern */}
             <div

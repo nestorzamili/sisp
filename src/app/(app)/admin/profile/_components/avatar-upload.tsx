@@ -122,7 +122,7 @@ export function AvatarUpload({
           toast.error(result.error || 'Gagal mengupload gambar');
         }
       } catch (error) {
-        logger.error('Error uploading image:', error);
+        logger.error(error, 'Error uploading image:');
         toast.error('Gagal mengupload gambar');
       } finally {
         setIsUploading(false);

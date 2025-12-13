@@ -31,7 +31,7 @@ export async function getUserNotifications(limit: number = 20) {
       data: notifications,
     };
   } catch (error) {
-    logger.error('Error fetching user notifications:', error);
+    logger.error(error, 'Error fetching user notifications:');
     return {
       success: false,
       error: 'Gagal mengambil notifikasi',
@@ -63,7 +63,7 @@ export async function getNotificationStats() {
       data: stats,
     };
   } catch (error) {
-    logger.error('Error fetching notification stats:', error);
+    logger.error(error, 'Error fetching notification stats:');
     return {
       success: false,
       error: 'Gagal mengambil statistik notifikasi',
@@ -92,7 +92,7 @@ export async function markNotificationAsRead(notificationId: string) {
       message: 'Notifikasi berhasil ditandai sebagai dibaca',
     };
   } catch (error) {
-    logger.error('Error marking notification as read:', error);
+    logger.error(error, 'Error marking notification as read:');
     return {
       success: false,
       error: 'Gagal menandai notifikasi sebagai dibaca',
@@ -120,7 +120,7 @@ export async function markAllNotificationsAsRead() {
       message: 'Semua notifikasi berhasil ditandai sebagai dibaca',
     };
   } catch (error) {
-    logger.error('Error marking all notifications as read:', error);
+    logger.error(error, 'Error marking all notifications as read:');
     return {
       success: false,
       error: 'Gagal menandai semua notifikasi sebagai dibaca',
@@ -148,7 +148,7 @@ export async function deleteNotification(notificationId: string) {
       message: 'Notifikasi berhasil dihapus',
     };
   } catch (error) {
-    logger.error('Error deleting notification:', error);
+    logger.error(error, 'Error deleting notification:');
     return {
       success: false,
       error: 'Gagal menghapus notifikasi',

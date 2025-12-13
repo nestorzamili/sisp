@@ -44,7 +44,7 @@ export async function getAllRequestReviews(options?: {
       totalRows: 0,
     };
   } catch (error) {
-    logger.error('Error fetching request reviews:', error);
+    logger.error(error, 'Error fetching request reviews:');
     return {
       success: false,
       error: 'Gagal mengambil data permintaan review',
@@ -96,7 +96,7 @@ export async function approveReview(sekolahId: string, notes?: string) {
       error: result.error || 'Gagal menyetujui review',
     };
   } catch (error) {
-    logger.error('Error approving review:', error);
+    logger.error(error, 'Error approving review:');
     return {
       success: false,
       error: 'Gagal menyetujui review',
@@ -153,7 +153,7 @@ export async function requestRevision(sekolahId: string, reason: string) {
       error: result.error || 'Gagal mengirim permintaan revisi',
     };
   } catch (error) {
-    logger.error('Error requesting revision:', error);
+    logger.error(error, 'Error requesting revision:');
     return {
       success: false,
       error: 'Gagal mengirim permintaan revisi',
@@ -194,7 +194,7 @@ export async function getReviewDetail(sekolahId: string) {
       error: result.error || 'Gagal mengambil detail data sekolah',
     };
   } catch (error) {
-    logger.error('Error fetching review detail:', error);
+    logger.error(error, 'Error fetching review detail:');
     return {
       success: false,
       error: 'Gagal mengambil detail data sekolah',

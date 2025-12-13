@@ -101,7 +101,7 @@ export default function FormulirPage() {
           setCompletedSteps(completed);
         }
       } catch (error) {
-        logger.error('Error loading formulir data:', error);
+        logger.error(error as Error, 'Error loading formulir data:');
         toast.error('Gagal memuat data formulir');
       } finally {
         setIsLoading(false);
@@ -125,7 +125,7 @@ export default function FormulirPage() {
         setCompletedSteps(completed);
       }
     } catch (error) {
-      logger.error('Error refreshing completion status:', error);
+      logger.error(error as Error, 'Error refreshing completion status:');
     }
   };
   const onStep1Submit = async (data: Step1Data) => {
@@ -147,7 +147,7 @@ export default function FormulirPage() {
         toast.error(result.error || 'Gagal menyimpan informasi sekolah');
       }
     } catch (error) {
-      logger.error('Unexpected error saving school info:', error);
+      logger.error(error as Error, 'Unexpected error saving school info:');
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
@@ -166,7 +166,7 @@ export default function FormulirPage() {
         toast.error(result.error || 'Gagal menyimpan data guru');
       }
     } catch (error) {
-      logger.error('Unexpected error saving teacher data:', error);
+      logger.error(error as Error, 'Unexpected error saving teacher data:');
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
@@ -187,7 +187,7 @@ export default function FormulirPage() {
         toast.error(result.error || 'Gagal menyimpan data siswa');
       }
     } catch (error) {
-      logger.error('Unexpected error saving student data:', error);
+      logger.error(error as Error, 'Unexpected error saving student data:');
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
@@ -205,7 +205,7 @@ export default function FormulirPage() {
         toast.error(result.error || 'Gagal menyimpan data sarana');
       }
     } catch (error) {
-      logger.error('Unexpected error saving facility data:', error);
+      logger.error(error as Error, 'Unexpected error saving facility data:');
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
@@ -225,7 +225,7 @@ export default function FormulirPage() {
         toast.error(result.error || 'Gagal menyimpan data prasarana');
       }
     } catch (error) {
-      logger.error('Unexpected error saving infrastructure data:', error);
+      logger.error(error as Error, 'Unexpected error saving infrastructure data:');
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
@@ -245,7 +245,7 @@ export default function FormulirPage() {
         toast.error(result.error || 'Gagal menyimpan data kebutuhan prioritas');
       }
     } catch (error) {
-      logger.error('Unexpected error saving priority needs data:', error);
+      logger.error(error as Error, 'Unexpected error saving priority needs data:');
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
@@ -264,7 +264,7 @@ export default function FormulirPage() {
         toast.error(result.error || 'Gagal menyimpan data lampiran');
       }
     } catch (error) {
-      logger.error('Unexpected error saving attachments data:', error);
+      logger.error(error as Error, 'Unexpected error saving attachments data:');
       toast.error('Terjadi kesalahan saat menyimpan data');
     }
   };
@@ -288,7 +288,7 @@ export default function FormulirPage() {
         toast.error(result.error || 'Gagal submit data');
       }
     } catch (error) {
-      logger.error('Unexpected error submitting data:', error);
+      logger.error(error as Error, 'Unexpected error submitting data:');
       toast.error('Terjadi kesalahan saat submit data');
     } finally {
       setIsSubmitting(false);

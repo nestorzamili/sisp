@@ -33,7 +33,7 @@ export function SaranaPrasaranaChart() {
           setPrasaranaData(prasaranaResult.data);
         }
       } catch (error) {
-        logger.error('Error fetching sarana/prasarana distribution:', error);
+        logger.error(error, 'Error fetching sarana/prasarana distribution:');
       } finally {
         setIsLoading(false);
       }

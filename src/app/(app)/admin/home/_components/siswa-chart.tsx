@@ -25,7 +25,7 @@ export function SiswaChart() {
           setData(result.data);
         }
       } catch (error) {
-        logger.error('Error fetching siswa distribution:', error);
+        logger.error(error, 'Error fetching siswa distribution:');
       } finally {
         setIsLoading(false);
       }
@@ -146,7 +146,7 @@ export function SiswaChart() {
                   formatter={(value, name) => [
                     `${value} Siswa `,
                     chartConfig[name as keyof typeof chartConfig]?.label ||
-                      name,
+                    name,
                   ]}
                 />
               }
